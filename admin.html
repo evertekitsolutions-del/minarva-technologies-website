@@ -20,7 +20,7 @@
     .msg{margin-top:14px;padding:11px 12px;border-radius:10px;font-size:13px;display:none}.msg.show{display:block}.msg.err{background:#fff1f0;color:#9f1c15}.msg.ok{background:#ecfdf3;color:#087443}
     #dashboard{display:none;padding:16px 0 60px}.dash-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}.dash-head h1{margin:0;font-size:34px}.userline{font-size:13px;color:var(--muted);margin-top:5px}
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:30px;margin-top:4px}
-    .table-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.table-top{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.table-top h2{margin:0;font-size:20px}.table-tools{display:grid;grid-template-columns:minmax(220px,1fr) 170px 160px 120px 120px;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fbfdff}.table-tools input,.table-tools select{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;font:inherit;font-size:13px;background:#fff;color:var(--ink);outline:none}.table-tools input:focus,.table-tools select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}.tool-btn{border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:10px;padding:10px 11px;font-weight:800;font-size:12px}.tool-btn:hover{background:#f3f8ff}.result-count{display:flex;align-items:center;justify-content:flex-end;color:var(--muted);font-size:12px;font-weight:700}
+    .table-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.table-top{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.table-top h2{margin:0;font-size:20px}.table-top-actions{display:flex;gap:8px;flex-wrap:wrap}.export-btn{border:1px solid #b8ead0;background:#f2fff7;color:#087443;border-radius:10px;padding:10px 13px;font-weight:800;font-size:12px}.table-tools{display:grid;grid-template-columns:minmax(220px,1fr) 170px 160px 120px 120px;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fbfdff}.table-tools input,.table-tools select{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;font:inherit;font-size:13px;background:#fff;color:var(--ink);outline:none}.table-tools input:focus,.table-tools select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}.tool-btn{border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:10px;padding:10px 11px;font-weight:800;font-size:12px}.tool-btn:hover{background:#f3f8ff}.result-count{display:flex;align-items:center;justify-content:flex-end;color:var(--muted);font-size:12px;font-weight:700}
     .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid #eef3f9;font-size:13px;vertical-align:top}th{font-size:11px;letter-spacing:.06em;color:#5f7394;background:#fbfdff}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#eaf3ff;color:#1456b8}.contacted{background:#fff7e8;color:#9a5b00}.qualified{background:#ecfdf3;color:#087443}.closed{background:#f2f4f7;color:#475467}.spam{background:#fff1f0;color:#9f1c15}.status-select{border:1px solid #cddcf0;border-radius:9px;padding:7px 9px;font:inherit;font-size:12px;background:white;color:var(--ink);min-width:112px}.action-row{display:flex;gap:7px;flex-wrap:wrap}.action-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid #cfe0f7;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;color:var(--blue);background:#f8fbff;text-decoration:none}.action-link.wa-link{color:#087443;border-color:#b8ead0;background:#f2fff7}.save-note{font-size:11px;color:var(--muted);margin-top:5px;min-height:15px}
     .empty{padding:34px;text-align:center;color:var(--muted)}.loader{padding:28px;text-align:center;color:var(--muted)}.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line);background:#fbfdff}.pager-info{font-size:12px;color:var(--muted);font-weight:700}.pager-actions{display:flex;gap:8px}.pager-btn{border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:9px;padding:8px 12px;font-weight:800;font-size:12px}.pager-btn:disabled{opacity:.45;cursor:not-allowed}
     @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.dash-head{align-items:flex-start}.brand img{width:220px}.table-tools{grid-template-columns:1fr 1fr}.result-count{grid-column:1/-1;justify-content:flex-start}}
@@ -70,7 +70,10 @@
         <div class="table-card">
           <div class="table-top">
             <h2>Latest Enquiries</h2>
-            <button id="refreshBtn" class="btn btn-ghost" type="button">Refresh</button>
+            <div class="table-top-actions">
+              <button id="exportCsvBtn" class="export-btn" type="button">Export CSV</button>
+              <button id="refreshBtn" class="btn btn-ghost" type="button">Refresh</button>
+            </div>
           </div>
           <div class="table-tools">
             <input id="searchInput" type="search" placeholder="Search name, phone, email, service…" aria-label="Search enquiries">
@@ -118,6 +121,7 @@
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
     const refreshBtn = document.getElementById('refreshBtn')
+    const exportCsvBtn = document.getElementById('exportCsvBtn')
     const tableArea = document.getElementById('tableArea')
     const searchInput = document.getElementById('searchInput')
     const statusFilter = document.getElementById('statusFilter')
@@ -378,6 +382,48 @@
     })
 
     refreshBtn.addEventListener('click', loadDashboard)
+
+    exportCsvBtn.addEventListener('click', () => {
+      const rows = filteredRows()
+
+      if (!rows.length){
+        alert('No enquiries to export for the current search/filter.')
+        return
+      }
+
+      const headers = ['ID','Created At','Name','Phone','Email','Service','Message','Source','Status']
+      const csvEscape = (value) => {
+        const text = String(value ?? '').replace(/"/g, '""')
+        return '"' + text + '"'
+      }
+
+      const lines = [
+        headers.map(csvEscape).join(','),
+        ...rows.map(r => [
+          r.id,
+          new Date(r.created_at).toLocaleString(),
+          r.name,
+          r.phone,
+          r.email || '',
+          r.service,
+          r.message || '',
+          r.source,
+          r.status
+        ].map(csvEscape).join(','))
+      ]
+
+      const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type:'text/csv;charset=utf-8;' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const date = new Date().toISOString().slice(0,10)
+
+      link.href = url
+      link.download = 'minarva-enquiries-' + date + '.csv'
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      URL.revokeObjectURL(url)
+    })
 
     searchInput.addEventListener('input', () => {
       currentPage = 1
