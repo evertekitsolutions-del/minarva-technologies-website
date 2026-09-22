@@ -32,7 +32,7 @@
     .process{background:#fff}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}.step{padding:24px;border-left:3px solid #dcecff}.step b{font-size:13px;color:var(--blue)}.step h3{margin:9px 0;font-size:19px}.step p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
     .brands{padding:44px 0;background:#f8fbff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}.brand-row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}.brand-chip{padding:11px 16px;background:white;border:1px solid var(--line);border-radius:11px;font-size:13px;font-weight:800;color:#24466f}
     .faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:52px}.faq-intro h2{font-size:42px;line-height:1.05;margin:0 0 15px}.faq-intro p{color:var(--muted);line-height:1.7}.faq-item{border-bottom:1px solid var(--line)}.faq-item button{width:100%;text-align:left;padding:18px 0;border:0;background:none;font:inherit;font-weight:800;color:var(--ink);display:flex;justify-content:space-between;gap:15px;cursor:pointer}.faq-answer{display:none;color:var(--muted);line-height:1.7;padding:0 0 18px;font-size:14px}.faq-item.open .faq-answer{display:block}
-    .contact{background:linear-gradient(135deg,#eef6ff,#fff)}.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px}.contact h2{font-size:44px;line-height:1.05;margin:0 0 17px}.contact-list{display:grid;gap:12px;margin-top:25px}.contact-list a,.contact-list span{background:white;border:1px solid var(--line);border-radius:14px;padding:14px 15px;font-size:14px}.form{background:white;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form input,.form select,.form textarea{width:100%;padding:13px 14px;border:1px solid #cfdef1;border-radius:11px;font:inherit;outline:none}.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--blue)}.form textarea{min-height:120px;resize:vertical;grid-column:1/-1}.form .full{grid-column:1/-1}.form small{display:block;color:var(--muted);margin-top:10px}
+    .contact{background:linear-gradient(135deg,#eef6ff,#fff)}.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px}.contact h2{font-size:44px;line-height:1.05;margin:0 0 17px}.contact-list{display:grid;gap:12px;margin-top:25px}.contact-list a,.contact-list span{background:white;border:1px solid var(--line);border-radius:14px;padding:14px 15px;font-size:14px}.form{background:white;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form input,.form select,.form textarea{width:100%;padding:13px 14px;border:1px solid #cfdef1;border-radius:11px;font:inherit;outline:none}.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--blue)}.form textarea{min-height:120px;resize:vertical;grid-column:1/-1}.form .full{grid-column:1/-1}.form small{display:block;color:var(--muted);margin-top:10px}.form-status{display:none;grid-column:1/-1;padding:11px 12px;border-radius:10px;font-size:13px;font-weight:700}.form-status.show{display:block}.form-status.ok{background:#ecfdf3;color:#087443}.form-status.err{background:#fff1f0;color:#9f1c15}.form button[disabled]{opacity:.7;cursor:not-allowed;transform:none}
     footer{background:#06172f;color:#b9c9e0;padding:50px 0 24px}.footer-grid{display:grid;grid-template-columns:1.4fr .8fr .8fr 1fr;gap:35px}.footer-logo{width:265px;background:white;border-radius:10px;padding:5px}.footer-grid h4{color:white;margin:0 0 14px}.footer-grid a,.footer-grid p{display:block;font-size:13px;line-height:1.9}.footer-grid a:hover{color:white}.footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:35px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px}
     .wa{position:fixed;right:20px;bottom:20px;z-index:50;width:58px;height:58px;border-radius:50%;background:#18b763;color:white;display:grid;place-items:center;font-weight:900;box-shadow:0 10px 30px rgba(24,183,99,.38);border:4px solid white}
     @media(max-width:980px){.links,.nav>.btn{display:none}.menu-btn{display:block}.hero-grid,.feature-grid,.faq-grid,.contact-grid{grid-template-columns:1fr}.hero{padding-top:48px}.control{max-width:700px}.service-grid{grid-template-columns:repeat(2,1fr)}.software-grid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.strip-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.brand img{width:230px}.section-head{display:block}.section-head>p{margin-top:14px}.gallery{grid-template-columns:1fr 1fr}.gallery img:first-child{grid-row:auto;height:235px}}
@@ -211,8 +211,9 @@
         </div>
         <form class="form" id="leadForm">
           <div class="form-grid">
-            <input id="name" placeholder="Your name" required>
-            <input id="phone" placeholder="Phone / WhatsApp" required>
+            <input id="name" name="name" autocomplete="name" maxlength="120" placeholder="Your name" required>
+            <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Phone / WhatsApp" required>
+            <input id="email" name="email" type="email" autocomplete="email" maxlength="320" placeholder="Email (optional)" class="full">
             <select id="service" class="full" required>
               <option value="">Select a service</option>
               <option>CCTV & Security Systems</option>
@@ -224,10 +225,11 @@
               <option>Website Development</option>
               <option>Complete Technology Solution</option>
             </select>
-            <textarea id="message" placeholder="Tell us about your requirement"></textarea>
-            <button class="btn btn-primary full" type="submit">Send Enquiry on WhatsApp →</button>
+            <textarea id="message" name="message" maxlength="4000" placeholder="Tell us about your requirement"></textarea>
+            <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
+            <button id="leadSubmit" class="btn btn-primary full" type="submit">Save & Send on WhatsApp →</button>
           </div>
-          <small>This form opens WhatsApp with your enquiry details. No form data is stored on this website.</small>
+          <small>Your enquiry is securely saved for follow-up and WhatsApp opens with the same details. Your password or payment information is never requested here.</small>
         </form>
       </div>
     </section>
@@ -245,21 +247,95 @@
 
   <a class="wa" href="https://wa.me/916235353732" target="_blank" rel="noreferrer" aria-label="WhatsApp">WA</a>
 
-  <script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+
+    const supabase = createClient(
+      'https://kwullzwhlzziosjsejud.supabase.co',
+      'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
+    )
+
     document.querySelectorAll('.faq-item button').forEach(function(btn){
       btn.addEventListener('click',function(){
-        btn.parentElement.classList.toggle('open');
-      });
-    });
-    document.getElementById('leadForm').addEventListener('submit',function(e){
-      e.preventDefault();
-      var name=document.getElementById('name').value.trim();
-      var phone=document.getElementById('phone').value.trim();
-      var service=document.getElementById('service').value;
-      var message=document.getElementById('message').value.trim();
-      var text='Hello Minarva Technologies,%0A%0AName: '+encodeURIComponent(name)+'%0APhone: '+encodeURIComponent(phone)+'%0AService: '+encodeURIComponent(service)+'%0ARequirement: '+encodeURIComponent(message||'Please contact me with details.');
-      window.open('https://wa.me/916235353732?text='+text,'_blank');
-    });
+        btn.parentElement.classList.toggle('open')
+      })
+    })
+
+    const leadForm = document.getElementById('leadForm')
+    const leadSubmit = document.getElementById('leadSubmit')
+    const formStatus = document.getElementById('formStatus')
+
+    function setFormStatus(message, type){
+      formStatus.textContent = message
+      formStatus.className = 'form-status show ' + type
+    }
+
+    leadForm.addEventListener('submit', async function(e){
+      e.preventDefault()
+
+      const name = document.getElementById('name').value.trim()
+      const phone = document.getElementById('phone').value.trim()
+      const email = document.getElementById('email').value.trim()
+      const service = document.getElementById('service').value
+      const message = document.getElementById('message').value.trim()
+
+      if (name.length < 2 || phone.length < 7 || service.length < 2){
+        setFormStatus('Please enter your name, a valid phone number and select a service.', 'err')
+        return
+      }
+
+      const whatsappText =
+        'Hello Minarva Technologies,%0A%0A' +
+        'Name: ' + encodeURIComponent(name) +
+        '%0APhone: ' + encodeURIComponent(phone) +
+        (email ? '%0AEmail: ' + encodeURIComponent(email) : '') +
+        '%0AService: ' + encodeURIComponent(service) +
+        '%0ARequirement: ' + encodeURIComponent(message || 'Please contact me with details.')
+
+      const whatsappUrl = 'https://wa.me/916235353732?text=' + whatsappText
+      const waWindow = window.open('about:blank', '_blank')
+
+      leadSubmit.disabled = true
+      leadSubmit.textContent = 'Saving enquiry…'
+      formStatus.className = 'form-status'
+
+      try {
+        const { error } = await supabase
+          .from('enquiries')
+          .insert({
+            name,
+            phone,
+            email: email || null,
+            service,
+            message: message || null,
+            source: 'website',
+            status: 'new'
+          })
+
+        if (error) throw error
+
+        setFormStatus('Enquiry saved successfully. Opening WhatsApp…', 'ok')
+        leadForm.reset()
+
+        if (waWindow) {
+          waWindow.location.href = whatsappUrl
+        } else {
+          window.location.href = whatsappUrl
+        }
+      } catch (error) {
+        console.error('Enquiry save failed:', error)
+        setFormStatus('We could not save the enquiry right now. WhatsApp is opening so you can still contact us.', 'err')
+
+        if (waWindow) {
+          waWindow.location.href = whatsappUrl
+        } else {
+          window.location.href = whatsappUrl
+        }
+      } finally {
+        leadSubmit.disabled = false
+        leadSubmit.textContent = 'Save & Send on WhatsApp →'
+      }
+    })
   </script>
 </body>
 </html>
