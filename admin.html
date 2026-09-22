@@ -219,7 +219,7 @@
                 <td>
                   <div class="action-row">
                     <a class="action-link" href="tel:${esc(r.phone)}">Call</a>
-                    <a class="action-link wa-link" href="https://wa.me/${esc(String(r.phone || '').replace(/\\D/g,''))}?text=${encodeURIComponent('Hello ' + (r.name || '') + ', this is Minarva Technologies regarding your enquiry for ' + (r.service || '') + '.')}" target="_blank" rel="noreferrer">WhatsApp</a>
+                    <a class="action-link wa-link" href="https://wa.me/${esc(String(r.phone || '').replace(/\D/g,''))}?text=${encodeURIComponent('Hello ' + (r.name || '') + ', this is Minarva Technologies regarding your enquiry for ' + (r.service || '') + '.')}" target="_blank" rel="noreferrer">WhatsApp</a>
                   </div>
                 </td>
               </tr>
