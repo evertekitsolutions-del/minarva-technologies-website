@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Minarva Technologies — Admin</title>
+  <meta name="theme-color" content="#0754c7" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--navy:#061d48;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--bg:#f4f8ff;--white:#fff;--green:#16b364;--red:#d92d20;--yellow:#f79009}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    .shell{width:min(1180px,calc(100% - 28px));margin:auto}.top{padding:24px 0}.brand{display:flex;align-items:center;gap:14px}.brand img{width:260px;height:56px;object-fit:contain;object-position:left center}
+    .login-wrap{min-height:calc(100vh - 105px);display:grid;place-items:center;padding:28px 0 60px}.panel{width:min(460px,100%);background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;box-shadow:0 22px 60px rgba(7,51,111,.14)}
+    h1,h2,h3,p{margin-top:0}.eyebrow{font-size:12px;letter-spacing:.14em;color:var(--blue);font-weight:800;margin-bottom:10px}.panel h1{font-size:32px;letter-spacing:-.035em;margin-bottom:10px}.sub{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:22px}
+    label{display:block;font-size:12px;font-weight:800;margin:14px 0 7px}input{width:100%;border:1px solid #cddcf0;border-radius:12px;padding:13px 14px;font:inherit;outline:none}input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.08)}
+    button{font:inherit;cursor:pointer}.btn{width:100%;border:0;border-radius:12px;padding:13px 16px;font-weight:800}.btn-primary{background:linear-gradient(135deg,var(--blue),#1381ff);color:#fff;margin-top:18px}.btn-ghost{background:#eef5ff;color:var(--blue);width:auto;padding:10px 14px}
+    .msg{margin-top:14px;padding:11px 12px;border-radius:10px;font-size:13px;display:none}.msg.show{display:block}.msg.err{background:#fff1f0;color:#9f1c15}.msg.ok{background:#ecfdf3;color:#087443}
+    #dashboard{display:none;padding:16px 0 60px}.dash-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}.dash-head h1{margin:0;font-size:34px}.userline{font-size:13px;color:var(--muted);margin-top:5px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:30px;margin-top:4px}
+    .table-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.table-top{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.table-top h2{margin:0;font-size:20px}
+    .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid #eef3f9;font-size:13px;vertical-align:top}th{font-size:11px;letter-spacing:.06em;color:#5f7394;background:#fbfdff}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#eaf3ff;color:#1456b8}.contacted{background:#fff7e8;color:#9a5b00}.qualified{background:#ecfdf3;color:#087443}.closed{background:#f2f4f7;color:#475467}.spam{background:#fff1f0;color:#9f1c15}
+    .empty{padding:34px;text-align:center;color:var(--muted)}.loader{padding:28px;text-align:center;color:var(--muted)}
+    @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.dash-head{align-items:flex-start}.brand img{width:220px}}
+    @media(max-width:520px){.stats{grid-template-columns:1fr}.panel{padding:22px}.dash-head{display:block}.dash-head .btn-ghost{margin-top:12px}.panel h1{font-size:28px}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <a class="brand" href="/"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+  </div>
+
+  <main>
+    <section id="loginSection" class="login-wrap">
+      <div class="panel">
+        <div class="eyebrow">SECURE ADMIN ACCESS</div>
+        <h1>Admin Login</h1>
+        <p class="sub">Sign in with an authorized Minarva Technologies admin account.</p>
+        <form id="loginForm">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="username" required />
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required />
+          <button class="btn btn-primary" type="submit">Sign In</button>
+        </form>
+        <div id="loginMsg" class="msg"></div>
+      </div>
+    </section>
+
+    <section id="dashboard">
+      <div class="shell">
+        <div class="dash-head">
+          <div>
+            <div class="eyebrow">MINARVA TECHNOLOGIES</div>
+            <h1>Admin Dashboard</h1>
+            <div id="userLine" class="userline"></div>
+          </div>
+          <button id="logoutBtn" class="btn btn-ghost" type="button">Sign Out</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat"><span>Total Enquiries</span><strong id="totalCount">0</strong></div>
+          <div class="stat"><span>New</span><strong id="newCount">0</strong></div>
+          <div class="stat"><span>Contacted</span><strong id="contactedCount">0</strong></div>
+          <div class="stat"><span>Qualified</span><strong id="qualifiedCount">0</strong></div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-top">
+            <h2>Latest Enquiries</h2>
+            <button id="refreshBtn" class="btn btn-ghost" type="button">Refresh</button>
+          </div>
+          <div id="tableArea" class="loader">Loading enquiries…</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+
+    const SUPABASE_URL = 'https://kwullzwhlzziosjsejud.supabase.co'
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+
+    const loginSection = document.getElementById('loginSection')
+    const dashboard = document.getElementById('dashboard')
+    const loginForm = document.getElementById('loginForm')
+    const loginMsg = document.getElementById('loginMsg')
+    const logoutBtn = document.getElementById('logoutBtn')
+    const refreshBtn = document.getElementById('refreshBtn')
+    const tableArea = document.getElementById('tableArea')
+
+    function showMsg(text, type='err'){
+      loginMsg.textContent = text
+      loginMsg.className = 'msg show ' + type
+    }
+
+    function showLogin(){
+      dashboard.style.display = 'none'
+      loginSection.style.display = 'grid'
+    }
+
+    function showDashboard(){
+      loginSection.style.display = 'none'
+      dashboard.style.display = 'block'
+    }
+
+    function esc(v=''){
+      return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    }
+
+    async function verifyAdmin(user){
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('email, role, active')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (error) throw error
+      if (!data || data.active !== true) return null
+      return data
+    }
+
+    async function loadDashboard(){
+      tableArea.className = 'loader'
+      tableArea.textContent = 'Loading enquiries…'
+
+      const { data, error } = await supabase
+        .from('enquiries')
+        .select('id,name,phone,email,service,message,source,status,created_at')
+        .order('created_at', { ascending:false })
+        .limit(50)
+
+      if (error){
+        tableArea.className = 'empty'
+        tableArea.textContent = 'Could not load enquiries: ' + error.message
+        return
+      }
+
+      const rows = data || []
+      document.getElementById('totalCount').textContent = rows.length
+      document.getElementById('newCount').textContent = rows.filter(x => x.status === 'new').length
+      document.getElementById('contactedCount').textContent = rows.filter(x => x.status === 'contacted').length
+      document.getElementById('qualifiedCount').textContent = rows.filter(x => x.status === 'qualified').length
+
+      if (!rows.length){
+        tableArea.className = 'empty'
+        tableArea.textContent = 'No enquiries yet.'
+        return
+      }
+
+      tableArea.className = 'table-scroll'
+      tableArea.innerHTML = `
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Name</th><th>Phone</th><th>Service</th><th>Message</th><th>Source</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            ${rows.map(r => `
+              <tr>
+                <td>${esc(new Date(r.created_at).toLocaleString())}</td>
+                <td><strong>${esc(r.name)}</strong><br><span style="color:#667085">${esc(r.email || '')}</span></td>
+                <td>${esc(r.phone)}</td>
+                <td>${esc(r.service)}</td>
+                <td style="max-width:280px">${esc(r.message || '')}</td>
+                <td>${esc(r.source)}</td>
+                <td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `
+    }
+
+    async function enterIfAuthorized(){
+      const { data:{ session } } = await supabase.auth.getSession()
+      if (!session?.user){
+        showLogin()
+        return
+      }
+
+      try{
+        const admin = await verifyAdmin(session.user)
+        if (!admin){
+          await supabase.auth.signOut()
+          showLogin()
+          showMsg('This account is not authorized for Minarva admin access.')
+          return
+        }
+
+        document.getElementById('userLine').textContent =
+          (admin.email || session.user.email || '') + ' • ' + admin.role
+        showDashboard()
+        await loadDashboard()
+      }catch(err){
+        showLogin()
+        showMsg(err.message || 'Unable to verify admin access.')
+      }
+    }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      loginMsg.className = 'msg'
+      const email = document.getElementById('email').value.trim()
+      const password = document.getElementById('password').value
+
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error){
+        showMsg(error.message)
+        return
+      }
+
+      try{
+        const admin = await verifyAdmin(data.user)
+        if (!admin){
+          await supabase.auth.signOut()
+          showMsg('Login succeeded, but this account is not authorized as an admin.')
+          return
+        }
+        document.getElementById('userLine').textContent =
+          (admin.email || data.user.email || '') + ' • ' + admin.role
+        showDashboard()
+        await loadDashboard()
+      }catch(err){
+        await supabase.auth.signOut()
+        showMsg(err.message || 'Unable to verify admin access.')
+      }
+    })
+
+    logoutBtn.addEventListener('click', async () => {
+      await supabase.auth.signOut()
+      showLogin()
+    })
+
+    refreshBtn.addEventListener('click', loadDashboard)
+
+    supabase.auth.onAuthStateChange((event) => {
+      if (event === 'SIGNED_OUT') showLogin()
+    })
+
+    enterIfAuthorized()
+  </script>
+</body>
+</html>
