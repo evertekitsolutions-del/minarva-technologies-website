@@ -21,7 +21,7 @@
     #dashboard{display:none;padding:16px 0 60px}.dash-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}.dash-head h1{margin:0;font-size:34px}.userline{font-size:13px;color:var(--muted);margin-top:5px}
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:30px;margin-top:4px}
     .table-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.table-top{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.table-top h2{margin:0;font-size:20px}
-    .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:850px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid #eef3f9;font-size:13px;vertical-align:top}th{font-size:11px;letter-spacing:.06em;color:#5f7394;background:#fbfdff}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#eaf3ff;color:#1456b8}.contacted{background:#fff7e8;color:#9a5b00}.qualified{background:#ecfdf3;color:#087443}.closed{background:#f2f4f7;color:#475467}.spam{background:#fff1f0;color:#9f1c15}
+    .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid #eef3f9;font-size:13px;vertical-align:top}th{font-size:11px;letter-spacing:.06em;color:#5f7394;background:#fbfdff}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#eaf3ff;color:#1456b8}.contacted{background:#fff7e8;color:#9a5b00}.qualified{background:#ecfdf3;color:#087443}.closed{background:#f2f4f7;color:#475467}.spam{background:#fff1f0;color:#9f1c15}.status-select{border:1px solid #cddcf0;border-radius:9px;padding:7px 9px;font:inherit;font-size:12px;background:white;color:var(--ink);min-width:112px}.action-row{display:flex;gap:7px;flex-wrap:wrap}.action-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid #cfe0f7;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;color:var(--blue);background:#f8fbff;text-decoration:none}.action-link.wa-link{color:#087443;border-color:#b8ead0;background:#f2fff7}.save-note{font-size:11px;color:var(--muted);margin-top:5px;min-height:15px}
     .empty{padding:34px;text-align:center;color:var(--muted)}.loader{padding:28px;text-align:center;color:var(--muted)}
     @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.dash-head{align-items:flex-start}.brand img{width:220px}}
     @media(max-width:520px){.stats{grid-template-columns:1fr}.panel{padding:22px}.dash-head{display:block}.dash-head .btn-ghost{margin-top:12px}.panel h1{font-size:28px}}
@@ -156,7 +156,7 @@
       tableArea.innerHTML = `
         <table>
           <thead>
-            <tr><th>Date</th><th>Name</th><th>Phone</th><th>Service</th><th>Message</th><th>Source</th><th>Status</th></tr>
+            <tr><th>Date</th><th>Name</th><th>Phone</th><th>Service</th><th>Message</th><th>Source</th><th>Status</th><th>Actions</th></tr>
           </thead>
           <tbody>
             ${rows.map(r => `
@@ -167,12 +167,54 @@
                 <td>${esc(r.service)}</td>
                 <td style="max-width:280px">${esc(r.message || '')}</td>
                 <td>${esc(r.source)}</td>
-                <td><span class="badge ${esc(r.status)}">${esc(r.status)}</span></td>
+                <td>
+                  <select class="status-select" data-id="${esc(r.id)}" aria-label="Change enquiry status">
+                    ${['new','contacted','qualified','closed','spam'].map(s => `<option value="${s}" ${r.status === s ? 'selected' : ''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`).join('')}
+                  </select>
+                  <div class="save-note" id="status-note-${esc(r.id)}"></div>
+                </td>
+                <td>
+                  <div class="action-row">
+                    <a class="action-link" href="tel:${esc(r.phone)}">Call</a>
+                    <a class="action-link wa-link" href="https://wa.me/${esc(String(r.phone || '').replace(/\D/g,''))}?text=${encodeURIComponent('Hello ' + (r.name || '') + ', this is Minarva Technologies regarding your enquiry for ' + (r.service || '') + '.')}" target="_blank" rel="noreferrer">WhatsApp</a>
+                  </div>
+                </td>
               </tr>
             `).join('')}
           </tbody>
         </table>
       `
+
+      tableArea.querySelectorAll('.status-select').forEach(select => {
+        select.addEventListener('change', async () => {
+          const id = Number(select.dataset.id)
+          const nextStatus = select.value
+          const note = document.getElementById('status-note-' + id)
+          const previous = rows.find(x => Number(x.id) === id)?.status || 'new'
+
+          select.disabled = true
+          if (note) note.textContent = 'Saving…'
+
+          const { error: updateError } = await supabase
+            .from('enquiries')
+            .update({
+              status: nextStatus,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', id)
+
+          if (updateError){
+            select.value = previous
+            if (note) note.textContent = 'Update failed'
+            select.disabled = false
+            return
+          }
+
+          if (note) note.textContent = 'Saved'
+          select.disabled = false
+          await loadDashboard()
+        })
+      })
     }
 
     async function enterIfAuthorized(){
