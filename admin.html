@@ -203,11 +203,48 @@
         <button id="manageCloseBtn" class="modal-close" type="button" aria-label="Close">×</button>
       </div>
 
-      <label for="followUpInput">Follow-up date & time</label>
-      <input id="followUpInput" type="datetime-local">
-
-      <label for="internalNotesInput">Internal notes</label>
-      <textarea id="internalNotesInput" maxlength="5000" placeholder="Add private notes for follow-up, quotation, site visit, customer response, etc."></textarea>
+      <div class="modal-grid">
+        <div>
+          <label for="manageNameInput">Customer name</label>
+          <input id="manageNameInput" type="text" maxlength="120" autocomplete="name">
+        </div>
+        <div>
+          <label for="managePhoneInput">Phone / WhatsApp</label>
+          <input id="managePhoneInput" type="tel" maxlength="30" autocomplete="tel">
+        </div>
+        <div>
+          <label for="manageEmailInput">Email</label>
+          <input id="manageEmailInput" type="email" maxlength="320" autocomplete="email">
+        </div>
+        <div>
+          <label for="manageServiceInput">Service</label>
+          <input id="manageServiceInput" type="text" maxlength="120">
+        </div>
+        <div class="full">
+          <label for="manageSourceInput">Source</label>
+          <select id="manageSourceInput">
+            <option value="website">Website</option>
+            <option value="admin">Admin / Walk-in</option>
+            <option value="phone">Phone Call</option>
+            <option value="whatsapp">WhatsApp</option>
+            <option value="instagram">Instagram</option>
+            <option value="facebook">Facebook</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="full">
+          <label for="manageMessageInput">Requirement</label>
+          <textarea id="manageMessageInput" maxlength="4000" placeholder="Customer requirement or enquiry details"></textarea>
+        </div>
+        <div class="full">
+          <label for="followUpInput">Follow-up date & time</label>
+          <input id="followUpInput" type="datetime-local">
+        </div>
+        <div class="full">
+          <label for="internalNotesInput">Internal notes</label>
+          <textarea id="internalNotesInput" maxlength="5000" placeholder="Add private notes for follow-up, quotation, site visit, customer response, etc."></textarea>
+        </div>
+      </div>
 
       <div id="manageStatus" class="modal-status" aria-live="polite"></div>
 
@@ -262,6 +299,12 @@
     const manageModal = document.getElementById('manageModal')
     const manageTitle = document.getElementById('manageTitle')
     const manageMeta = document.getElementById('manageMeta')
+    const manageNameInput = document.getElementById('manageNameInput')
+    const managePhoneInput = document.getElementById('managePhoneInput')
+    const manageEmailInput = document.getElementById('manageEmailInput')
+    const manageServiceInput = document.getElementById('manageServiceInput')
+    const manageSourceInput = document.getElementById('manageSourceInput')
+    const manageMessageInput = document.getElementById('manageMessageInput')
     const followUpInput = document.getElementById('followUpInput')
     const internalNotesInput = document.getElementById('internalNotesInput')
     const manageStatus = document.getElementById('manageStatus')
@@ -343,6 +386,12 @@
       activeManageId = Number(row.id)
       manageTitle.textContent = row.name || 'Manage Enquiry'
       manageMeta.textContent = [row.service, row.phone, row.email].filter(Boolean).join(' • ')
+      manageNameInput.value = row.name || ''
+      managePhoneInput.value = row.phone || ''
+      manageEmailInput.value = row.email || ''
+      manageServiceInput.value = row.service || ''
+      manageSourceInput.value = row.source || 'other'
+      manageMessageInput.value = row.message || ''
       followUpInput.value = toDateTimeLocal(row.follow_up_at)
       internalNotesInput.value = row.internal_notes || ''
       manageStatus.textContent = ''
@@ -923,8 +972,26 @@
     manageSaveBtn.addEventListener('click', async () => {
       if (!activeManageId) return
 
+      const name = manageNameInput.value.trim()
+      const phone = managePhoneInput.value.trim()
+      const email = manageEmailInput.value.trim()
+      const service = manageServiceInput.value.trim()
+      const source = manageSourceInput.value
+      const message = manageMessageInput.value.trim()
       const notes = internalNotesInput.value.trim()
       const followUpValue = followUpInput.value
+
+      if (name.length < 2 || phone.length < 7 || service.length < 2){
+        manageStatus.textContent = 'Enter customer name, a valid phone number and service.'
+        manageStatus.className = 'modal-status err'
+        return
+      }
+
+      if (email.length > 320 || message.length > 4000){
+        manageStatus.textContent = 'Email or requirement is too long.'
+        manageStatus.className = 'modal-status err'
+        return
+      }
 
       if (notes.length > 5000){
         manageStatus.textContent = 'Internal notes must be 5000 characters or less.'
@@ -950,6 +1017,12 @@
       const { error } = await supabase
         .from('enquiries')
         .update({
+          name,
+          phone,
+          email: email || null,
+          service,
+          source,
+          message: message || null,
           internal_notes: notes || null,
           follow_up_at: followUpIso,
           updated_at: new Date().toISOString()
@@ -966,10 +1039,19 @@
 
       const row = allRows.find(x => Number(x.id) === Number(activeManageId))
       if (row){
+        row.name = name
+        row.phone = phone
+        row.email = email || null
+        row.service = service
+        row.source = source
+        row.message = message || null
         row.internal_notes = notes || null
         row.follow_up_at = followUpIso
+        row.updated_at = new Date().toISOString()
       }
 
+      manageTitle.textContent = name
+      manageMeta.textContent = [service, phone, email].filter(Boolean).join(' • ')
       updateStats()
       manageStatus.textContent = 'Saved successfully.'
       manageStatus.className = 'modal-status ok'
