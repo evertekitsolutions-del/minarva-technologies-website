@@ -111,6 +111,9 @@
               <option value="facebook">Facebook</option>
               <option value="other">Other</option>
             </select>
+            <select id="serviceFilter" aria-label="Filter by service">
+              <option value="all">All services</option>
+            </select>
             <select id="sortSelect" aria-label="Sort enquiries">
               <option value="newest">Newest first</option>
               <option value="oldest">Oldest first</option>
@@ -292,6 +295,7 @@
     const dateFilter = document.getElementById('dateFilter')
     const followUpFilter = document.getElementById('followUpFilter')
     const sourceFilter = document.getElementById('sourceFilter')
+    const serviceFilter = document.getElementById('serviceFilter')
     const sortSelect = document.getElementById('sortSelect')
     const exportCsvBtn = document.getElementById('exportCsvBtn')
     const clearFiltersBtn = document.getElementById('clearFiltersBtn')
@@ -560,7 +564,7 @@
       else if (status === 'new') active = 'new'
       else if (status === 'contacted') active = 'contacted'
       else if (status === 'qualified') active = 'qualified'
-      else if (status !== 'all' || follow !== 'all' || sourceFilter.value !== 'all' || dateFilter.value !== 'all' || searchInput.value.trim()) active = ''
+      else if (status !== 'all' || follow !== 'all' || sourceFilter.value !== 'all' || serviceFilter.value !== 'all' || dateFilter.value !== 'all' || searchInput.value.trim()) active = ''
 
       kpiCards.forEach(card => card.classList.toggle('active', card.dataset.kpi === active))
     }
@@ -571,6 +575,7 @@
       statusFilter.value = 'all'
       followUpFilter.value = 'all'
       sourceFilter.value = 'all'
+      serviceFilter.value = 'all'
 
       if (kpi === 'due') followUpFilter.value = 'due'
       else if (['new','contacted','qualified'].includes(kpi)) statusFilter.value = kpi
@@ -578,6 +583,31 @@
       currentPage = 1
       syncKpiActiveState()
       renderDashboardRows()
+    }
+
+    function refreshServiceFilterOptions(){
+      const previous = serviceFilter.value || 'all'
+      const services = [...new Set(
+        allRows
+          .map(row => String(row.service || '').trim())
+          .filter(Boolean)
+      )].sort((a,b) => a.localeCompare(b))
+
+      serviceFilter.innerHTML = ''
+
+      const allOption = document.createElement('option')
+      allOption.value = 'all'
+      allOption.textContent = 'All services'
+      serviceFilter.appendChild(allOption)
+
+      services.forEach(service => {
+        const option = document.createElement('option')
+        option.value = service
+        option.textContent = service
+        serviceFilter.appendChild(option)
+      })
+
+      serviceFilter.value = services.includes(previous) ? previous : 'all'
     }
 
     function updateStats(){
@@ -599,11 +629,13 @@
       const dateRange = dateFilter.value
       const followUpRange = followUpFilter.value
       const source = sourceFilter.value
+      const service = serviceFilter.value
       const now = new Date()
 
       return allRows.filter(r => {
         if (status !== 'all' && r.status !== status) return false
         if (source !== 'all' && r.source !== source) return false
+        if (service !== 'all' && r.service !== service) return false
 
         if (dateRange !== 'all'){
           const created = new Date(r.created_at)
@@ -840,6 +872,7 @@
       }
 
       allRows = data || []
+      refreshServiceFilterOptions()
       updateStats()
       renderDashboardRows()
     }
@@ -977,6 +1010,7 @@
       }
 
       allRows.unshift(data)
+      refreshServiceFilterOptions()
       updateStats()
       currentPage = 1
       sortSelect.value = 'newest'
@@ -1032,6 +1066,12 @@
       renderDashboardRows()
     })
 
+    serviceFilter.addEventListener('change', () => {
+      currentPage = 1
+      syncKpiActiveState()
+      renderDashboardRows()
+    })
+
     sortSelect.addEventListener('change', () => {
       currentPage = 1
       renderDashboardRows()
@@ -1043,6 +1083,7 @@
       dateFilter.value = 'all'
       followUpFilter.value = 'all'
       sourceFilter.value = 'all'
+      serviceFilter.value = 'all'
       sortSelect.value = 'newest'
       currentPage = 1
       syncKpiActiveState()
@@ -1187,6 +1228,7 @@
 
       manageTitle.textContent = name
       manageMeta.textContent = [service, phone, email].filter(Boolean).join(' • ')
+      refreshServiceFilterOptions()
       if (row) renderCustomerHistory(row)
       updateStats()
       manageStatus.textContent = 'Saved successfully.'
