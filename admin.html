@@ -171,7 +171,20 @@
         </div>
         <div>
           <label for="addService">Service</label>
-          <input id="addService" type="text" maxlength="120" placeholder="CCTV, Laptop Service, Solar…" required>
+          <input id="addService" type="text" maxlength="120" list="serviceOptions" placeholder="Choose or type a service…" required>
+          <datalist id="serviceOptions">
+            <option value="CCTV Camera Sales / Installation / Service"></option>
+            <option value="Computer & Laptop Sales / Service / Upgrades"></option>
+            <option value="Networking & Support"></option>
+            <option value="Solar Solutions"></option>
+            <option value="Inverters / Power Solutions"></option>
+            <option value="Home & Office Automation"></option>
+            <option value="Website Design / Development"></option>
+            <option value="Customized Software Solutions"></option>
+            <option value="Biometric & Access Control"></option>
+            <option value="Video Door Phone / Security Alarm"></option>
+            <option value="On-site Technical Support"></option>
+          </datalist>
         </div>
         <div>
           <label for="addSource">Source</label>
@@ -246,7 +259,7 @@
         </div>
         <div>
           <label for="manageServiceInput">Service</label>
-          <input id="manageServiceInput" type="text" maxlength="120">
+          <input id="manageServiceInput" type="text" maxlength="120" list="serviceOptions">
         </div>
         <div class="full">
           <label for="manageSourceInput">Source</label>
@@ -300,6 +313,29 @@
     const SUPABASE_URL = 'https://kwullzwhlzziosjsejud.supabase.co'
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+
+    const standardServices = [
+      'CCTV Camera Sales / Installation / Service',
+      'Computer & Laptop Sales / Service / Upgrades',
+      'Networking & Support',
+      'Solar Solutions',
+      'Inverters / Power Solutions',
+      'Home & Office Automation',
+      'Website Design / Development',
+      'Customized Software Solutions',
+      'Biometric & Access Control',
+      'Video Door Phone / Security Alarm',
+      'On-site Technical Support'
+    ]
+
+    function normalizeService(value){
+      const clean = String(value || '').trim()
+      if (!clean) return ''
+      const canonical = standardServices.find(service =>
+        service.toLowerCase() === clean.toLowerCase()
+      )
+      return canonical || clean
+    }
 
     const loginSection = document.getElementById('loginSection')
     const dashboard = document.getElementById('dashboard')
@@ -1184,7 +1220,7 @@
       const name = addName.value.trim()
       const phone = addPhone.value.trim()
       const email = addEmail.value.trim()
-      const service = addService.value.trim()
+      const service = normalizeService(addService.value)
       const message = addMessage.value.trim()
       const notes = addNotes.value.trim()
 
@@ -1416,7 +1452,7 @@
       const name = manageNameInput.value.trim()
       const phone = managePhoneInput.value.trim()
       const email = manageEmailInput.value.trim()
-      const service = manageServiceInput.value.trim()
+      const service = normalizeService(manageServiceInput.value)
       const source = manageSourceInput.value
       const message = manageMessageInput.value.trim()
       const notes = internalNotesInput.value.trim()
