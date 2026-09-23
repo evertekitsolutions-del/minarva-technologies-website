@@ -591,13 +591,16 @@
     function syncKpiActiveState(){
       const status = statusFilter.value
       const follow = followUpFilter.value
-      let active = 'all'
+      const hasSearch = Boolean(searchInput.value.trim())
+      const cleanDate = dateFilter.value === 'all'
+      const cleanSource = sourceFilter.value === 'all'
+      const cleanService = serviceFilter.value === 'all'
+      const cleanBase = !hasSearch && cleanDate && cleanSource && cleanService
+      let active = ''
 
-      if (follow === 'due') active = 'due'
-      else if (status === 'new') active = 'new'
-      else if (status === 'contacted') active = 'contacted'
-      else if (status === 'qualified') active = 'qualified'
-      else if (status !== 'all' || follow !== 'all' || sourceFilter.value !== 'all' || serviceFilter.value !== 'all' || dateFilter.value !== 'all' || searchInput.value.trim()) active = ''
+      if (cleanBase && status === 'all' && follow === 'all') active = 'all'
+      else if (cleanBase && status === 'all' && follow === 'due') active = 'due'
+      else if (cleanBase && follow === 'all' && ['new','contacted','qualified'].includes(status)) active = status
 
       kpiCards.forEach(card => card.classList.toggle('active', card.dataset.kpi === active))
     }
