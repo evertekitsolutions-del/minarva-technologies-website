@@ -336,6 +336,29 @@
       return String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
     }
 
+    function phoneDigits(value){
+      return String(value || '').replace(/\D/g,'')
+    }
+
+    function whatsappNumber(value){
+      let digits = phoneDigits(value)
+      if (digits.startsWith('00')) digits = digits.slice(2)
+      if (digits.length === 10) return '91' + digits
+      if (digits.length === 11 && digits.startsWith('0')) return '91' + digits.slice(1)
+      return digits
+    }
+
+    function telNumber(value){
+      const raw = String(value || '').trim()
+      const digits = phoneDigits(raw)
+      if (!digits) return ''
+      if (raw.startsWith('+')) return '+' + digits
+      if (digits.length === 10) return '+91' + digits
+      if (digits.length === 11 && digits.startsWith('0')) return '+91' + digits.slice(1)
+      if (digits.length === 12 && digits.startsWith('91')) return '+' + digits
+      return raw
+    }
+
     function toDateTimeLocal(value){
       if (!value) return ''
       const date = new Date(value)
@@ -622,8 +645,9 @@
                 </td>
                 <td>
                   <div class="action-row">
-                    <a class="action-link" href="tel:${esc(r.phone)}">Call</a>
-                    <a class="action-link wa-link" href="https://wa.me/${esc(String(r.phone || '').replace(/\D/g,''))}?text=${encodeURIComponent('Hello ' + (r.name || '') + ', this is Minarva Technologies regarding your enquiry for ' + (r.service || '') + '.')}" target="_blank" rel="noreferrer">WhatsApp</a>
+                    <a class="action-link" href="tel:${esc(telNumber(r.phone))}">Call</a>
+                    <a class="action-link wa-link" href="https://wa.me/${esc(whatsappNumber(r.phone))}?text=${encodeURIComponent('Hello ' + (r.name || '') + ', this is Minarva Technologies regarding your enquiry for ' + (r.service || '') + '.')}" target="_blank" rel="noreferrer">WhatsApp</a>
+                    ${r.email ? `<a class="action-link" href="mailto:${encodeURIComponent(r.email)}?subject=${encodeURIComponent('Minarva Technologies - ' + (r.service || 'Enquiry'))}">Email</a>` : ''}
                     ${r.status !== 'contacted' && r.status !== 'closed' && r.status !== 'spam'
                       ? `<button class="action-link quick-contacted" type="button" data-contacted-id="${esc(r.id)}">Mark Contacted</button>`
                       : ''}
