@@ -329,12 +329,53 @@
       'On-site Technical Support'
     ]
 
+    const serviceAliases = new Map([
+      ['cctv', 'CCTV Camera Sales / Installation / Service'],
+      ['cctv camera', 'CCTV Camera Sales / Installation / Service'],
+      ['cctv installation', 'CCTV Camera Sales / Installation / Service'],
+      ['cctv service', 'CCTV Camera Sales / Installation / Service'],
+      ['camera installation', 'CCTV Camera Sales / Installation / Service'],
+      ['computer service', 'Computer & Laptop Sales / Service / Upgrades'],
+      ['laptop service', 'Computer & Laptop Sales / Service / Upgrades'],
+      ['computer & laptop service', 'Computer & Laptop Sales / Service / Upgrades'],
+      ['computer laptop service', 'Computer & Laptop Sales / Service / Upgrades'],
+      ['networking', 'Networking & Support'],
+      ['network support', 'Networking & Support'],
+      ['solar', 'Solar Solutions'],
+      ['solar panel', 'Solar Solutions'],
+      ['solar panels', 'Solar Solutions'],
+      ['inverter', 'Inverters / Power Solutions'],
+      ['inverters', 'Inverters / Power Solutions'],
+      ['home automation', 'Home & Office Automation'],
+      ['office automation', 'Home & Office Automation'],
+      ['website', 'Website Design / Development'],
+      ['website design', 'Website Design / Development'],
+      ['website development', 'Website Design / Development'],
+      ['software', 'Customized Software Solutions'],
+      ['custom software', 'Customized Software Solutions'],
+      ['customized software', 'Customized Software Solutions'],
+      ['biometric', 'Biometric & Access Control'],
+      ['access control', 'Biometric & Access Control'],
+      ['video door phone', 'Video Door Phone / Security Alarm'],
+      ['vdp', 'Video Door Phone / Security Alarm'],
+      ['security alarm', 'Video Door Phone / Security Alarm'],
+      ['onsite service', 'On-site Technical Support'],
+      ['on-site service', 'On-site Technical Support'],
+      ['technical support', 'On-site Technical Support']
+    ])
+
     function normalizeService(value){
-      const clean = String(value || '').trim()
+      const clean = String(value || '').trim().replace(/\s+/g, ' ')
       if (!clean) return ''
+
+      const key = clean.toLowerCase()
+      const alias = serviceAliases.get(key)
+      if (alias) return alias
+
       const canonical = standardServices.find(service =>
-        service.toLowerCase() === clean.toLowerCase()
+        service.toLowerCase() === key
       )
+
       return canonical || clean
     }
 
