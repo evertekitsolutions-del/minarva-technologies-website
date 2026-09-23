@@ -364,7 +364,10 @@
     let addExistingMatch = null
     let addDuplicateLookupTimer = null
     let addDuplicateLookupSeq = 0
+    let customerHistoryLookupSeq = 0
+    const customerHistoryCache = new Map()
     let activeManageId = null
+    let activeManageRow = null
     let currentPage = 1
     let pageSize = 10
     const batchSize = 500
@@ -492,17 +495,16 @@
       addDuplicateLookupTimer = setTimeout(renderAddDuplicateHint, 350)
     }
 
-    function renderCustomerHistory(row){
-      const matches = phoneMatches(row.phone, row.id)
-        .slice()
-        .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
-        .slice(0,5)
+    function paintCustomerHistory(matches){
+      customerHistoryCache.clear()
 
       if (!matches.length){
         customerHistoryContent.className = 'history-empty'
         customerHistoryContent.textContent = 'No earlier enquiries for this phone number.'
         return
       }
+
+      matches.forEach(item => customerHistoryCache.set(String(item.id), item))
 
       customerHistoryContent.className = 'history-list'
       customerHistoryContent.innerHTML = matches.map(item => `
@@ -522,6 +524,41 @@
       customerHistoryContent.querySelectorAll('[data-history-id]').forEach(button => {
         button.addEventListener('click', () => openManageModal(button.dataset.historyId))
       })
+    }
+
+    async function renderCustomerHistory(row){
+      const lookupSeq = ++customerHistoryLookupSeq
+      const key = phoneKey(row.phone)
+
+      if (key.length < 7){
+        paintCustomerHistory([])
+        return
+      }
+
+      customerHistoryContent.className = 'history-empty'
+      customerHistoryContent.textContent = 'Loading customer history…'
+
+      const { data, error } = await supabase
+        .from('enquiries')
+        .select('id,name,phone,email,service,message,source,status,created_at,updated_at,internal_notes,follow_up_at')
+        .eq('phone_normalized', key)
+        .neq('id', row.id)
+        .order('created_at', { ascending:false })
+        .order('id', { ascending:false })
+        .limit(5)
+
+      if (lookupSeq !== customerHistoryLookupSeq) return
+
+      if (error){
+        const localMatches = phoneMatches(row.phone, row.id)
+          .slice()
+          .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0,5)
+        paintCustomerHistory(localMatches)
+        return
+      }
+
+      paintCustomerHistory(data || [])
     }
 
     function telNumber(value){
@@ -584,6 +621,9 @@
 
     function closeManageModal(){
       activeManageId = null
+      activeManageRow = null
+      customerHistoryLookupSeq += 1
+      customerHistoryCache.clear()
       manageModal.classList.remove('show')
       manageModal.setAttribute('aria-hidden','true')
       manageStatus.textContent = ''
@@ -592,10 +632,14 @@
     }
 
     function openManageModal(id){
-      const row = allRows.find(x => Number(x.id) === Number(id))
+      const row =
+        allRows.find(x => Number(x.id) === Number(id)) ||
+        customerHistoryCache.get(String(id))
+
       if (!row) return
 
       activeManageId = Number(row.id)
+      activeManageRow = row
       manageTitle.textContent = row.name || 'Manage Enquiry'
       manageMeta.textContent = [row.service, row.phone, row.email].filter(Boolean).join(' • ')
       manageNameInput.value = row.name || ''
@@ -1434,7 +1478,10 @@
         return
       }
 
-      const row = allRows.find(x => Number(x.id) === Number(activeManageId))
+      const row =
+        allRows.find(x => Number(x.id) === Number(activeManageId)) ||
+        activeManageRow
+
       if (row){
         row.name = name
         row.phone = phone
@@ -1445,6 +1492,7 @@
         row.internal_notes = notes || null
         row.follow_up_at = followUpIso
         row.updated_at = new Date().toISOString()
+        activeManageRow = row
       }
 
       manageTitle.textContent = name
