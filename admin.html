@@ -767,9 +767,10 @@
 
     function refreshServiceFilterOptions(){
       const previous = serviceFilter.value || 'all'
+      const normalizedPrevious = previous === 'all' ? 'all' : normalizeService(previous)
       const services = [...new Set(
         allRows
-          .map(row => String(row.service || '').trim())
+          .map(row => normalizeService(row.service))
           .filter(Boolean)
       )].sort((a,b) => a.localeCompare(b))
 
@@ -787,7 +788,7 @@
         serviceFilter.appendChild(option)
       })
 
-      serviceFilter.value = services.includes(previous) ? previous : 'all'
+      serviceFilter.value = services.includes(normalizedPrevious) ? normalizedPrevious : 'all'
     }
 
     function updateScopeNote(total){
@@ -874,7 +875,7 @@
       return allRows.filter(r => {
         if (status !== 'all' && r.status !== status) return false
         if (source !== 'all' && r.source !== source) return false
-        if (service !== 'all' && r.service !== service) return false
+        if (service !== 'all' && normalizeService(r.service) !== service) return false
 
         if (dateRange !== 'all'){
           const created = new Date(r.created_at)
