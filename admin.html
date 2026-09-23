@@ -253,6 +253,7 @@
         <div>
           <label for="managePhoneInput">Phone / WhatsApp</label>
           <input id="managePhoneInput" type="tel" maxlength="30" autocomplete="tel">
+          <div id="manageDuplicateHint" class="duplicate-note" aria-live="polite"></div>
         </div>
         <div>
           <label for="manageEmailInput">Email</label>
@@ -425,6 +426,7 @@
     const manageMeta = document.getElementById('manageMeta')
     const manageNameInput = document.getElementById('manageNameInput')
     const managePhoneInput = document.getElementById('managePhoneInput')
+    const manageDuplicateHint = document.getElementById('manageDuplicateHint')
     const manageEmailInput = document.getElementById('manageEmailInput')
     const manageServiceInput = document.getElementById('manageServiceInput')
     const manageSourceInput = document.getElementById('manageSourceInput')
@@ -442,6 +444,8 @@
     let addExistingMatch = null
     let addDuplicateLookupTimer = null
     let addDuplicateLookupSeq = 0
+    let manageDuplicateLookupTimer = null
+    let manageDuplicateLookupSeq = 0
     let customerHistoryLookupSeq = 0
     const customerHistoryCache = new Map()
     let activeManageId = null
@@ -573,6 +577,85 @@
       addDuplicateLookupTimer = setTimeout(renderAddDuplicateHint, 350)
     }
 
+    async function renderManageDuplicateHint(){
+      if (!activeManageId || !activeManageRow) return
+
+      const key = phoneKey(managePhoneInput.value)
+      const originalKey = phoneKey(activeManageRow.phone)
+      const lookupSeq = ++manageDuplicateLookupSeq
+
+      if (key.length < 7 || key === originalKey){
+        manageDuplicateHint.textContent = ''
+        return
+      }
+
+      manageDuplicateHint.textContent = 'Checking this phone number…'
+
+      const { data, count, error } = await supabase
+        .from('enquiries')
+        .select('id,name,phone,email,service,status,created_at,phone_normalized', { count:'exact' })
+        .eq('phone_normalized', key)
+        .neq('id', activeManageId)
+        .order('created_at', { ascending:false })
+        .order('id', { ascending:false })
+        .limit(5)
+
+      if (lookupSeq !== manageDuplicateLookupSeq) return
+
+      if (error){
+        const localMatches = phoneMatches(managePhoneInput.value, activeManageId)
+        if (!localMatches.length){
+          manageDuplicateHint.textContent = 'Could not check this phone against customer history.'
+          return
+        }
+
+        const latestLocal = localMatches
+          .slice()
+          .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0]
+
+        manageDuplicateHint.textContent =
+          'This phone matches ' + localMatches.length +
+          (localMatches.length === 1 ? ' other loaded enquiry' : ' other loaded enquiries') +
+          ' • latest: ' + (latestLocal.name || 'Customer')
+        return
+      }
+
+      const matches = data || []
+      if (!matches.length){
+        manageDuplicateHint.textContent = ''
+        return
+      }
+
+      const latest = matches[0]
+      const totalMatches = Number(count ?? matches.length)
+      manageDuplicateHint.textContent =
+        'This phone matches ' + totalMatches +
+        (totalMatches === 1 ? ' other enquiry' : ' other enquiries') +
+        ' in the database • latest: ' + (latest.name || 'Customer') +
+        '. Saving will link this enquiry to the same phone history.'
+    }
+
+    function scheduleManageDuplicateLookup(){
+      clearTimeout(manageDuplicateLookupTimer)
+      manageDuplicateLookupSeq += 1
+
+      if (!activeManageRow){
+        manageDuplicateHint.textContent = ''
+        return
+      }
+
+      const key = phoneKey(managePhoneInput.value)
+      const originalKey = phoneKey(activeManageRow.phone)
+
+      if (key.length < 7 || key === originalKey){
+        manageDuplicateHint.textContent = ''
+        return
+      }
+
+      manageDuplicateHint.textContent = 'Checking this phone number…'
+      manageDuplicateLookupTimer = setTimeout(renderManageDuplicateHint, 350)
+    }
+
     function paintCustomerHistory(matches){
       customerHistoryCache.clear()
 
@@ -700,6 +783,9 @@
     function closeManageModal(){
       activeManageId = null
       activeManageRow = null
+      clearTimeout(manageDuplicateLookupTimer)
+      manageDuplicateLookupSeq += 1
+      manageDuplicateHint.textContent = ''
       customerHistoryLookupSeq += 1
       customerHistoryCache.clear()
       manageModal.classList.remove('show')
@@ -722,6 +808,9 @@
       manageMeta.textContent = [row.service, row.phone, row.email].filter(Boolean).join(' • ')
       manageNameInput.value = row.name || ''
       managePhoneInput.value = row.phone || ''
+      manageDuplicateHint.textContent = ''
+      clearTimeout(manageDuplicateLookupTimer)
+      manageDuplicateLookupSeq += 1
       manageEmailInput.value = row.email || ''
       manageServiceInput.value = row.service || ''
       manageSourceInput.value = row.source || 'other'
@@ -1242,6 +1331,7 @@
     })
 
     addPhone.addEventListener('input', scheduleAddDuplicateLookup)
+    managePhoneInput.addEventListener('input', scheduleManageDuplicateLookup)
 
     useExistingCustomerBtn.addEventListener('click', () => {
       if (!addExistingMatch) return
@@ -1573,6 +1663,10 @@
         row.updated_at = new Date().toISOString()
         activeManageRow = row
       }
+
+      clearTimeout(manageDuplicateLookupTimer)
+      manageDuplicateLookupSeq += 1
+      manageDuplicateHint.textContent = ''
 
       manageTitle.textContent = name
       manageMeta.textContent = [service, phone, email].filter(Boolean).join(' • ')
