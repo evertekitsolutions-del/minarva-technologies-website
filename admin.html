@@ -924,9 +924,9 @@
     function updateScopeNote(total){
       if (Number(total) > allRows.length){
         scopeNote.textContent =
-          'KPI totals cover all ' + total +
-          ' enquiries. Table search, filters, customer history and CSV currently use ' +
-          allRows.length + ' loaded enquiries. Use Load Older to bring in the next batch.'
+          'KPI totals, duplicate-phone checks and customer history cover the full database. ' +
+          'Table search, filters and CSV currently use ' + allRows.length +
+          ' of ' + total + ' loaded enquiries. Use Load Older to bring in the next batch.'
         scopeNote.classList.add('show')
         loadOlderBtn.classList.add('show')
       } else {
