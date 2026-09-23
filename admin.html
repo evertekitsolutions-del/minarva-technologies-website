@@ -362,6 +362,8 @@
     let allRows = []
     let serverStats = null
     let addExistingMatch = null
+    let addDuplicateLookupTimer = null
+    let addDuplicateLookupSeq = 0
     let activeManageId = null
     let currentPage = 1
     let pageSize = 10
@@ -415,26 +417,79 @@
       )
     }
 
-    function renderAddDuplicateHint(){
-      const matches = phoneMatches(addPhone.value)
+    async function renderAddDuplicateHint(){
+      const key = phoneKey(addPhone.value)
+      const lookupSeq = ++addDuplicateLookupSeq
       addExistingMatch = null
+      useExistingCustomerBtn.classList.remove('show')
 
-      if (!matches.length){
+      if (key.length < 7){
         addDuplicateHint.textContent = ''
-        useExistingCustomerBtn.classList.remove('show')
         return
       }
 
-      const latest = matches
-        .slice()
-        .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0]
+      addDuplicateHint.textContent = 'Checking existing customers…'
 
+      const { data, count, error } = await supabase
+        .from('enquiries')
+        .select('id,name,phone,email,service,status,created_at,phone_normalized', { count:'exact' })
+        .eq('phone_normalized', key)
+        .order('created_at', { ascending:false })
+        .order('id', { ascending:false })
+        .limit(5)
+
+      if (lookupSeq !== addDuplicateLookupSeq) return
+
+      if (error){
+        const localMatches = phoneMatches(addPhone.value)
+        if (!localMatches.length){
+          addDuplicateHint.textContent = 'Could not check existing customer history.'
+          return
+        }
+
+        const latestLocal = localMatches
+          .slice()
+          .sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0]
+
+        addExistingMatch = latestLocal
+        addDuplicateHint.textContent =
+          'Existing customer found in loaded enquiries: ' + (latestLocal.name || 'Customer') +
+          ' • ' + localMatches.length + (localMatches.length === 1 ? ' previous enquiry' : ' previous enquiries')
+        useExistingCustomerBtn.classList.add('show')
+        return
+      }
+
+      const matches = data || []
+      if (!matches.length){
+        addDuplicateHint.textContent = ''
+        return
+      }
+
+      const latest = matches[0]
+      const totalMatches = Number(count ?? matches.length)
       addExistingMatch = latest
       addDuplicateHint.textContent =
         'Existing customer found: ' + (latest.name || 'Customer') +
-        ' • ' + matches.length + (matches.length === 1 ? ' previous enquiry' : ' previous enquiries')
+        ' • ' + totalMatches + (totalMatches === 1 ? ' previous enquiry' : ' previous enquiries') +
+        ' in database'
 
       useExistingCustomerBtn.classList.add('show')
+    }
+
+    function scheduleAddDuplicateLookup(){
+      clearTimeout(addDuplicateLookupTimer)
+      addDuplicateLookupSeq += 1
+      addExistingMatch = null
+      useExistingCustomerBtn.classList.remove('show')
+
+      const key = phoneKey(addPhone.value)
+      if (key.length < 7){
+        addDuplicateHint.textContent = ''
+        return
+      }
+
+      addDuplicateHint.textContent = 'Checking existing customers…'
+      addDuplicateLookupTimer = setTimeout(renderAddDuplicateHint, 350)
     }
 
     function renderCustomerHistory(row){
@@ -509,6 +564,8 @@
       addPhone.value = ''
       addDuplicateHint.textContent = ''
       addExistingMatch = null
+      clearTimeout(addDuplicateLookupTimer)
+      addDuplicateLookupSeq += 1
       useExistingCustomerBtn.classList.remove('show')
       addEmail.value = ''
       addService.value = ''
@@ -1061,7 +1118,7 @@
       })
     })
 
-    addPhone.addEventListener('input', renderAddDuplicateHint)
+    addPhone.addEventListener('input', scheduleAddDuplicateLookup)
 
     useExistingCustomerBtn.addEventListener('click', () => {
       if (!addExistingMatch) return
