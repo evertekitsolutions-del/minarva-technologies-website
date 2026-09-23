@@ -75,6 +75,7 @@
             <div class="table-top-actions">
               <button id="addEnquiryBtn" class="btn btn-ghost" type="button">+ Add Enquiry</button>
               <button id="loadOlderBtn" class="btn btn-ghost load-older-btn" type="button">Load Older</button>
+              <button id="loadAllBtn" class="btn btn-ghost load-older-btn" type="button">Load All</button>
               <button id="refreshBtn" class="btn btn-ghost" type="button">Refresh</button>
             </div>
           </div>
@@ -387,6 +388,7 @@
     const logoutBtn = document.getElementById('logoutBtn')
     const addEnquiryBtn = document.getElementById('addEnquiryBtn')
     const loadOlderBtn = document.getElementById('loadOlderBtn')
+    const loadAllBtn = document.getElementById('loadAllBtn')
     const refreshBtn = document.getElementById('refreshBtn')
     const tableArea = document.getElementById('tableArea')
     const searchInput = document.getElementById('searchInput')
@@ -926,13 +928,15 @@
         scopeNote.textContent =
           'KPI totals, duplicate-phone checks and customer history cover the full database. ' +
           'Table search, filters and CSV currently use ' + allRows.length +
-          ' of ' + total + ' loaded enquiries. Use Load Older to bring in the next batch.'
+          ' of ' + total + ' loaded enquiries. Use Load Older for the next batch or Load All for the full dataset.'
         scopeNote.classList.add('show')
         loadOlderBtn.classList.add('show')
+        loadAllBtn.classList.add('show')
       } else {
         scopeNote.textContent = ''
         scopeNote.classList.remove('show')
         loadOlderBtn.classList.remove('show')
+        loadAllBtn.classList.remove('show')
       }
     }
 
@@ -1455,6 +1459,65 @@
 
       loadOlderBtn.disabled = false
       loadOlderBtn.textContent = originalText
+    })
+
+    loadAllBtn.addEventListener('click', async () => {
+      const total = Number(serverStats?.total || 0)
+      if (total && allRows.length >= total){
+        updateScopeNote(total)
+        return
+      }
+
+      loadAllBtn.disabled = true
+      loadOlderBtn.disabled = true
+      const originalText = loadAllBtn.textContent
+
+      try{
+        while (!total || allRows.length < total){
+          const cursor = allRows[allRows.length - 1]
+          if (!cursor?.created_at || !cursor?.id) break
+
+          loadAllBtn.textContent = total
+            ? 'Loading ' + allRows.length + '/' + total + '…'
+            : 'Loading…'
+
+          const { data, error } = await supabase
+            .from('enquiries')
+            .select('id,name,phone,email,service,message,source,status,created_at,updated_at,internal_notes,follow_up_at')
+            .or(`created_at.lt.${cursor.created_at},and(created_at.eq.${cursor.created_at},id.lt.${cursor.id})`)
+            .order('created_at', { ascending:false })
+            .order('id', { ascending:false })
+            .limit(batchSize)
+
+          if (error) throw error
+
+          const batch = data || []
+          const existingIds = new Set(allRows.map(row => Number(row.id)))
+          const olderRows = batch.filter(row => !existingIds.has(Number(row.id)))
+
+          if (!olderRows.length) break
+          allRows = allRows.concat(olderRows)
+
+          refreshServiceFilterOptions()
+          updateStats()
+          renderDashboardRows()
+
+          if (batch.length < batchSize) break
+        }
+
+        currentPage = 1
+        refreshServiceFilterOptions()
+        updateStats()
+        renderDashboardRows()
+        loadAllBtn.textContent = originalText
+      }catch(error){
+        console.warn('Could not load all enquiries:', error)
+        loadAllBtn.textContent = 'Retry All'
+        setTimeout(() => { loadAllBtn.textContent = originalText }, 1800)
+      }finally{
+        loadAllBtn.disabled = false
+        loadOlderBtn.disabled = false
+      }
     })
 
     refreshBtn.addEventListener('click', loadDashboard)
