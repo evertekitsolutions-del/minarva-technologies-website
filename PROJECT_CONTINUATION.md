@@ -75,8 +75,13 @@ The goal is one connected system for Minarva Technologies covering:
 
 ## Baseline at creation of this file
 
-Latest known website/admin commit before this continuation document:
+Latest known website/admin baseline before billing foundation:
 `c369cfade73947b4a64f7d4c66baf3cf2a8bc764`
+
+Billing foundation commits:
+- continuation/calling roadmap: `5840319eabcd2eedb902352758218ecad95210dc`
+- billing foundation migration: `efec9980ef84f5eee24cea8f8f157628150c46db`
+- FK index cleanup migration: `445741d34d54733b700c670e8e3d8adce6c311f9`
 
 Always verify live state before substantive work.
 
@@ -185,18 +190,25 @@ Compliance/security requirement:
 - Call answer/failure/callback metrics
 - Customer-care performance dashboards
 
-## Immediate next milestone
+## Billing Foundation — Milestone 1 — COMPLETE
 
-**Billing Foundation — Milestone 1**
+Completed in Supabase and committed as migrations:
+- `supabase/migrations/20261005_billing_foundation_milestone_1.sql`
+- `supabase/migrations/20261005_billing_foundation_index_cleanup.sql`
 
-Create secure Supabase schema for:
+Implemented:
 - business billing settings
-- customers
+- voice-ready customer master
 - catalogue items/services
 - quotations
 - quotation items
+- admin-only RLS policies
+- phone normalization for customer master
+- updated_at triggers
+- quotation/customer/catalogue indexes
+- foreign-key index cleanup
 
-The customer foundation must already be **voice-ready** for future automatic calling, including:
+Voice-ready customer fields included:
 - preferred_language
 - preferred_contact_channel
 - call_consent
@@ -204,13 +216,19 @@ The customer foundation must already be **voice-ready** for future automatic cal
 - call_consent_source
 - do_not_call
 
-Requirements:
-- RLS from day one
-- Admin-only management
-- GST fields optional
-- No fake production data
-- Existing enquiries remain untouched
-- Design conversion path from enquiry → customer → quotation
-- Run security/performance advisors after migration
+Security advisor after migration: no new database/RLS security finding; only the existing Auth leaked-password-protection warning remains.
+Performance advisor after cleanup: no unindexed-foreign-key findings remain; only unused-index informational notices remain on the new/low-usage tables.
 
-After this milestone is verified, add the first Billing/Quotations section to the existing admin UI.
+## Immediate next milestone
+
+**Billing Foundation — Milestone 2: Admin Billing / Quotations UI**
+
+Add the first Billing section to the existing admin UI with:
+- Business Billing Settings
+- Customer Master
+- Product / Service Catalogue
+- Create Quotation
+- Quotation list / status
+- enquiry → customer → quotation conversion path
+
+Keep this milestone small: first wire secure CRUD and navigation; document numbering/PDF/print comes in the following milestone.
