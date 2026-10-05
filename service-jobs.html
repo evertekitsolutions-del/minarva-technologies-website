@@ -32,6 +32,7 @@
     <div class="brand">
       <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
       <div class="nav">
+        <button id="technicianMobileBtn" class="btn btn-ghost" type="button">Technician Mobile</button>
         <button id="invoicesBtn" class="btn btn-ghost" type="button">Invoices</button>
         <button id="adminBtn" class="btn btn-ghost" type="button">Admin</button>
       </div>
@@ -204,7 +205,7 @@
 
   <div id="technicianModal" class="modal" aria-hidden="true">
     <div class="modal-card">
-      <div class="modal-head"><div><h3>Add Technician</h3><div class="meta">Foundation record for job assignment. Login/mobile technician access comes later.</div></div><button id="technicianCloseBtn" class="close" type="button">×</button></div>
+      <div class="modal-head"><div><h3>Add Technician</h3><div class="meta">Add the technician's real email if mobile access is needed. They can open Technician Mobile, create/sign in to a Supabase Auth account with the same email, and the account will be linked only to this approved active technician record.</div></div><button id="technicianCloseBtn" class="close" type="button">×</button></div>
       <div class="form-grid" style="margin-top:14px">
         <div><label for="techName">Name</label><input id="techName" type="text" maxlength="160"></div>
         <div><label for="techPhone">Phone</label><input id="techPhone" type="tel" maxlength="30"></div>
@@ -221,6 +222,7 @@
     const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 
     const userLine=document.getElementById('userLine')
+    const technicianMobileBtn=document.getElementById('technicianMobileBtn')
     const invoicesBtn=document.getElementById('invoicesBtn')
     const adminBtn=document.getElementById('adminBtn')
     const technicianBtn=document.getElementById('technicianBtn')
@@ -659,6 +661,7 @@
     technicianCloseBtn.addEventListener('click',closeTechnicianModal)
     techSaveBtn.addEventListener('click',saveTechnician)
     technicianModal.addEventListener('click',event=>{if(event.target===technicianModal)closeTechnicianModal()})
+    technicianMobileBtn.addEventListener('click',()=>{window.open('/technician','_blank','noopener')})
     invoicesBtn.addEventListener('click',()=>{location.href='/invoices'})
     adminBtn.addEventListener('click',()=>{location.href='/admin'})
     document.addEventListener('keydown',event=>{if(event.key==='Escape'&&technicianModal.classList.contains('show'))closeTechnicianModal()})
