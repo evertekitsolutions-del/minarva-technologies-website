@@ -59,6 +59,7 @@
             <div id="userLine" class="userline"></div>
           </div>
           <div class="dash-actions">
+            <button id="serviceJobsBtn" class="btn btn-ghost" type="button">Service Jobs</button>
             <button id="invoicesBtn" class="btn btn-ghost" type="button">Invoices</button>
             <button id="quotationsBtn" class="btn btn-ghost" type="button">Quotations</button>
             <button id="catalogueBtn" class="btn btn-ghost" type="button">Catalogue</button>
@@ -426,6 +427,7 @@
           <div class="modal-actions">
             <button id="customerResetBtn" class="btn btn-ghost" type="button">Reset</button>
             <button id="customerLinkBtn" class="btn btn-ghost customer-link-btn" type="button">Link to Enquiry</button>
+            <button id="customerServiceJobBtn" class="btn btn-ghost" type="button" disabled>Service Job</button>
             <button id="customerSaveBtn" class="btn btn-primary" type="button">Save Customer</button>
           </div>
         </div>
@@ -743,6 +745,7 @@
       <div class="modal-actions">
         <button id="manageCancelBtn" class="btn btn-ghost" type="button">Cancel</button>
         <button id="manageCustomerBtn" class="btn btn-ghost" type="button">Create / Link Customer</button>
+        <button id="manageServiceJobBtn" class="btn btn-ghost" type="button" style="display:none">Service Job</button>
         <button id="manageQuotationBtn" class="btn btn-ghost" type="button" style="display:none">Create Quotation</button>
         <button id="manageSaveBtn" class="btn btn-primary" type="button">Save Details</button>
       </div>
@@ -825,6 +828,7 @@
     const loginForm = document.getElementById('loginForm')
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
+    const serviceJobsBtn = document.getElementById('serviceJobsBtn')
     const invoicesBtn = document.getElementById('invoicesBtn')
     const quotationsBtn = document.getElementById('quotationsBtn')
     const catalogueBtn = document.getElementById('catalogueBtn')
@@ -885,6 +889,7 @@
     const customerMasterStatus = document.getElementById('customerMasterStatus')
     const customerResetBtn = document.getElementById('customerResetBtn')
     const customerLinkBtn = document.getElementById('customerLinkBtn')
+    const customerServiceJobBtn = document.getElementById('customerServiceJobBtn')
     const customerSaveBtn = document.getElementById('customerSaveBtn')
     const billingSettingsBtn = document.getElementById('billingSettingsBtn')
     const billingSettingsModal = document.getElementById('billingSettingsModal')
@@ -973,6 +978,7 @@
     const manageCloseBtn = document.getElementById('manageCloseBtn')
     const manageCancelBtn = document.getElementById('manageCancelBtn')
     const manageCustomerBtn = document.getElementById('manageCustomerBtn')
+    const manageServiceJobBtn = document.getElementById('manageServiceJobBtn')
     const manageQuotationBtn = document.getElementById('manageQuotationBtn')
     const manageSaveBtn = document.getElementById('manageSaveBtn')
 
@@ -1514,6 +1520,7 @@
       customerMasterStatus.textContent = ''
       customerMasterStatus.className = 'modal-status'
       customerSaveBtn.textContent = 'Save Customer'
+      customerServiceJobBtn.disabled = true
       customerList.querySelectorAll('[data-customer-id]').forEach(el => el.classList.remove('active'))
       syncCustomerLinkAction()
     }
@@ -1548,6 +1555,7 @@
       customerMasterStatus.textContent = ''
       customerMasterStatus.className = 'modal-status'
       customerSaveBtn.textContent = 'Save Changes'
+      customerServiceJobBtn.disabled = false
       syncCustomerLinkAction()
 
       customerList.querySelectorAll('[data-customer-id]').forEach(el => {
@@ -2350,6 +2358,8 @@
       manageStatus.textContent = ''
       manageStatus.className = 'modal-status'
       manageCustomerBtn.textContent = row.customer_id ? 'Open Linked Customer' : 'Create / Link Customer'
+      manageServiceJobBtn.style.display = row.customer_id ? '' : 'none'
+      manageServiceJobBtn.disabled = !row.customer_id
       manageQuotationBtn.style.display = row.customer_id ? '' : 'none'
       manageQuotationBtn.disabled = !row.customer_id
       manageModal.classList.add('show')
@@ -2683,6 +2693,7 @@
                       ? `<button class="action-link quick-contacted" type="button" data-contacted-id="${esc(r.id)}">Mark Contacted</button>`
                       : ''}
                     <button class="action-link customer-link ${r.customer_id ? 'linked' : ''}" type="button" data-customer-enquiry-id="${esc(r.id)}">${r.customer_id ? 'Open Customer' : 'Create/Link Customer'}</button>
+                    ${r.customer_id ? `<button class="action-link" type="button" data-service-job-enquiry-id="${esc(r.id)}" data-service-job-customer-id="${esc(r.customer_id)}" data-service-job-service="${esc(r.service || '')}">Service Job</button>` : ''}
                     ${r.customer_id ? `<button class="action-link" type="button" data-quotation-enquiry-id="${esc(r.id)}" data-quotation-customer-id="${esc(r.customer_id)}">Quotation</button>` : ''}
                     <button class="action-link manage-link" type="button" data-manage-id="${esc(r.id)}">Manage</button>
                   </div>
@@ -2729,6 +2740,17 @@
 
       tableArea.querySelectorAll('[data-customer-enquiry-id]').forEach(button => {
         button.addEventListener('click', () => openCustomerForEnquiry(button.dataset.customerEnquiryId))
+      })
+
+      tableArea.querySelectorAll('[data-service-job-enquiry-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          const enquiryId = button.dataset.serviceJobEnquiryId
+          const customerId = button.dataset.serviceJobCustomerId
+          const service = button.dataset.serviceJobService || ''
+          location.href = '/service-jobs?customer=' + encodeURIComponent(customerId) +
+            '&enquiry=' + encodeURIComponent(enquiryId) +
+            (service ? '&service=' + encodeURIComponent(service) : '')
+        })
       })
 
       tableArea.querySelectorAll('[data-quotation-enquiry-id]').forEach(button => {
@@ -2862,6 +2884,7 @@
       showLogin()
     })
 
+    serviceJobsBtn.addEventListener('click', () => { location.href = '/service-jobs' })
     invoicesBtn.addEventListener('click', () => { location.href = '/invoices' })
     quotationsBtn.addEventListener('click', () => { location.href = '/quotations' })
     catalogueBtn.addEventListener('click', openCatalogueModal)
@@ -2898,6 +2921,10 @@
     })
     customerLinkBtn.addEventListener('click', () => {
       if (activeCustomerRow) linkCustomerToPendingEnquiry(activeCustomerRow)
+    })
+    customerServiceJobBtn.addEventListener('click', () => {
+      if (!activeCustomerId) return
+      location.href = '/service-jobs?customer=' + encodeURIComponent(activeCustomerId)
     })
     customerSaveBtn.addEventListener('click', saveCustomer)
     customerSearchInput.addEventListener('input', renderCustomerList)
@@ -3239,6 +3266,12 @@
     manageCancelBtn.addEventListener('click', closeManageModal)
     manageCustomerBtn.addEventListener('click', () => {
       if (activeManageId) openCustomerForEnquiry(activeManageId)
+    })
+    manageServiceJobBtn.addEventListener('click', () => {
+      if (!activeManageId || !activeManageRow?.customer_id) return
+      location.href = '/service-jobs?customer=' + encodeURIComponent(activeManageRow.customer_id) +
+        '&enquiry=' + encodeURIComponent(activeManageId) +
+        (activeManageRow.service ? '&service=' + encodeURIComponent(activeManageRow.service) : '')
     })
     manageQuotationBtn.addEventListener('click', () => {
       if (!activeManageId || !activeManageRow?.customer_id) return
