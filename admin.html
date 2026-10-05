@@ -742,6 +742,7 @@
       <div class="modal-actions">
         <button id="manageCancelBtn" class="btn btn-ghost" type="button">Cancel</button>
         <button id="manageCustomerBtn" class="btn btn-ghost" type="button">Create / Link Customer</button>
+        <button id="manageQuotationBtn" class="btn btn-ghost" type="button" style="display:none">Create Quotation</button>
         <button id="manageSaveBtn" class="btn btn-primary" type="button">Save Details</button>
       </div>
     </div>
@@ -970,6 +971,7 @@
     const manageCloseBtn = document.getElementById('manageCloseBtn')
     const manageCancelBtn = document.getElementById('manageCancelBtn')
     const manageCustomerBtn = document.getElementById('manageCustomerBtn')
+    const manageQuotationBtn = document.getElementById('manageQuotationBtn')
     const manageSaveBtn = document.getElementById('manageSaveBtn')
 
     let allRows = []
@@ -2346,6 +2348,8 @@
       manageStatus.textContent = ''
       manageStatus.className = 'modal-status'
       manageCustomerBtn.textContent = row.customer_id ? 'Open Linked Customer' : 'Create / Link Customer'
+      manageQuotationBtn.style.display = row.customer_id ? '' : 'none'
+      manageQuotationBtn.disabled = !row.customer_id
       manageModal.classList.add('show')
       manageModal.setAttribute('aria-hidden','false')
       document.body.style.overflow = 'hidden'
@@ -2677,6 +2681,7 @@
                       ? `<button class="action-link quick-contacted" type="button" data-contacted-id="${esc(r.id)}">Mark Contacted</button>`
                       : ''}
                     <button class="action-link customer-link ${r.customer_id ? 'linked' : ''}" type="button" data-customer-enquiry-id="${esc(r.id)}">${r.customer_id ? 'Open Customer' : 'Create/Link Customer'}</button>
+                    ${r.customer_id ? `<button class="action-link" type="button" data-quotation-enquiry-id="${esc(r.id)}" data-quotation-customer-id="${esc(r.customer_id)}">Quotation</button>` : ''}
                     <button class="action-link manage-link" type="button" data-manage-id="${esc(r.id)}">Manage</button>
                   </div>
                   ${r.follow_up_at ? `<div class="followup-inline">Follow-up: ${esc(new Date(r.follow_up_at).toLocaleString())}</div>` : ''}
@@ -2722,6 +2727,14 @@
 
       tableArea.querySelectorAll('[data-customer-enquiry-id]').forEach(button => {
         button.addEventListener('click', () => openCustomerForEnquiry(button.dataset.customerEnquiryId))
+      })
+
+      tableArea.querySelectorAll('[data-quotation-enquiry-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          const enquiryId = button.dataset.quotationEnquiryId
+          const customerId = button.dataset.quotationCustomerId
+          location.href = '/quotations?customer=' + encodeURIComponent(customerId) + '&enquiry=' + encodeURIComponent(enquiryId)
+        })
       })
 
       tableArea.querySelectorAll('[data-manage-id]').forEach(button => {
@@ -3223,6 +3236,11 @@
     manageCancelBtn.addEventListener('click', closeManageModal)
     manageCustomerBtn.addEventListener('click', () => {
       if (activeManageId) openCustomerForEnquiry(activeManageId)
+    })
+    manageQuotationBtn.addEventListener('click', () => {
+      if (!activeManageId || !activeManageRow?.customer_id) return
+      location.href = '/quotations?customer=' + encodeURIComponent(activeManageRow.customer_id) +
+        '&enquiry=' + encodeURIComponent(activeManageId)
     })
 
     manageModal.addEventListener('click', (event) => {
