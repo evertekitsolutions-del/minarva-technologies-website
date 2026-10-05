@@ -12,7 +12,9 @@ create index if not exists enquiries_customer_id_idx
 
 -- Backfill only explicit source-enquiry relationships where the mapping is unambiguous.
 with unique_source_links as (
-  select source_enquiry_id, min(id) as customer_id
+  select
+    source_enquiry_id,
+    (array_agg(id order by id))[1] as customer_id
   from public.customers
   where source_enquiry_id is not null
   group by source_enquiry_id
