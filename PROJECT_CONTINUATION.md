@@ -400,20 +400,65 @@ GitHub commits:
 - Admin navigation + company-code settings: `1833b54d7025d25ec278d74c0542606d9ce1b8a8`
 - quotation RPC security cleanup: `dc9c3b747e2ac875c6d0742fbc81468061aa959c`
 
+## Billing Foundation — Milestone 2C3 — COMPLETE
+
+Implemented:
+- open any saved quotation from the quotation list
+- load and view all saved quotation line items
+- Draft quotation editing
+- non-Draft quotations open read-only
+- atomic `public.update_quotation(...)` RPC
+- quotation number preserved during Draft edits
+- server-side revalidation and recalculation of all line totals and quotation totals
+- transactional line replacement; failed edits roll back without partial data
+- professional A4 quotation print layout
+- business details
+- customer billing/contact details
+- GSTIN / tax mode
+- quotation number/date/validity/reference
+- line-item HSN/SAC, qty, unit, rate, discount, tax and amount
+- subtotal / discount / taxable / tax / grand total
+- notes
+- payment details / UPI / bank information
+- terms & conditions
+- print preview
+- browser Print / Save as PDF flow
+- direct **Enquiry → Quotation** shortcut for enquiries already linked to a Customer Master record
+- direct shortcut available both from enquiry rows and Manage Enquiry
+- existing `?customer=<uuid>&enquiry=<id>` quotation prefill is now wired into the CRM workflow
+
+Security / integrity:
+- `update_quotation` is authenticated-admin-only through existing RLS + admin authority
+- anonymous execution is blocked
+- only quotations whose current database status is `draft` can be structurally edited by the edit RPC
+- quotation numbers are never regenerated during edit
+- current Security Advisor reports no new database/RLS finding; only the pre-existing **Leaked Password Protection Disabled** Auth warning remains
+- Performance Advisor reports only unused-index informational notices on new/low-usage indexes
+
+Migration:
+- `supabase/migrations/20261005_quotation_edit_rpc.sql`
+
+GitHub commits:
+- atomic Draft quotation edit RPC: `799b28d4ed768fcf6a6d5ebe32c937a005fe82a6`
+- saved quotation detail/edit + A4 print/PDF preview: `0ea412a319a8cef1a4da93715d6ca8475cd9d3cf`
+- direct Enquiry → Quotation shortcuts: `77350743538b85745e8332571001036c31a0c1f0`
+
+No fake quotation/customer/product data was created.
+
 ## Immediate next milestone
 
-**Billing Foundation — Milestone 2C3: Quotation Detail / Edit / Print Preview**
+**Billing Foundation — Milestone 2D1: Quotation → Invoice Conversion Foundation**
 
-Add:
-- open a saved quotation
-- view all saved line items
-- edit Draft quotations safely
-- preserve quotation number during edits
-- recalculate totals server-side
-- professional A4 quotation layout
-- business/customer/GST/payment/terms sections
-- print preview
-- browser PDF / print output
-- direct Enquiry → Quotation shortcut using the existing customer/enquiry prefill URL
+Build the invoice foundation from accepted/sent quotations:
+- invoice header + invoice line items
+- professional financial-year-aware invoice numbering
+- convert quotation → invoice without retyping customer/items
+- preserve source quotation reference
+- GST / Non-GST tax mode and totals
+- payment status foundation: Unpaid / Partially Paid / Paid
+- amount paid + balance due
+- invoice list
+- customer outstanding balance preparation
+- admin-only RLS and atomic server-side conversion
 
-Keep quotation → invoice conversion for the following milestone after saved quotation editing and print/PDF are completed and verified.
+Keep invoice print/PDF and payment-entry UI for the next small milestone after conversion foundation is completed and verified.
