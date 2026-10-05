@@ -20,6 +20,7 @@ The goal is one connected system for Minarva Technologies covering:
 - Purchases / expenses where needed
 - Reports
 - Customer follow-up and reminders
+- Automatic calling / AI customer care
 - Future customer self-service / portal
 
 ## Delivery rules
@@ -127,13 +128,62 @@ Only what Minarva Technologies needs operationally:
 - Service history
 - Optional reminders
 
-### Phase E — Reporting / automation
+### Phase E — Automatic calling / AI customer care
+
+Build a provider-agnostic voice customer-care layer connected to CRM, billing and service operations.
+
+Required capabilities:
+- Inbound customer-care calls
+- Outbound follow-up calls
+- AI voice agent with Malayalam + English support target
+- IVR / intent routing
+- Lead follow-up after website enquiry
+- Quotation follow-up
+- Invoice/payment reminder calls
+- Service appointment confirmation
+- Service completion / feedback calls
+- AMC / maintenance reminder calls
+- Human-agent handoff / callback request
+- Call outcome stored back in CRM
+- Call notes, transcript and summary where supported
+- Retry policy with limits; never uncontrolled repeated calling
+- Customer opt-out / do-not-call handling
+- Consent and communication-preference tracking
+- Allowed calling hours / quiet-hours enforcement
+- Call recording disclosure where recording is enabled
+- Private storage and retention controls for recordings/transcripts
+- Provider webhook event log for ringing/answered/completed/failed states
+- Provider abstraction so telephony vendor can be changed later without redesigning CRM
+
+Voice-ready data model must include:
+- customer communication consent
+- preferred language
+- preferred contact channel
+- do-not-call flag
+- call consent source + timestamp
+- call campaigns / call jobs
+- call attempts
+- call outcomes
+- callback requests
+- provider call IDs
+- optional transcript / summary references
+
+Compliance/security requirement:
+- Design calling workflows to respect applicable telecom, DND/consent, privacy and recording rules before production activation.
+- Do not make promotional robocalls to customers without an appropriate legal/consent basis.
+- Keep telephony secrets server-side only.
+- Browser/admin UI must never contain provider secret credentials.
+
+### Phase F — Reporting / automation
 - Sales and service reports
 - Outstanding receivables
 - Enquiry conversion
 - Service turnaround
 - Revenue by service category
 - Reminder automation using free-tier-compatible scheduling where practical
+- Voice-call conversion and outcome reporting
+- Call answer/failure/callback metrics
+- Customer-care performance dashboards
 
 ## Immediate next milestone
 
@@ -145,6 +195,14 @@ Create secure Supabase schema for:
 - catalogue items/services
 - quotations
 - quotation items
+
+The customer foundation must already be **voice-ready** for future automatic calling, including:
+- preferred_language
+- preferred_contact_channel
+- call_consent
+- call_consent_at
+- call_consent_source
+- do_not_call
 
 Requirements:
 - RLS from day one
