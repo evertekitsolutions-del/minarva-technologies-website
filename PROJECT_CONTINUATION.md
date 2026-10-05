@@ -338,26 +338,82 @@ Security verification after UI milestone:
 - no new database/RLS finding
 - the existing Supabase Auth **Leaked Password Protection Disabled** warning remains
 
-## Immediate next milestone
+## Billing Foundation — Milestone 2C2 — COMPLETE
 
-**Billing Foundation — Milestone 2C2: Quotation Creation UI**
-
-Add the first usable quotation workflow:
-- Quotation list
-- Create quotation
-- select linked customer
-- optional source enquiry link
-- add catalogue items/services as quotation lines
-- custom manual line allowed
+Implemented:
+- dedicated authenticated `/quotations` workspace
+- Admin Dashboard **Quotations** navigation
+- quotation list + search + Draft/Sent filter
+- create quotation
+- select Customer Master record
+- optional source enquiry ID
+- active catalogue Product / Service selection
+- custom manual lines
 - quantity
 - unit
 - unit price
-- discount
-- tax rate
-- subtotal / taxable / tax / total calculation
+- line discount %
+- GST / tax rate
+- HSN / SAC
+- No-tax / GST-exclusive / GST-inclusive modes
+- live subtotal / discount / taxable / tax / grand-total calculation
 - quotation date + validity
 - notes + terms
 - Draft / Sent status
-- prepare professional quotation numbering
+- existing quotation Draft/Sent status update
+- URL prefill support for future `?customer=<uuid>&enquiry=<id>` shortcuts
+- responsive mobile/tablet layout
 
-Keep PDF/print and quotation → invoice conversion for the following milestones after quotation creation is completed and verified.
+Professional quotation numbering:
+- added Billing Settings `document_company_code` (default `MT`)
+- format: `QT-MT-2026-27-0001`
+- financial-year-aware sequential counter
+- atomic numbering inside the same database transaction as quotation header + lines
+- configurable quotation prefix + company code
+- no fake quotation data created for testing
+
+Database implementation:
+- `quotations.tax_mode`
+- private `document_counters`
+- atomic `public.create_quotation(...)` RPC
+- server-side line validation and totals
+- server-side inclusive/exclusive/non-tax calculation
+- customer and optional enquiry validation
+- transaction rollback protects against partial quotation creation
+
+Security hardening:
+- initial RPC SECURITY DEFINER linter warning was root-cause fixed
+- `create_quotation` now runs as SECURITY INVOKER
+- private document counter has RLS enabled
+- counter access is authenticated + active-admin policy controlled
+- anonymous users cannot execute quotation creation RPC
+- current Security Advisor has no new quotation/RLS warning; only the pre-existing **Leaked Password Protection Disabled** Auth warning remains
+- Performance Advisor shows only unused-index informational notices on new/low-usage indexes
+
+Migrations:
+- `supabase/migrations/20261005_quotation_creation_foundation.sql`
+- `supabase/migrations/20261005_quotation_creation_security_cleanup.sql`
+
+GitHub commits:
+- atomic quotation creation + numbering migration: `0d788e770caf9032d911eb74000e1ac159004291`
+- quotation workspace UI: `0bbc1dced0ad6de6c5b42df4cbf86a664ce13167`
+- Admin navigation + company-code settings: `1833b54d7025d25ec278d74c0542606d9ce1b8a8`
+- quotation RPC security cleanup: `dc9c3b747e2ac875c6d0742fbc81468061aa959c`
+
+## Immediate next milestone
+
+**Billing Foundation — Milestone 2C3: Quotation Detail / Edit / Print Preview**
+
+Add:
+- open a saved quotation
+- view all saved line items
+- edit Draft quotations safely
+- preserve quotation number during edits
+- recalculate totals server-side
+- professional A4 quotation layout
+- business/customer/GST/payment/terms sections
+- print preview
+- browser PDF / print output
+- direct Enquiry → Quotation shortcut using the existing customer/enquiry prefill URL
+
+Keep quotation → invoice conversion for the following milestone after saved quotation editing and print/PDF are completed and verified.
