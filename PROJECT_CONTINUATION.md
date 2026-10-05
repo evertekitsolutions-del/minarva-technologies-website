@@ -219,16 +219,48 @@ Voice-ready customer fields included:
 Security advisor after migration: no new database/RLS security finding; only the existing Auth leaked-password-protection warning remains.
 Performance advisor after cleanup: no unindexed-foreign-key findings remain; only unused-index informational notices remain on the new/low-usage tables.
 
+## Billing Foundation — Milestone 2A — COMPLETE
+
+Implemented in `admin.html`:
+- authenticated **Billing Settings** entry point in the Admin Dashboard
+- secure load/save against `business_billing_settings`
+- singleton upsert flow
+- Business / Legal name
+- optional GSTIN + PAN
+- phone + email
+- billing address
+- State / State Code / PIN / Country
+- GST / Non-GST default tax mode
+- currency
+- quotation + invoice prefixes
+- financial-year start month
+- quotation validity days
+- default terms
+- UPI ID
+- bank name / account holder / account number / IFSC
+- client-side validation for key billing identifiers
+- modal cancel / backdrop / Escape handling
+- existing CRM dashboard behavior preserved
+
+GitHub commit:
+- `068b62074601dacf5b615eb04d4b7d0163949977`
+
+The browser uses the existing Supabase publishable key + authenticated session; admin-only RLS remains the authority for reads/writes.
+
 ## Immediate next milestone
 
-**Billing Foundation — Milestone 2: Admin Billing / Quotations UI**
+**Billing Foundation — Milestone 2B: Customer Master UI**
 
-Add the first Billing section to the existing admin UI with:
-- Business Billing Settings
-- Customer Master
-- Product / Service Catalogue
-- Create Quotation
-- Quotation list / status
-- enquiry → customer → quotation conversion path
+Add secure Customer Master management to the Admin system:
+- list/search customers
+- create customer
+- edit customer
+- phone normalization / duplicate awareness
+- GST and address fields
+- preferred language / preferred contact channel
+- call consent + consent source/date
+- Do Not Call
+- link source enquiry to customer
+- prepare **Enquiry → Customer** conversion
 
-Keep this milestone small: first wire secure CRUD and navigation; document numbering/PDF/print comes in the following milestone.
+Keep quotation creation for the next small milestone after Customer Master is completed and verified.
