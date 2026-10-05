@@ -888,6 +888,10 @@
         await Promise.all([loadSettings(),loadCustomers(),loadCatalogue()])
         applyDefaults()
         await loadQuotations()
+        const requestedQuotation = new URLSearchParams(location.search).get('quotation')
+        if (requestedQuotation && quotations.some(row => String(row.id) === String(requestedQuotation))){
+          await openQuotation(requestedQuotation)
+        }
       }catch(error){
         formStatus.textContent = 'Could not initialize quotations: ' + (error?.message || error)
         formStatus.className = 'status err'
