@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>Minarva Technologies — Quotations</title>
+  <meta name="theme-color" content="#0754c7" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--navy:#061d48;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--bg:#f4f8ff;--white:#fff;--green:#087443;--red:#b42318;--amber:#9a5b00}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select,textarea{font:inherit}.shell{width:min(1280px,calc(100% - 28px));margin:auto}.top{padding:20px 0}.brand{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand img{width:250px;height:54px;object-fit:contain;object-position:left center}
+    .btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),#1381ff);color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn-danger{background:#fff1f0;color:var(--red)}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin:10px 0 18px}.eyebrow{font-size:12px;letter-spacing:.13em;color:var(--blue);font-weight:800}.head h1{margin:5px 0 0;font-size:34px;letter-spacing:-.035em}.userline{font-size:12px;color:var(--muted);margin-top:5px}.head-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(360px,.75fr);gap:18px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 34px rgba(7,51,111,.07);overflow:hidden}.card-head{padding:18px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:12px}.card-head h2{font-size:19px;margin:0}.card-body{padding:18px}
+    .form-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.field.full{grid-column:1/-1}.field.span2{grid-column:span 2}label{display:block;font-size:11px;font-weight:800;margin-bottom:6px;color:#334155}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);outline:none}textarea{min-height:90px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}
+    .number-preview{font-size:11px;color:var(--muted);margin-top:6px}.section-title{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.04em;margin:20px 0 10px;padding-top:14px;border-top:1px solid var(--line)}.section-title.first{border-top:0;margin-top:0;padding-top:0}
+    .lines{display:grid;gap:12px}.line{border:1px solid #dce8f8;border-radius:14px;padding:12px;background:#fbfdff}.line-top{display:grid;grid-template-columns:1.2fr 1fr auto;gap:8px;align-items:end}.line-fields{display:grid;grid-template-columns:1.6fr .55fr .7fr .8fr .7fr .65fr .8fr;gap:8px;margin-top:9px}.line-desc{grid-column:span 1}.mini-label{font-size:9px;font-weight:800;color:var(--muted);margin:0 0 4px}.line-total{text-align:right;font-size:12px;font-weight:800;color:var(--navy);margin-top:9px}
+    .totals{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}.total-box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.total-box span{font-size:9px;color:var(--muted);font-weight:700}.total-box strong{display:block;margin-top:3px;font-size:15px}.total-box.grand{border-color:#b2ccff;background:#eff8ff}.total-box.grand strong{color:var(--blue)}
+    .status{min-height:18px;font-size:12px;font-weight:700;margin-top:10px}.status.ok{color:var(--green)}.status.err{color:var(--red)}.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
+    .quote-tools{padding:14px 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 160px;gap:8px;background:#fbfdff}.quote-list{max-height:760px;overflow:auto}.quote-item{padding:14px 16px;border-bottom:1px solid #edf2f8}.quote-item:last-child{border-bottom:0}.quote-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.quote-number{font-weight:800;font-size:13px;color:var(--blue)}.quote-customer{font-size:12px;font-weight:800;margin-top:3px}.quote-meta{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}.quote-amount{font-weight:800;font-size:14px;text-align:right}.quote-status{margin-top:6px;min-width:110px;padding:6px 8px;font-size:11px}.badge{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800}.badge.draft{background:#eef4ff;color:#3538cd}.badge.sent{background:#ecfdf3;color:#087443}.empty,.loader{padding:26px;text-align:center;color:var(--muted);font-size:12px}
+    .help{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}
+    @media(max-width:1050px){.grid{grid-template-columns:1fr}.quote-list{max-height:500px}.form-grid{grid-template-columns:1fr 1fr}.line-fields{grid-template-columns:1.5fr .7fr .8fr .8fr}.totals{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:650px){.head{display:block}.head-actions{margin-top:12px}.head h1{font-size:28px}.form-grid{grid-template-columns:1fr}.field.span2{grid-column:auto}.line-top,.line-fields{grid-template-columns:1fr}.totals{grid-template-columns:1fr 1fr}.quote-tools{grid-template-columns:1fr}.brand img{width:215px}.form-actions{flex-direction:column}.form-actions .btn{width:100%}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <div class="brand">
+      <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+      <button id="backBtn" class="btn btn-ghost" type="button">← Admin</button>
+    </div>
+  </div>
+
+  <main class="shell" style="padding-bottom:60px">
+    <div class="head">
+      <div>
+        <div class="eyebrow">BILLING & CRM</div>
+        <h1>Quotations</h1>
+        <div id="userLine" class="userline">Checking admin access…</div>
+      </div>
+      <div class="head-actions">
+        <button id="newQuoteBtn" class="btn btn-ghost" type="button">+ New Quotation</button>
+        <button id="refreshBtn" class="btn btn-ghost" type="button">Refresh</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <div class="card-head">
+          <h2>Create Quotation</h2>
+          <span id="numberPreview" class="number-preview">Number generated on save</span>
+        </div>
+        <div class="card-body">
+          <div class="section-title first">Quotation details</div>
+          <div class="form-grid">
+            <div class="field span2">
+              <label for="quoteCustomer">Customer</label>
+              <select id="quoteCustomer"><option value="">Loading customers…</option></select>
+            </div>
+            <div class="field">
+              <label for="quoteEnquiry">Source enquiry ID</label>
+              <input id="quoteEnquiry" type="number" min="1" step="1" placeholder="Optional">
+            </div>
+            <div class="field">
+              <label for="quoteStatus">Status</label>
+              <select id="quoteStatus"><option value="draft">Draft</option><option value="sent">Sent</option></select>
+            </div>
+            <div class="field">
+              <label for="quoteDate">Quotation date</label>
+              <input id="quoteDate" type="date">
+            </div>
+            <div class="field">
+              <label for="quoteValidUntil">Valid until</label>
+              <input id="quoteValidUntil" type="date">
+            </div>
+            <div class="field">
+              <label for="quoteTaxMode">Tax mode</label>
+              <select id="quoteTaxMode">
+                <option value="none">No tax / Non-GST</option>
+                <option value="exclusive">GST exclusive</option>
+                <option value="inclusive">GST inclusive</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="quoteCurrency">Currency</label>
+              <input id="quoteCurrency" type="text" maxlength="3" value="INR">
+            </div>
+          </div>
+
+          <div class="section-title">Line items</div>
+          <div id="lines" class="lines"></div>
+          <button id="addLineBtn" class="btn btn-ghost" type="button" style="margin-top:10px">+ Add Line</button>
+
+          <div class="totals">
+            <div class="total-box"><span>Subtotal</span><strong id="sumSubtotal">₹0.00</strong></div>
+            <div class="total-box"><span>Discount</span><strong id="sumDiscount">₹0.00</strong></div>
+            <div class="total-box"><span>Taxable</span><strong id="sumTaxable">₹0.00</strong></div>
+            <div class="total-box"><span>Tax</span><strong id="sumTax">₹0.00</strong></div>
+            <div class="total-box grand"><span>Total</span><strong id="sumTotal">₹0.00</strong></div>
+          </div>
+
+          <div class="section-title">Notes & terms</div>
+          <div class="form-grid">
+            <div class="field span2">
+              <label for="quoteNotes">Notes</label>
+              <textarea id="quoteNotes" maxlength="5000" placeholder="Customer-specific notes"></textarea>
+            </div>
+            <div class="field span2">
+              <label for="quoteTerms">Terms & conditions</label>
+              <textarea id="quoteTerms" maxlength="10000" placeholder="Default terms load from Billing Settings"></textarea>
+            </div>
+          </div>
+
+          <div id="formStatus" class="status" aria-live="polite"></div>
+          <div class="form-actions">
+            <button id="resetBtn" class="btn btn-ghost" type="button">Reset</button>
+            <button id="saveBtn" class="btn btn-primary" type="button">Create Quotation</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="card-head"><h2>Quotation List</h2></div>
+        <div class="quote-tools">
+          <input id="quoteSearch" type="search" placeholder="Search number / customer…">
+          <select id="quoteFilter">
+            <option value="all">All statuses</option>
+            <option value="draft">Draft</option>
+            <option value="sent">Sent</option>
+          </select>
+        </div>
+        <div id="quoteList" class="quote-list"><div class="loader">Loading quotations…</div></div>
+      </aside>
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+
+    const SUPABASE_URL = 'https://kwullzwhlzziosjsejud.supabase.co'
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
+    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+
+    const userLine = document.getElementById('userLine')
+    const backBtn = document.getElementById('backBtn')
+    const newQuoteBtn = document.getElementById('newQuoteBtn')
+    const refreshBtn = document.getElementById('refreshBtn')
+    const numberPreview = document.getElementById('numberPreview')
+    const quoteCustomer = document.getElementById('quoteCustomer')
+    const quoteEnquiry = document.getElementById('quoteEnquiry')
+    const quoteStatus = document.getElementById('quoteStatus')
+    const quoteDate = document.getElementById('quoteDate')
+    const quoteValidUntil = document.getElementById('quoteValidUntil')
+    const quoteTaxMode = document.getElementById('quoteTaxMode')
+    const quoteCurrency = document.getElementById('quoteCurrency')
+    const linesEl = document.getElementById('lines')
+    const addLineBtn = document.getElementById('addLineBtn')
+    const quoteNotes = document.getElementById('quoteNotes')
+    const quoteTerms = document.getElementById('quoteTerms')
+    const formStatus = document.getElementById('formStatus')
+    const saveBtn = document.getElementById('saveBtn')
+    const resetBtn = document.getElementById('resetBtn')
+    const quoteSearch = document.getElementById('quoteSearch')
+    const quoteFilter = document.getElementById('quoteFilter')
+    const quoteList = document.getElementById('quoteList')
+    const sumSubtotal = document.getElementById('sumSubtotal')
+    const sumDiscount = document.getElementById('sumDiscount')
+    const sumTaxable = document.getElementById('sumTaxable')
+    const sumTax = document.getElementById('sumTax')
+    const sumTotal = document.getElementById('sumTotal')
+
+    let settings = {
+      quotation_prefix:'QT',
+      document_company_code:'MT',
+      financial_year_start_month:4,
+      default_quotation_valid_days:15,
+      default_currency:'INR',
+      default_tax_mode:'none',
+      default_terms:''
+    }
+    let customers = []
+    let catalogue = []
+    let quotations = []
+    let lineSeq = 0
+
+    const esc = value => String(value ?? '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;').replace(/'/g,'&#039;')
+
+    function localDateValue(date){
+      const d = new Date(date)
+      if (Number.isNaN(d.getTime())) return ''
+      const y = d.getFullYear()
+      const m = String(d.getMonth()+1).padStart(2,'0')
+      const day = String(d.getDate()).padStart(2,'0')
+      return y + '-' + m + '-' + day
+    }
+
+    function addDays(dateString, days){
+      const d = dateString ? new Date(dateString + 'T00:00:00') : new Date()
+      d.setDate(d.getDate() + Number(days || 0))
+      return localDateValue(d)
+    }
+
+    function money(value, currency=quoteCurrency.value.trim().toUpperCase() || 'INR'){
+      const amount = Number(value || 0)
+      try{
+        return new Intl.NumberFormat('en-IN',{style:'currency',currency,maximumFractionDigits:2}).format(amount)
+      }catch{
+        return currency + ' ' + amount.toFixed(2)
+      }
+    }
+
+    function financialYearLabel(dateString){
+      const d = new Date((dateString || localDateValue(new Date())) + 'T00:00:00')
+      const month = d.getMonth() + 1
+      const year = d.getFullYear()
+      const startMonth = Number(settings.financial_year_start_month || 4)
+      const startYear = month >= startMonth ? year : year - 1
+      return startYear + '-' + String(startYear + 1).slice(-2)
+    }
+
+    function updateNumberPreview(){
+      const prefix = String(settings.quotation_prefix || 'QT').toUpperCase().replace(/[^A-Z0-9]/g,'') || 'QT'
+      const code = String(settings.document_company_code || 'MT').toUpperCase().replace(/[^A-Z0-9]/g,'') || 'MT'
+      numberPreview.textContent = 'Auto number: ' + prefix + '-' + code + '-' + financialYearLabel(quoteDate.value) + '-####'
+    }
+
+    function lineOptions(selected=''){
+      const options = ['<option value="">Manual line</option>']
+      catalogue.filter(item => item.active !== false).forEach(item => {
+        options.push('<option value="' + esc(item.id) + '"' +
+          (String(item.id) === String(selected) ? ' selected' : '') + '>' +
+          esc(item.name) + ' — ' + esc(money(item.unit_price, settings.default_currency || 'INR')) +
+          '</option>')
+      })
+      return options.join('')
+    }
+
+    function addLine(seed={}){
+      const id = ++lineSeq
+      const wrap = document.createElement('div')
+      wrap.className = 'line'
+      wrap.dataset.lineId = String(id)
+      wrap.innerHTML = `
+        <div class="line-top">
+          <div>
+            <div class="mini-label">Catalogue item</div>
+            <select data-field="catalogue">${lineOptions(seed.catalogue_item_id || '')}</select>
+          </div>
+          <div>
+            <div class="mini-label">Type</div>
+            <select data-field="item_type">
+              <option value="service" ${seed.item_type === 'product' ? '' : 'selected'}>Service</option>
+              <option value="product" ${seed.item_type === 'product' ? 'selected' : ''}>Product</option>
+            </select>
+          </div>
+          <button class="btn btn-danger" type="button" data-remove>Remove</button>
+        </div>
+        <div class="line-fields">
+          <div class="line-desc">
+            <div class="mini-label">Description</div>
+            <input data-field="description" type="text" maxlength="1000" value="${esc(seed.description || '')}" placeholder="Item / service description">
+          </div>
+          <div><div class="mini-label">Qty</div><input data-field="quantity" type="number" min="0.001" step="0.001" value="${esc(seed.quantity ?? 1)}"></div>
+          <div><div class="mini-label">Unit</div><input data-field="unit" type="text" maxlength="30" value="${esc(seed.unit || 'Nos')}"></div>
+          <div><div class="mini-label">Unit price</div><input data-field="unit_price" type="number" min="0" step="0.01" value="${esc(seed.unit_price ?? 0)}"></div>
+          <div><div class="mini-label">Discount %</div><input data-field="discount_percent" type="number" min="0" max="100" step="0.01" value="${esc(seed.discount_percent ?? 0)}"></div>
+          <div><div class="mini-label">Tax %</div><input data-field="tax_rate" type="number" min="0" max="100" step="0.01" value="${esc(seed.tax_rate ?? 0)}"></div>
+          <div><div class="mini-label">HSN / SAC</div><input data-field="hsn_sac" type="text" maxlength="20" value="${esc(seed.hsn_sac || '')}"></div>
+        </div>
+        <div class="line-total" data-line-total>Total: ${money(0)}</div>
+      `
+      linesEl.appendChild(wrap)
+
+      const catalogueSelect = wrap.querySelector('[data-field="catalogue"]')
+      catalogueSelect.addEventListener('change', () => {
+        const item = catalogue.find(x => String(x.id) === catalogueSelect.value)
+        if (item){
+          wrap.querySelector('[data-field="item_type"]').value = item.item_type || 'service'
+          wrap.querySelector('[data-field="description"]').value = item.description || item.name || ''
+          wrap.querySelector('[data-field="unit"]').value = item.unit || 'Nos'
+          wrap.querySelector('[data-field="unit_price"]').value = Number(item.unit_price || 0)
+          wrap.querySelector('[data-field="tax_rate"]').value = Number(item.tax_rate || 0)
+          wrap.querySelector('[data-field="hsn_sac"]').value = item.hsn_sac || ''
+        }
+        calculateTotals()
+      })
+
+      wrap.querySelector('[data-remove]').addEventListener('click', () => {
+        wrap.remove()
+        if (!linesEl.children.length) addLine()
+        calculateTotals()
+      })
+
+      wrap.querySelectorAll('input,select').forEach(input => {
+        if (input !== catalogueSelect) input.addEventListener('input', calculateTotals)
+        input.addEventListener('change', calculateTotals)
+      })
+
+      calculateTotals()
+    }
+
+    function lineData(wrap){
+      const get = name => wrap.querySelector('[data-field="' + name + '"]')
+      return {
+        catalogue_item_id:get('catalogue').value || null,
+        item_type:get('item_type').value,
+        description:get('description').value.trim(),
+        quantity:Number(get('quantity').value || 0),
+        unit:get('unit').value.trim() || 'Nos',
+        unit_price:Number(get('unit_price').value || 0),
+        discount_percent:Number(get('discount_percent').value || 0),
+        tax_rate:Number(get('tax_rate').value || 0),
+        hsn_sac:get('hsn_sac').value.trim() || null
+      }
+    }
+
+    function calculateLine(item){
+      const subtotal = Math.round(item.quantity * item.unit_price * 100) / 100
+      const discount = Math.round(subtotal * item.discount_percent) / 100
+      const after = Math.max(0, Math.round((subtotal - discount) * 100) / 100)
+      const mode = quoteTaxMode.value
+      const rate = mode === 'none' ? 0 : item.tax_rate
+      let taxable = after
+      let tax = 0
+      let total = after
+
+      if (mode === 'inclusive' && rate > 0){
+        total = after
+        taxable = Math.round((after / (1 + rate / 100)) * 100) / 100
+        tax = Math.round((total - taxable) * 100) / 100
+      } else if (mode === 'exclusive' && rate > 0){
+        taxable = after
+        tax = Math.round((taxable * rate / 100) * 100) / 100
+        total = Math.round((taxable + tax) * 100) / 100
+      }
+
+      return {subtotal,discount,taxable,tax,total}
+    }
+
+    function calculateTotals(){
+      let subtotal=0,discount=0,taxable=0,tax=0,total=0
+      Array.from(linesEl.children).forEach(wrap => {
+        const calc = calculateLine(lineData(wrap))
+        subtotal += calc.subtotal
+        discount += calc.discount
+        taxable += calc.taxable
+        tax += calc.tax
+        total += calc.total
+        const lineTotal = wrap.querySelector('[data-line-total]')
+        if (lineTotal) lineTotal.textContent = 'Total: ' + money(calc.total)
+      })
+      sumSubtotal.textContent = money(subtotal)
+      sumDiscount.textContent = money(discount)
+      sumTaxable.textContent = money(taxable)
+      sumTax.textContent = money(tax)
+      sumTotal.textContent = money(total)
+    }
+
+    function populateCustomers(){
+      quoteCustomer.innerHTML = '<option value="">Choose customer…</option>' + customers.map(c =>
+        '<option value="' + esc(c.id) + '">' + esc(c.name) +
+        (c.phone ? ' • ' + esc(c.phone) : '') + '</option>'
+      ).join('')
+    }
+
+    async function loadSettings(){
+      const {data,error} = await supabase
+        .from('business_billing_settings')
+        .select('*')
+        .eq('singleton',true)
+        .maybeSingle()
+      if (error) throw error
+      if (data) settings = {...settings,...data}
+    }
+
+    async function loadCustomers(){
+      const {data,error} = await supabase
+        .from('customers')
+        .select('id,name,phone,email,gstin,source_enquiry_id,updated_at')
+        .order('name',{ascending:true})
+        .limit(2000)
+      if (error) throw error
+      customers = data || []
+      populateCustomers()
+    }
+
+    async function loadCatalogue(){
+      const {data,error} = await supabase
+        .from('catalogue_items')
+        .select('id,item_type,name,description,sku,hsn_sac,unit,unit_price,tax_rate,active')
+        .eq('active',true)
+        .order('item_type',{ascending:true})
+        .order('name',{ascending:true})
+        .limit(2000)
+      if (error) throw error
+      catalogue = data || []
+    }
+
+    function filteredQuotations(){
+      const q = quoteSearch.value.trim().toLowerCase()
+      const status = quoteFilter.value
+      return quotations.filter(row => {
+        if (status !== 'all' && row.status !== status) return false
+        if (!q) return true
+        const customer = Array.isArray(row.customers) ? row.customers[0] : row.customers
+        return [
+          row.quotation_number,row.status,row.enquiry_id,customer?.name,customer?.phone
+        ].map(v => String(v || '').toLowerCase()).join(' ').includes(q)
+      })
+    }
+
+    function renderQuotationList(){
+      const rows = filteredQuotations()
+      if (!rows.length){
+        quoteList.innerHTML = '<div class="empty">No quotations found.</div>'
+        return
+      }
+
+      quoteList.innerHTML = rows.map(row => {
+        const customer = Array.isArray(row.customers) ? row.customers[0] : row.customers
+        const editable = ['draft','sent'].includes(row.status)
+        return '<div class="quote-item">' +
+          '<div class="quote-row"><div><div class="quote-number">' + esc(row.quotation_number || 'Unnumbered') + '</div>' +
+          '<div class="quote-customer">' + esc(customer?.name || 'Customer') + '</div>' +
+          '<div class="quote-meta">' + esc(row.quotation_date || '') +
+          (row.valid_until ? ' • Valid to ' + esc(row.valid_until) : '') +
+          (row.enquiry_id ? ' • Enquiry #' + esc(row.enquiry_id) : '') +
+          ' • ' + esc(row.tax_mode || 'none') + '</div></div>' +
+          '<div><div class="quote-amount">' + esc(money(row.total_amount,row.currency || 'INR')) + '</div>' +
+          (editable
+            ? '<select class="quote-status" data-quote-status="' + esc(row.id) + '">' +
+              '<option value="draft"' + (row.status === 'draft' ? ' selected' : '') + '>Draft</option>' +
+              '<option value="sent"' + (row.status === 'sent' ? ' selected' : '') + '>Sent</option></select>'
+            : '<span class="badge ' + esc(row.status) + '">' + esc(row.status) + '</span>') +
+          '</div></div></div>'
+      }).join('')
+
+      quoteList.querySelectorAll('[data-quote-status]').forEach(select => {
+        select.addEventListener('change', async () => {
+          const id = select.dataset.quoteStatus
+          const previous = quotations.find(q => q.id === id)?.status
+          select.disabled = true
+          const {error} = await supabase
+            .from('quotations')
+            .update({status:select.value,updated_at:new Date().toISOString()})
+            .eq('id',id)
+          select.disabled = false
+          if (error){
+            select.value = previous || 'draft'
+            alert('Could not update quotation status: ' + error.message)
+            return
+          }
+          const row = quotations.find(q => q.id === id)
+          if (row) row.status = select.value
+        })
+      })
+    }
+
+    async function loadQuotations(){
+      quoteList.innerHTML = '<div class="loader">Loading quotations…</div>'
+      const {data,error} = await supabase
+        .from('quotations')
+        .select('id,quotation_number,customer_id,enquiry_id,quotation_date,valid_until,status,currency,tax_mode,subtotal,discount_amount,taxable_amount,tax_amount,total_amount,notes,terms,created_at,updated_at,customers(name,phone)')
+        .order('quotation_date',{ascending:false})
+        .order('created_at',{ascending:false})
+        .limit(500)
+      if (error){
+        quoteList.innerHTML = '<div class="empty">Could not load quotations: ' + esc(error.message) + '</div>'
+        return
+      }
+      quotations = data || []
+      renderQuotationList()
+    }
+
+    function applyDefaults(){
+      const today = localDateValue(new Date())
+      quoteDate.value = today
+      quoteValidUntil.value = addDays(today,settings.default_quotation_valid_days || 15)
+      quoteStatus.value = 'draft'
+      quoteTaxMode.value = settings.default_tax_mode || 'none'
+      quoteCurrency.value = String(settings.default_currency || 'INR').toUpperCase()
+      quoteNotes.value = ''
+      quoteTerms.value = settings.default_terms || ''
+      quoteEnquiry.value = ''
+      quoteCustomer.value = ''
+      linesEl.innerHTML = ''
+      addLine()
+      formStatus.textContent = ''
+      formStatus.className = 'status'
+      updateNumberPreview()
+
+      const params = new URLSearchParams(location.search)
+      const customer = params.get('customer')
+      const enquiry = params.get('enquiry')
+      if (customer && customers.some(c => c.id === customer)) quoteCustomer.value = customer
+      if (enquiry && /^\d+$/.test(enquiry)) quoteEnquiry.value = enquiry
+    }
+
+    function collectItems(){
+      return Array.from(linesEl.children).map(lineData)
+    }
+
+    function validateItems(items){
+      if (!items.length) return 'Add at least one line item.'
+      for (let i=0;i<items.length;i++){
+        const item = items[i]
+        if (!item.description) return 'Line ' + (i+1) + ': description is required.'
+        if (!['product','service'].includes(item.item_type)) return 'Line ' + (i+1) + ': invalid type.'
+        if (!Number.isFinite(item.quantity) || item.quantity <= 0) return 'Line ' + (i+1) + ': quantity must be greater than zero.'
+        if (!Number.isFinite(item.unit_price) || item.unit_price < 0) return 'Line ' + (i+1) + ': unit price is invalid.'
+        if (!Number.isFinite(item.discount_percent) || item.discount_percent < 0 || item.discount_percent > 100) return 'Line ' + (i+1) + ': discount must be 0–100%.'
+        if (!Number.isFinite(item.tax_rate) || item.tax_rate < 0 || item.tax_rate > 100) return 'Line ' + (i+1) + ': tax rate must be 0–100%.'
+      }
+      return ''
+    }
+
+    async function saveQuotation(){
+      const customerId = quoteCustomer.value
+      const enquiryRaw = quoteEnquiry.value.trim()
+      const enquiryId = enquiryRaw ? Number(enquiryRaw) : null
+      const currency = quoteCurrency.value.trim().toUpperCase()
+      const items = collectItems()
+      const itemError = validateItems(items)
+
+      if (!customerId){
+        formStatus.textContent = 'Choose a customer.'
+        formStatus.className = 'status err'
+        return
+      }
+      if (enquiryRaw && (!Number.isInteger(enquiryId) || enquiryId < 1)){
+        formStatus.textContent = 'Source enquiry ID must be a positive number.'
+        formStatus.className = 'status err'
+        return
+      }
+      if (!/^[A-Z]{3}$/.test(currency)){
+        formStatus.textContent = 'Currency must be a 3-letter code such as INR.'
+        formStatus.className = 'status err'
+        return
+      }
+      if (!quoteDate.value || !quoteValidUntil.value || quoteValidUntil.value < quoteDate.value){
+        formStatus.textContent = 'Check quotation date and validity date.'
+        formStatus.className = 'status err'
+        return
+      }
+      if (itemError){
+        formStatus.textContent = itemError
+        formStatus.className = 'status err'
+        return
+      }
+
+      saveBtn.disabled = true
+      saveBtn.textContent = 'Creating…'
+      formStatus.textContent = ''
+
+      const {data,error} = await supabase.rpc('create_quotation',{
+        p_customer_id:customerId,
+        p_enquiry_id:enquiryId,
+        p_quotation_date:quoteDate.value,
+        p_valid_until:quoteValidUntil.value,
+        p_status:quoteStatus.value,
+        p_currency:currency,
+        p_tax_mode:quoteTaxMode.value,
+        p_notes:quoteNotes.value.trim() || null,
+        p_terms:quoteTerms.value.trim() || null,
+        p_items:items
+      })
+
+      saveBtn.disabled = false
+      saveBtn.textContent = 'Create Quotation'
+
+      if (error){
+        formStatus.textContent = 'Could not create quotation: ' + error.message
+        formStatus.className = 'status err'
+        return
+      }
+
+      formStatus.textContent = 'Created ' + (data?.quotation_number || 'quotation') + ' successfully.'
+      formStatus.className = 'status ok'
+      await loadQuotations()
+      const createdNumber = data?.quotation_number || ''
+      applyDefaults()
+      formStatus.textContent = 'Created ' + createdNumber + ' successfully.'
+      formStatus.className = 'status ok'
+    }
+
+    async function verifyAdmin(){
+      const {data:{session}} = await supabase.auth.getSession()
+      if (!session?.user){
+        location.href = '/admin'
+        return false
+      }
+
+      const {data,error} = await supabase
+        .from('admin_users')
+        .select('email,role,active')
+        .eq('user_id',session.user.id)
+        .maybeSingle()
+
+      if (error || !data || data.active !== true){
+        location.href = '/admin'
+        return false
+      }
+
+      userLine.textContent = (data.email || session.user.email || '') + ' • ' + data.role
+      return true
+    }
+
+    async function init(){
+      try{
+        if (!await verifyAdmin()) return
+        await Promise.all([loadSettings(),loadCustomers(),loadCatalogue()])
+        applyDefaults()
+        await loadQuotations()
+      }catch(error){
+        formStatus.textContent = 'Could not initialize quotations: ' + (error?.message || error)
+        formStatus.className = 'status err'
+      }
+    }
+
+    backBtn.addEventListener('click',()=>{ location.href='/admin' })
+    newQuoteBtn.addEventListener('click',()=>{ applyDefaults(); window.scrollTo({top:0,behavior:'smooth'}) })
+    refreshBtn.addEventListener('click',loadQuotations)
+    addLineBtn.addEventListener('click',()=>addLine())
+    resetBtn.addEventListener('click',applyDefaults)
+    saveBtn.addEventListener('click',saveQuotation)
+    quoteTaxMode.addEventListener('change',calculateTotals)
+    quoteCurrency.addEventListener('input',calculateTotals)
+    quoteDate.addEventListener('change',()=>{
+      quoteValidUntil.value = addDays(quoteDate.value,settings.default_quotation_valid_days || 15)
+      updateNumberPreview()
+    })
+    quoteSearch.addEventListener('input',renderQuotationList)
+    quoteFilter.addEventListener('change',renderQuotationList)
+
+    supabase.auth.onAuthStateChange(event => {
+      if (event === 'SIGNED_OUT') location.href='/admin'
+    })
+
+    init()
+  </script>
+</body>
+</html>
