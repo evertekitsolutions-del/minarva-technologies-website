@@ -22,7 +22,8 @@
     .totals{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}.total-box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.total-box span{font-size:9px;color:var(--muted);font-weight:700}.total-box strong{display:block;margin-top:3px;font-size:15px}.total-box.grand{border-color:#b2ccff;background:#eff8ff}.total-box.grand strong{color:var(--blue)}
     .status{min-height:18px;font-size:12px;font-weight:700;margin-top:10px}.status.ok{color:var(--green)}.status.err{color:var(--red)}.form-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
     .quote-tools{padding:14px 18px;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr 160px;gap:8px;background:#fbfdff}.quote-list{max-height:760px;overflow:auto}.quote-item{padding:14px 16px;border-bottom:1px solid #edf2f8}.quote-item:last-child{border-bottom:0}.quote-row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.quote-number{font-weight:800;font-size:13px;color:var(--blue)}.quote-customer{font-size:12px;font-weight:800;margin-top:3px}.quote-meta{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.5}.quote-amount{font-weight:800;font-size:14px;text-align:right}.quote-status{margin-top:6px;min-width:110px;padding:6px 8px;font-size:11px}.badge{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800}.badge.draft{background:#eef4ff;color:#3538cd}.badge.sent{background:#ecfdf3;color:#087443}.empty,.loader{padding:26px;text-align:center;color:var(--muted);font-size:12px}
-    .help{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}
+    .help{font-size:10px;color:var(--muted);line-height:1.5;margin-top:5px}.quote-actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.quote-actions .btn{padding:7px 9px;font-size:10px}.preview-backdrop{display:none;position:fixed;inset:0;background:rgba(5,20,45,.72);z-index:999;padding:18px;overflow:auto}.preview-backdrop.show{display:block}.preview-wrap{width:min(980px,100%);margin:auto}.preview-toolbar{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;gap:8px;padding:10px;background:rgba(246,250,255,.96);border-radius:14px 14px 0 0;border:1px solid #dbe8f8}.a4-sheet{width:210mm;min-height:297mm;margin:0 auto 30px;background:#fff;padding:14mm 14mm 16mm;box-shadow:0 16px 50px rgba(0,0,0,.2);color:#111827}.print-head{display:flex;justify-content:space-between;gap:24px;padding-bottom:14px;border-bottom:2px solid #0b59d8}.print-logo{max-width:250px;max-height:62px;object-fit:contain;object-position:left center}.print-title{text-align:right}.print-title h1{margin:0;color:#0b59d8;font-size:28px;letter-spacing:.08em}.print-title div{font-size:11px;color:#475467;margin-top:5px}.print-info-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:18px 0}.print-box{border:1px solid #d7e3f2;border-radius:9px;padding:11px}.print-box h3{margin:0 0 7px;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#0b59d8}.print-box p{margin:2px 0;font-size:10px;line-height:1.55}.print-table{width:100%;border-collapse:collapse;font-size:9px;margin-top:12px}.print-table th{background:#edf5ff;color:#173b6d;text-align:left;padding:7px 6px;border:1px solid #cbdcf1}.print-table td{padding:7px 6px;border:1px solid #d9e4f2;vertical-align:top}.print-table .num{text-align:right;white-space:nowrap}.print-totals{width:48%;margin:14px 0 0 auto;border-collapse:collapse;font-size:10px}.print-totals td{padding:5px 7px;border-bottom:1px solid #e2e8f0}.print-totals td:last-child{text-align:right;font-weight:700}.print-totals .grand td{font-size:13px;color:#0b59d8;font-weight:800;border-top:2px solid #0b59d8;border-bottom:0}.print-notes{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-top:18px}.print-section{font-size:9px;line-height:1.6}.print-section h4{font-size:10px;margin:0 0 5px;color:#0b59d8}.print-footer{margin-top:28px;padding-top:10px;border-top:1px solid #d9e4f2;display:flex;justify-content:space-between;gap:15px;font-size:8px;color:#667085}.read-only-note{font-size:11px;color:var(--amber);font-weight:800;margin-left:auto}
+    @media print{@page{size:A4;margin:0}body{background:#fff!important}body>*{visibility:hidden!important}.preview-backdrop,.preview-backdrop *{visibility:visible!important}.preview-backdrop{display:block!important;position:absolute!important;inset:0!important;padding:0!important;background:#fff!important;overflow:visible!important}.preview-wrap{width:auto!important;margin:0!important}.preview-toolbar{display:none!important}.a4-sheet{position:absolute;left:0;top:0;width:210mm;min-height:297mm;margin:0;padding:14mm;box-shadow:none!important}}
     @media(max-width:1050px){.grid{grid-template-columns:1fr}.quote-list{max-height:500px}.form-grid{grid-template-columns:1fr 1fr}.line-fields{grid-template-columns:1.5fr .7fr .8fr .8fr}.totals{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:650px){.head{display:block}.head-actions{margin-top:12px}.head h1{font-size:28px}.form-grid{grid-template-columns:1fr}.field.span2{grid-column:auto}.line-top,.line-fields{grid-template-columns:1fr}.totals{grid-template-columns:1fr 1fr}.quote-tools{grid-template-columns:1fr}.brand img{width:215px}.form-actions{flex-direction:column}.form-actions .btn{width:100%}}
   </style>
@@ -51,8 +52,11 @@
     <div class="grid">
       <section class="card">
         <div class="card-head">
-          <h2>Create Quotation</h2>
-          <span id="numberPreview" class="number-preview">Number generated on save</span>
+          <h2 id="editorTitle">Create Quotation</h2>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+            <span id="numberPreview" class="number-preview">Number generated on save</span>
+            <button id="previewCurrentBtn" class="btn btn-ghost" type="button" style="display:none">Preview</button>
+          </div>
         </div>
         <div class="card-body">
           <div class="section-title first">Quotation details</div>
@@ -138,6 +142,16 @@
     </div>
   </main>
 
+  <div id="printModal" class="preview-backdrop" aria-hidden="true">
+    <div class="preview-wrap">
+      <div class="preview-toolbar">
+        <button id="printCloseBtn" class="btn btn-ghost" type="button">Close</button>
+        <button id="printBtn" class="btn btn-primary" type="button">Print / Save PDF</button>
+      </div>
+      <article id="printSheet" class="a4-sheet"></article>
+    </div>
+  </div>
+
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
 
@@ -149,7 +163,13 @@
     const backBtn = document.getElementById('backBtn')
     const newQuoteBtn = document.getElementById('newQuoteBtn')
     const refreshBtn = document.getElementById('refreshBtn')
+    const editorTitle = document.getElementById('editorTitle')
     const numberPreview = document.getElementById('numberPreview')
+    const previewCurrentBtn = document.getElementById('previewCurrentBtn')
+    const printModal = document.getElementById('printModal')
+    const printCloseBtn = document.getElementById('printCloseBtn')
+    const printBtn = document.getElementById('printBtn')
+    const printSheet = document.getElementById('printSheet')
     const quoteCustomer = document.getElementById('quoteCustomer')
     const quoteEnquiry = document.getElementById('quoteEnquiry')
     const quoteStatus = document.getElementById('quoteStatus')
@@ -185,11 +205,25 @@
     let customers = []
     let catalogue = []
     let quotations = []
+    let activeQuotationId = null
+    let activeQuotationNumber = ''
+    let activeQuotationStatus = null
+    let activeQuotationDetail = null
     let lineSeq = 0
 
     const esc = value => String(value ?? '')
       .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
       .replace(/"/g,'&quot;').replace(/'/g,'&#039;')
+
+    const nl2br = value => esc(value || '').replace(/\n/g,'<br>')
+
+    function setEditorLocked(locked){
+      ;[quoteCustomer,quoteEnquiry,quoteStatus,quoteDate,quoteValidUntil,quoteTaxMode,quoteCurrency,quoteNotes,quoteTerms]
+        .forEach(el => { el.disabled = locked })
+      addLineBtn.disabled = locked
+      linesEl.querySelectorAll('input,select,button[data-remove]').forEach(el => { el.disabled = locked })
+      saveBtn.disabled = locked
+    }
 
     function localDateValue(date){
       const d = new Date(date)
@@ -438,7 +472,10 @@
               '<option value="draft"' + (row.status === 'draft' ? ' selected' : '') + '>Draft</option>' +
               '<option value="sent"' + (row.status === 'sent' ? ' selected' : '') + '>Sent</option></select>'
             : '<span class="badge ' + esc(row.status) + '">' + esc(row.status) + '</span>') +
-          '</div></div></div>'
+          '<div class="quote-actions">' +
+            '<button class="btn btn-ghost" type="button" data-open-quote="' + esc(row.id) + '">Open</button>' +
+            '<button class="btn btn-ghost" type="button" data-preview-quote="' + esc(row.id) + '">Preview</button>' +
+          '</div></div></div></div>'
       }).join('')
 
       quoteList.querySelectorAll('[data-quote-status]').forEach(select => {
@@ -458,7 +495,18 @@
           }
           const row = quotations.find(q => q.id === id)
           if (row) row.status = select.value
+          if (activeQuotationId === id){
+            activeQuotationStatus = select.value
+            if (select.value !== 'draft') setEditorLocked(true)
+          }
         })
+      })
+
+      quoteList.querySelectorAll('[data-open-quote]').forEach(button => {
+        button.addEventListener('click', () => openQuotation(button.dataset.openQuote))
+      })
+      quoteList.querySelectorAll('[data-preview-quote]').forEach(button => {
+        button.addEventListener('click', () => openPrintPreview(button.dataset.previewQuote))
       })
     }
 
@@ -478,7 +526,185 @@
       renderQuotationList()
     }
 
+    async function fetchQuotationDetail(id){
+      const {data,error} = await supabase
+        .from('quotations')
+        .select('id,quotation_number,customer_id,enquiry_id,quotation_date,valid_until,status,currency,tax_mode,subtotal,discount_amount,taxable_amount,tax_amount,total_amount,notes,terms,created_at,updated_at,customers(id,name,phone,email,gstin,billing_address_line1,billing_address_line2,city,district,state,state_code,pincode,country,site_address),quotation_items(id,catalogue_item_id,line_no,item_type,description,hsn_sac,quantity,unit,unit_price,discount_percent,discount_amount,tax_rate,line_subtotal,taxable_amount,tax_amount,line_total)')
+        .eq('id',id)
+        .maybeSingle()
+
+      if (error) throw error
+      if (!data) throw new Error('Quotation not found.')
+      data.quotation_items = (data.quotation_items || []).slice().sort((a,b) => Number(a.line_no)-Number(b.line_no))
+      return data
+    }
+
+    async function openQuotation(id){
+      formStatus.textContent = 'Loading quotation…'
+      formStatus.className = 'status'
+      try{
+        const detail = await fetchQuotationDetail(id)
+        activeQuotationId = detail.id
+        activeQuotationNumber = detail.quotation_number || ''
+        activeQuotationStatus = detail.status
+        activeQuotationDetail = detail
+
+        editorTitle.textContent = detail.status === 'draft' ? 'Edit Draft Quotation' : 'View Quotation'
+        numberPreview.textContent = (detail.quotation_number || 'Quotation') +
+          (detail.status === 'draft' ? ' • Draft editing' : ' • ' + String(detail.status || '').toUpperCase() + ' • Read only')
+        previewCurrentBtn.style.display = ''
+        quoteCustomer.value = detail.customer_id || ''
+        quoteEnquiry.value = detail.enquiry_id || ''
+        quoteStatus.value = detail.status || 'draft'
+        quoteDate.value = detail.quotation_date || ''
+        quoteValidUntil.value = detail.valid_until || ''
+        quoteTaxMode.value = detail.tax_mode || 'none'
+        quoteCurrency.value = detail.currency || 'INR'
+        quoteNotes.value = detail.notes || ''
+        quoteTerms.value = detail.terms || ''
+        linesEl.innerHTML = ''
+        detail.quotation_items.forEach(item => addLine(item))
+        if (!detail.quotation_items.length) addLine()
+        calculateTotals()
+
+        const locked = detail.status !== 'draft'
+        setEditorLocked(locked)
+        saveBtn.textContent = locked ? 'Sent — Read Only' : 'Save Draft Changes'
+        formStatus.textContent = locked
+          ? 'This quotation is read-only because it is not Draft. Change its status back to Draft from the list before editing.'
+          : 'Draft loaded. Saving will preserve quotation number ' + (detail.quotation_number || '') + '.'
+        formStatus.className = locked ? 'status' : 'status ok'
+        window.scrollTo({top:0,behavior:'smooth'})
+      }catch(error){
+        formStatus.textContent = 'Could not open quotation: ' + error.message
+        formStatus.className = 'status err'
+      }
+    }
+
+    function businessAddress(){
+      return [
+        settings.address_line1,settings.address_line2,settings.city,
+        settings.district,settings.state,settings.pincode,settings.country
+      ].filter(Boolean).join(', ')
+    }
+
+    function customerAddress(customer={}){
+      return [
+        customer.billing_address_line1,customer.billing_address_line2,
+        customer.city,customer.district,customer.state,customer.pincode,customer.country
+      ].filter(Boolean).join(', ')
+    }
+
+    function renderPrintSheet(detail){
+      const customer = Array.isArray(detail.customers) ? detail.customers[0] : detail.customers || {}
+      const items = (detail.quotation_items || []).slice().sort((a,b) => Number(a.line_no)-Number(b.line_no))
+      const bank = settings.bank_details && typeof settings.bank_details === 'object' ? settings.bank_details : {}
+
+      const itemRows = items.map((item,index) =>
+        '<tr>' +
+        '<td>' + (index+1) + '</td>' +
+        '<td><strong>' + esc(item.description || '') + '</strong></td>' +
+        '<td>' + esc(item.hsn_sac || '') + '</td>' +
+        '<td class="num">' + esc(Number(item.quantity || 0).toLocaleString('en-IN',{maximumFractionDigits:3})) + '</td>' +
+        '<td>' + esc(item.unit || '') + '</td>' +
+        '<td class="num">' + esc(money(item.unit_price,detail.currency || 'INR')) + '</td>' +
+        '<td class="num">' + esc(Number(item.discount_percent || 0)) + '%</td>' +
+        '<td class="num">' + esc(Number(item.tax_rate || 0)) + '%</td>' +
+        '<td class="num">' + esc(money(item.line_total,detail.currency || 'INR')) + '</td>' +
+        '</tr>'
+      ).join('')
+
+      const paymentBits = [
+        settings.upi_id ? '<p><strong>UPI:</strong> ' + esc(settings.upi_id) + '</p>' : '',
+        bank.bank_name ? '<p><strong>Bank:</strong> ' + esc(bank.bank_name) + '</p>' : '',
+        bank.account_name ? '<p><strong>A/C Name:</strong> ' + esc(bank.account_name) + '</p>' : '',
+        bank.account_number ? '<p><strong>A/C No:</strong> ' + esc(bank.account_number) + '</p>' : '',
+        bank.ifsc ? '<p><strong>IFSC:</strong> ' + esc(bank.ifsc) + '</p>' : ''
+      ].join('')
+
+      printSheet.innerHTML =
+        '<div class="print-head">' +
+          '<div>' +
+            '<img class="print-logo" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies">' +
+            '<div style="font-size:9px;line-height:1.55;margin-top:8px;max-width:380px">' +
+              (settings.legal_name ? '<strong>' + esc(settings.legal_name) + '</strong><br>' : '') +
+              esc(businessAddress()) +
+              (settings.phone ? '<br>Phone: ' + esc(settings.phone) : '') +
+              (settings.email ? '<br>Email: ' + esc(settings.email) : '') +
+              (settings.gstin ? '<br><strong>GSTIN: ' + esc(settings.gstin) + '</strong>' : '') +
+            '</div>' +
+          '</div>' +
+          '<div class="print-title"><h1>QUOTATION</h1>' +
+            '<div><strong>' + esc(detail.quotation_number || '') + '</strong></div>' +
+            '<div>Date: ' + esc(detail.quotation_date || '') + '</div>' +
+            '<div>Valid Until: ' + esc(detail.valid_until || '') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="print-info-grid">' +
+          '<div class="print-box"><h3>Quotation To</h3>' +
+            '<p><strong>' + esc(customer.name || 'Customer') + '</strong></p>' +
+            (customerAddress(customer) ? '<p>' + esc(customerAddress(customer)) + '</p>' : '') +
+            (customer.phone ? '<p>Phone: ' + esc(customer.phone) + '</p>' : '') +
+            (customer.email ? '<p>Email: ' + esc(customer.email) + '</p>' : '') +
+            (customer.gstin ? '<p><strong>GSTIN: ' + esc(customer.gstin) + '</strong></p>' : '') +
+          '</div>' +
+          '<div class="print-box"><h3>Reference</h3>' +
+            '<p>Status: ' + esc(String(detail.status || '').toUpperCase()) + '</p>' +
+            '<p>Tax Mode: ' + esc(String(detail.tax_mode || 'none').toUpperCase()) + '</p>' +
+            (detail.enquiry_id ? '<p>Enquiry: #' + esc(detail.enquiry_id) + '</p>' : '') +
+            '<p>Currency: ' + esc(detail.currency || 'INR') + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<table class="print-table"><thead><tr>' +
+          '<th>#</th><th>Description</th><th>HSN/SAC</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Disc.</th><th>Tax</th><th>Amount</th>' +
+        '</tr></thead><tbody>' + itemRows + '</tbody></table>' +
+        '<table class="print-totals">' +
+          '<tr><td>Subtotal</td><td>' + esc(money(detail.subtotal,detail.currency)) + '</td></tr>' +
+          '<tr><td>Discount</td><td>' + esc(money(detail.discount_amount,detail.currency)) + '</td></tr>' +
+          '<tr><td>Taxable Amount</td><td>' + esc(money(detail.taxable_amount,detail.currency)) + '</td></tr>' +
+          '<tr><td>Tax</td><td>' + esc(money(detail.tax_amount,detail.currency)) + '</td></tr>' +
+          '<tr class="grand"><td>Grand Total</td><td>' + esc(money(detail.total_amount,detail.currency)) + '</td></tr>' +
+        '</table>' +
+        '<div class="print-notes">' +
+          '<div class="print-section"><h4>Notes</h4>' + (detail.notes ? nl2br(detail.notes) : '—') + '</div>' +
+          '<div class="print-section"><h4>Payment Details</h4>' + (paymentBits || '—') + '</div>' +
+        '</div>' +
+        '<div class="print-section" style="margin-top:16px"><h4>Terms & Conditions</h4>' +
+          (detail.terms ? nl2br(detail.terms) : '—') + '</div>' +
+        '<div class="print-footer"><span>Generated by Minarva Technologies Billing & CRM</span><span>Authorised Signatory</span></div>'
+    }
+
+    async function openPrintPreview(id){
+      printSheet.innerHTML = '<div class="loader">Loading print preview…</div>'
+      printModal.classList.add('show')
+      printModal.setAttribute('aria-hidden','false')
+      document.body.style.overflow = 'hidden'
+      try{
+        const detail = activeQuotationId === id && activeQuotationDetail
+          ? await fetchQuotationDetail(id)
+          : await fetchQuotationDetail(id)
+        activeQuotationDetail = detail
+        renderPrintSheet(detail)
+      }catch(error){
+        printSheet.innerHTML = '<div class="empty">Could not load preview: ' + esc(error.message) + '</div>'
+      }
+    }
+
+    function closePrintPreview(){
+      printModal.classList.remove('show')
+      printModal.setAttribute('aria-hidden','true')
+      document.body.style.overflow = ''
+    }
+
     function applyDefaults(){
+      activeQuotationId = null
+      activeQuotationNumber = ''
+      activeQuotationStatus = null
+      activeQuotationDetail = null
+      editorTitle.textContent = 'Create Quotation'
+      previewCurrentBtn.style.display = 'none'
+      setEditorLocked(false)
+      saveBtn.textContent = 'Create Quotation'
       const today = localDateValue(new Date())
       quoteDate.value = today
       quoteValidUntil.value = addDays(today,settings.default_quotation_valid_days || 15)
@@ -554,11 +780,12 @@
         return
       }
 
+      const editing = Boolean(activeQuotationId)
       saveBtn.disabled = true
-      saveBtn.textContent = 'Creating…'
+      saveBtn.textContent = editing ? 'Saving…' : 'Creating…'
       formStatus.textContent = ''
 
-      const {data,error} = await supabase.rpc('create_quotation',{
+      const params = {
         p_customer_id:customerId,
         p_enquiry_id:enquiryId,
         p_quotation_date:quoteDate.value,
@@ -569,24 +796,34 @@
         p_notes:quoteNotes.value.trim() || null,
         p_terms:quoteTerms.value.trim() || null,
         p_items:items
-      })
+      }
+      if (editing) params.p_quotation_id = activeQuotationId
+
+      const {data,error} = await supabase.rpc(
+        editing ? 'update_quotation' : 'create_quotation',
+        params
+      )
 
       saveBtn.disabled = false
-      saveBtn.textContent = 'Create Quotation'
+      saveBtn.textContent = editing ? 'Save Draft Changes' : 'Create Quotation'
 
       if (error){
-        formStatus.textContent = 'Could not create quotation: ' + error.message
+        formStatus.textContent = 'Could not ' + (editing ? 'update' : 'create') + ' quotation: ' + error.message
         formStatus.className = 'status err'
         return
       }
 
-      formStatus.textContent = 'Created ' + (data?.quotation_number || 'quotation') + ' successfully.'
-      formStatus.className = 'status ok'
       await loadQuotations()
-      const createdNumber = data?.quotation_number || ''
-      applyDefaults()
-      formStatus.textContent = 'Created ' + createdNumber + ' successfully.'
-      formStatus.className = 'status ok'
+      const number = data?.quotation_number || activeQuotationNumber || ''
+      if (editing){
+        await openQuotation(data.id || activeQuotationId)
+        formStatus.textContent = 'Updated ' + number + ' successfully. Quotation number preserved.'
+        formStatus.className = 'status ok'
+      } else {
+        applyDefaults()
+        formStatus.textContent = 'Created ' + number + ' successfully.'
+        formStatus.className = 'status ok'
+      }
     }
 
     async function verifyAdmin(){
@@ -626,6 +863,10 @@
     backBtn.addEventListener('click',()=>{ location.href='/admin' })
     newQuoteBtn.addEventListener('click',()=>{ applyDefaults(); window.scrollTo({top:0,behavior:'smooth'}) })
     refreshBtn.addEventListener('click',loadQuotations)
+    previewCurrentBtn.addEventListener('click',()=>{ if (activeQuotationId) openPrintPreview(activeQuotationId) })
+    printCloseBtn.addEventListener('click',closePrintPreview)
+    printBtn.addEventListener('click',()=>window.print())
+    printModal.addEventListener('click',event=>{ if (event.target === printModal) closePrintPreview() })
     addLineBtn.addEventListener('click',()=>addLine())
     resetBtn.addEventListener('click',applyDefaults)
     saveBtn.addEventListener('click',saveQuotation)
@@ -637,6 +878,7 @@
     })
     quoteSearch.addEventListener('input',renderQuotationList)
     quoteFilter.addEventListener('change',renderQuotationList)
+    document.addEventListener('keydown',event=>{ if (event.key === 'Escape' && printModal.classList.contains('show')) closePrintPreview() })
 
     supabase.auth.onAuthStateChange(event => {
       if (event === 'SIGNED_OUT') location.href='/admin'
