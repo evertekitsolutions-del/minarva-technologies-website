@@ -1,0 +1,14 @@
+{
+  "name":"Minarva Technician",
+  "short_name":"Minarva Tech",
+  "description":"Technician mobile service execution for Minarva Technologies",
+  "start_url":"/technician",
+  "scope":"/technician",
+  "display":"standalone",
+  "background_color":"#eef5ff",
+  "theme_color":"#0754c7",
+  "orientation":"portrait-primary",
+  "icons":[
+    {"src":"/technician-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
