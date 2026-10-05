@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0754c7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Minarva Technician</title>
+  <link rel="manifest" href="/technician.webmanifest">
+  <link rel="icon" href="/technician-icon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--blue2:#1381ff;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--bg:#eef5ff;--green:#087443;--red:#b42318;--amber:#9a5b00;--card:#fff}
+    *{box-sizing:border-box}html{background:var(--bg)}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(180deg,#f8fbff,#eef5ff);color:var(--ink);min-height:100vh;padding-bottom:env(safe-area-inset-bottom)}
+    button,input,select,textarea{font:inherit}.hidden{display:none!important}.app{width:min(760px,100%);margin:auto;min-height:100vh}.top{position:sticky;top:0;z-index:20;background:rgba(248,251,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 14px 10px}.toprow{display:flex;justify-content:space-between;gap:10px;align-items:center}.brand{display:flex;align-items:center;gap:9px}.brand img{width:38px;height:38px;border-radius:11px}.brand strong{display:block;font-size:14px}.brand span{display:block;font-size:9px;color:var(--muted)}
+    .chips{display:flex;gap:5px;align-items:center}.chip{border-radius:999px;padding:5px 8px;font-size:9px;font-weight:800}.online{background:#ecfdf3;color:var(--green)}.offline{background:#fff1f0;color:var(--red)}.syncing{background:#fff7e8;color:var(--amber)}.btn{border:0;border-radius:12px;padding:11px 13px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn-danger{background:#fff1f0;color:var(--red)}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .content{padding:14px}.auth{padding:24px 14px}.auth-card,.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 30px rgba(7,51,111,.07)}.auth-card{padding:20px}.auth-card h1{font-size:24px;margin:0 0 6px}.sub{font-size:11px;color:var(--muted);line-height:1.6}.form{display:grid;gap:10px;margin-top:16px}label{font-size:9px;font-weight:800;color:#344054;display:block;margin-bottom:4px}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:11px;padding:11px;background:#fff;color:var(--ink);outline:none}textarea{min-height:80px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}.auth-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.msg{min-height:17px;font-size:10px;font-weight:700}.msg.ok{color:var(--green)}.msg.err{color:var(--red)}
+    .hello{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:12px}.hello h1{font-size:22px;margin:0}.hello p{margin:3px 0 0;font-size:10px;color:var(--muted)}.tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}.tab{border:0;border-radius:11px;background:#eaf2ff;color:#31517c;font-size:9px;font-weight:800;padding:10px 5px}.tab.active{background:var(--blue);color:#fff}.queue{display:grid;gap:10px}.job{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;box-shadow:0 6px 20px rgba(7,51,111,.04)}.jobtop{display:flex;justify-content:space-between;gap:10px}.jobno{font-size:11px;color:var(--blue);font-weight:800}.customer{font-size:15px;font-weight:800;margin-top:3px}.meta{font-size:9px;color:var(--muted);line-height:1.5;margin-top:4px}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.badge{border-radius:999px;padding:4px 7px;font-size:8px;font-weight:800}.urgent{background:#fff1f0;color:var(--red)}.high{background:#fff7e8;color:var(--amber)}.normal{background:#eef4ff;color:#3538cd}.low{background:#f2f4f7;color:#475467}.open,.scheduled{background:#eef4ff;color:#3538cd}.in_progress{background:#fff7e8;color:var(--amber)}.completed{background:#ecfdf3;color:var(--green)}.job-actions{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}.empty{text-align:center;padding:30px 15px;color:var(--muted);font-size:11px}
+    .detail{position:fixed;inset:0;z-index:50;background:#f5f9ff;overflow:auto;padding-bottom:calc(90px + env(safe-area-inset-bottom))}.detail-head{position:sticky;top:0;z-index:3;background:rgba(248,251,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 12px 10px;display:flex;gap:9px;align-items:center}.detail-head .grow{flex:1}.detail-head strong{font-size:12px}.detail-head span{font-size:9px;color:var(--muted);display:block}.detail-body{padding:12px}.section{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:10px}.section h2{font-size:12px;margin:0 0 10px;color:var(--blue)}.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.info{background:#f8fbff;border:1px solid #e3edfb;border-radius:10px;padding:9px}.info span{font-size:8px;color:var(--muted);font-weight:800}.info strong{display:block;font-size:10px;margin-top:2px}.stage-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}.stage{border:1px solid var(--line);border-radius:11px;padding:9px;background:#fbfdff}.stage.done{background:#ecfdf3;border-color:#abefc6}.stage b{font-size:9px;display:block}.stage time{font-size:8px;color:var(--muted)}.stage .btn{width:100%;margin-top:6px;padding:9px;font-size:9px}.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}.full{grid-column:1/-1}.checklist{display:grid;grid-template-columns:1fr 1fr;gap:6px}.check{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fbfdff;font-size:9px;font-weight:700}.check input{width:auto}
+    .materials{display:grid;gap:7px}.material{display:grid;grid-template-columns:1.6fr .55fr .55fr auto;gap:6px;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fbfdff}.mini{font-size:7px;font-weight:800;color:var(--muted);margin-bottom:3px}.material .btn{padding:8px;font-size:8px;align-self:end}.upload{display:grid;grid-template-columns:120px 1fr;gap:7px}.photo-buttons{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.signature{width:100%;height:170px;border:1px dashed #a9bdd7;border-radius:10px;background:#fff;touch-action:none}.sig-actions{display:flex;gap:7px;margin-top:7px}.bottom-save{position:fixed;left:0;right:0;bottom:0;z-index:55;background:rgba(248,251,255,.96);border-top:1px solid var(--line);padding:9px 12px calc(9px + env(safe-area-inset-bottom));display:grid;grid-template-columns:1fr 1fr;gap:7px;max-width:760px;margin:auto}.pending-list{font-size:9px;color:var(--muted);line-height:1.5}
+    @media(max-width:430px){.two,.info-grid,.checklist{grid-template-columns:1fr}.full{grid-column:auto}.material{grid-template-columns:1fr 1fr}.material>div:first-child{grid-column:1/-1}.tabs{gap:4px}.tab{font-size:8px;padding:9px 3px}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <div class="toprow">
+        <div class="brand"><img src="/technician-icon.svg" alt=""><div><strong>Minarva Technician</strong><span>Service Operations</span></div></div>
+        <div class="chips"><span id="netChip" class="chip online">Online</span><span id="syncChip" class="chip syncing hidden">0 pending</span></div>
+      </div>
+    </header>
+
+    <section id="authView" class="auth">
+      <div class="auth-card">
+        <h1>Technician Login</h1>
+        <div class="sub">Use the same email that the administrator saved in Technician Master. New technician accounts are linked only when that email matches an active approved technician record.</div>
+        <div class="form">
+          <div><label>Email</label><input id="authEmail" type="email" autocomplete="email"></div>
+          <div><label>Password</label><input id="authPassword" type="password" autocomplete="current-password" minlength="8"></div>
+          <div class="auth-actions"><button id="loginBtn" class="btn btn-primary">Sign In</button><button id="signupBtn" class="btn btn-ghost">Create Account</button></div>
+          <div id="authMsg" class="msg"></div>
+        </div>
+      </div>
+    </section>
+
+    <main id="mainView" class="content hidden">
+      <div class="hello">
+        <div><h1 id="helloName">My Jobs</h1><p id="profileMeta"></p></div>
+        <button id="logoutBtn" class="btn btn-ghost" style="padding:8px 10px;font-size:9px">Sign Out</button>
+      </div>
+      <div class="tabs">
+        <button class="tab active" data-filter="today">Today</button>
+        <button class="tab" data-filter="upcoming">Upcoming</button>
+        <button class="tab" data-filter="overdue">Overdue</button>
+        <button class="tab" data-filter="all">All</button>
+      </div>
+      <div id="queue" class="queue"><div class="empty">Loading assigned jobs…</div></div>
+    </main>
+  </div>
+
+  <section id="detailView" class="detail hidden">
+    <div class="detail-head">
+      <button id="detailBack" class="btn btn-ghost" style="padding:8px 10px">←</button>
+      <div class="grow"><strong id="detailTitle">Job</strong><span id="detailSub"></span></div>
+      <button id="callCustomerBtn" class="btn btn-ghost" style="padding:8px 10px">Call</button>
+    </div>
+    <div class="detail-body">
+      <div class="section">
+        <h2>Customer & Job</h2>
+        <div class="info-grid">
+          <div class="info"><span>CUSTOMER</span><strong id="dCustomer">—</strong></div>
+          <div class="info"><span>SERVICE</span><strong id="dService">—</strong></div>
+          <div class="info"><span>SCHEDULE</span><strong id="dSchedule">—</strong></div>
+          <div class="info"><span>PRIORITY</span><strong id="dPriority">—</strong></div>
+        </div>
+        <div class="meta" id="dAddress" style="margin-top:8px"></div>
+        <div class="meta" id="dComplaint" style="margin-top:6px"></div>
+      </div>
+
+      <div class="section">
+        <h2>Visit Status</h2>
+        <div class="stage-grid">
+          <div id="mVisit" class="stage"><b>1. Visit Start</b><time id="mVisitTime">Not recorded</time><button class="btn btn-ghost" data-mobile-stage="visit_start">Start Visit</button></div>
+          <div id="mArrival" class="stage"><b>2. Arrival</b><time id="mArrivalTime">Not recorded</time><button class="btn btn-ghost" data-mobile-stage="arrival">Mark Arrived</button></div>
+          <div id="mWorkStart" class="stage"><b>3. Work Start</b><time id="mWorkStartTime">Not recorded</time><button class="btn btn-ghost" data-mobile-stage="work_start">Start Work</button></div>
+          <div id="mWorkComplete" class="stage"><b>4. Work Complete</b><time id="mWorkCompleteTime">Not recorded</time><button class="btn btn-ghost" data-mobile-stage="work_complete">Complete Work</button></div>
+        </div>
+        <div class="two" style="margin-top:9px">
+          <div><label>ETA</label><input id="etaAt" type="datetime-local"></div>
+          <div><label>ETA note</label><input id="etaNote" type="text" maxlength="300" placeholder="On the way / delayed…"></div>
+          <div class="full"><button id="saveEtaBtn" class="btn btn-ghost" style="width:100%">Save ETA / Notify Hook</button></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Diagnosis & Work</h2>
+        <div class="two">
+          <div class="full"><label>Diagnosis / findings</label><textarea id="mDiagnosis"></textarea></div>
+          <div class="full"><label>Work performed</label><textarea id="mWorkPerformed"></textarea></div>
+          <div><label>Resolution</label><select id="mResolution"><option value="">Choose…</option><option value="resolved">Resolved</option><option value="partially_resolved">Partially Resolved</option><option value="unresolved">Unresolved</option><option value="awaiting_parts">Awaiting Parts</option><option value="return_visit_required">Return Visit Required</option></select></div>
+          <div><label>Next visit</label><input id="mNextVisit" type="datetime-local"></div>
+          <div class="full"><label>Unresolved / return-visit reason</label><textarea id="mUnresolved"></textarea></div>
+          <div><label>Callback required</label><select id="mCallbackRequired"><option value="false">No</option><option value="true">Yes</option></select></div>
+          <div><label>Callback time</label><input id="mCallbackAt" type="datetime-local"></div>
+          <div><label>Warranty reference</label><input id="mWarranty" type="text" maxlength="240"></div>
+          <div><label>AMC reference</label><input id="mAmc" type="text" maxlength="240"></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Completion Checklist</h2>
+        <div class="checklist">
+          <label class="check"><input id="mcTested" type="checkbox"> Tested</label>
+          <label class="check"><input id="mcDemo" type="checkbox"> Customer demo</label>
+          <label class="check"><input id="mcClean" type="checkbox"> Site clean</label>
+          <label class="check"><input id="mcMaterials" type="checkbox"> Materials recorded</label>
+          <label class="check"><input id="mcPhotos" type="checkbox"> Photos attached</label>
+          <label class="check"><input id="mcAck" type="checkbox"> Customer acknowledged</label>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Materials Used</h2>
+        <div id="mobileMaterials" class="materials"></div>
+        <button id="mobileAddMaterial" class="btn btn-ghost" style="width:100%;margin-top:8px">+ Add Material</button>
+        <div class="meta" style="margin-top:6px">Technician mobile records usage/quantity. Existing admin-set prices are preserved server-side.</div>
+      </div>
+
+      <div class="section">
+        <h2>Customer Acknowledgement</h2>
+        <div class="two">
+          <div><label>Acknowledged by</label><input id="mAckBy" type="text" maxlength="200"></div>
+          <div><label>Time</label><input id="mAckAt" type="datetime-local"></div>
+          <div class="full"><label>Remarks</label><textarea id="mAckText"></textarea></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Customer Signature</h2>
+        <canvas id="mSignature" class="signature"></canvas>
+        <div class="sig-actions"><button id="mSigClear" class="btn btn-ghost">Clear</button><button id="mSigQueue" class="btn btn-primary">Save / Queue Signature</button></div>
+      </div>
+
+      <div class="section">
+        <h2>Before / After Photos</h2>
+        <div class="upload"><select id="mPhotoType"><option value="before_photo">Before</option><option value="after_photo">After</option><option value="other">Other</option></select><input id="mPhotoFile" type="file" accept="image/jpeg,image/png,image/webp" capture="environment"></div>
+        <div class="photo-buttons"><button id="mPhotoQueue" class="btn btn-primary">Upload / Queue Photo</button><button id="refreshJobBtn" class="btn btn-ghost">Refresh Job</button></div>
+        <div id="photoMeta" class="meta" style="margin-top:7px"></div>
+      </div>
+
+      <div class="section">
+        <h2>Sync Status</h2>
+        <div id="jobSyncInfo" class="pending-list">No pending changes.</div>
+        <div id="detailMsg" class="msg" style="margin-top:7px"></div>
+      </div>
+    </div>
+    <div class="bottom-save"><button id="saveMobileJobBtn" class="btn btn-primary">Save / Queue</button><button id="completeMobileJobBtn" class="btn btn-ghost">Complete Job</button></div>
+  </section>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+
+    const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    const DB_NAME='minarva-technician-pwa-v1'
+    const DB_VERSION=1
+    const BUCKET='service-job-media'
+
+    const el=id=>document.getElementById(id)
+    const authView=el('authView'),mainView=el('mainView'),queueEl=el('queue'),netChip=el('netChip'),syncChip=el('syncChip')
+    const authEmail=el('authEmail'),authPassword=el('authPassword'),authMsg=el('authMsg'),helloName=el('helloName'),profileMeta=el('profileMeta')
+    const detailView=el('detailView'),detailTitle=el('detailTitle'),detailSub=el('detailSub'),detailMsg=el('detailMsg'),jobSyncInfo=el('jobSyncInfo')
+    let profile=null,queue=[],activeFilter='today',job=null,materialSeq=0,signatureDirty=false
+
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    const fmt=v=>v?new Date(v).toLocaleString():'Not recorded'
+    const toLocal=v=>{if(!v)return '';const d=new Date(v);const l=new Date(d.getTime()-d.getTimezoneOffset()*60000);return l.toISOString().slice(0,16)}
+    const toIso=v=>v?new Date(v).toISOString():null
+    const uid=()=>crypto.randomUUID?crypto.randomUUID():Date.now().toString(16)+'-'+Math.random().toString(16).slice(2)
+
+    function openDb(){
+      return new Promise((resolve,reject)=>{
+        const req=indexedDB.open(DB_NAME,DB_VERSION)
+        req.onupgradeneeded=()=>{const db=req.result;if(!db.objectStoreNames.contains('cache'))db.createObjectStore('cache');if(!db.objectStoreNames.contains('pending'))db.createObjectStore('pending',{keyPath:'id'})}
+        req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)
+      })
+    }
+    async function dbPut(store,key,value){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');const os=tx.objectStore(store);store==='cache'?os.put(value,key):os.put(value);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+    async function dbGet(store,key){const db=await openDb();return new Promise((res,rej)=>{const r=db.transaction(store).objectStore(store).get(key);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})}
+    async function dbGetAll(store){const db=await openDb();return new Promise((res,rej)=>{const r=db.transaction(store).objectStore(store).getAll();r.onsuccess=()=>res(r.result||[]);r.onerror=()=>rej(r.error)})}
+    async function dbDelete(store,key){const db=await openDb();return new Promise((res,rej)=>{const tx=db.transaction(store,'readwrite');tx.objectStore(store).delete(key);tx.oncomplete=()=>res();tx.onerror=()=>rej(tx.error)})}
+
+    function setMsg(node,text,type=''){node.textContent=text||'';node.className='msg'+(type?' '+type:'')}
+    function isNetworkError(error){const m=String(error?.message||error||'').toLowerCase();return !navigator.onLine||m.includes('fetch')||m.includes('network')||m.includes('load failed')||m.includes('connection')}
+    function updateNetwork(){netChip.textContent=navigator.onLine?'Online':'Offline';netChip.className='chip '+(navigator.onLine?'online':'offline')}
+    async function updatePendingChip(){const p=await dbGetAll('pending');syncChip.textContent=p.length+' pending';syncChip.classList.toggle('hidden',p.length===0);if(job)jobSyncInfo.textContent=p.filter(x=>x.job_id===job.id).length? p.filter(x=>x.job_id===job.id).length+' change(s) waiting to sync.':'No pending changes.'}
+
+    async function rpcAction(jobId,actionType,payload={},id=uid()){
+      const entry={id,kind:'rpc',job_id:jobId,action_type:actionType,payload,created_at:new Date().toISOString(),attempts:0}
+      if(!navigator.onLine){await dbPut('pending',null,entry);await updatePendingChip();return {queued:true,id}}
+      try{
+        const {data,error}=await supabase.rpc('technician_apply_mobile_action',{p_client_action_id:id,p_service_job_id:jobId,p_action_type:actionType,p_payload:payload})
+        if(error)throw error
+        return {queued:false,id,data}
+      }catch(error){
+        if(isNetworkError(error)){await dbPut('pending',null,entry);await updatePendingChip();return {queued:true,id}}
+        throw error
+      }
+    }
+
+    function extFor(type){return type==='image/png'?'png':type==='image/webp'?'webp':'jpg'}
+    async function queuePhoto(blob,type,fileName,mime){
+      const id=uid()
+      const entry={id,kind:'photo',job_id:job.id,attachment_type:type,file_name:fileName||'image',mime:mime,size:blob.size,blob,created_at:new Date().toISOString(),attempts:0}
+      await dbPut('pending',null,entry);await updatePendingChip()
+      if(navigator.onLine)await flushPending()
+      return id
+    }
+
+    async function flushPhoto(entry){
+      const path=entry.job_id+'/mobile/'+entry.id+'.'+extFor(entry.mime)
+      const {error:upErr}=await supabase.storage.from(BUCKET).upload(path,entry.blob,{contentType:entry.mime,upsert:false})
+      if(upErr&&!String(upErr.message||'').toLowerCase().includes('already'))throw upErr
+      const {error}=await supabase.rpc('technician_apply_mobile_action',{
+        p_client_action_id:entry.id,p_service_job_id:entry.job_id,p_action_type:'register_attachment',
+        p_payload:{storage_path:path,attachment_type:entry.attachment_type,original_name:entry.file_name,mime_type:entry.mime,size_bytes:entry.size}
+      })
+      if(error)throw error
+    }
+
+    async function flushPending(){
+      if(!navigator.onLine)return
+      const pending=(await dbGetAll('pending')).sort((a,b)=>new Date(a.created_at)-new Date(b.created_at))
+      if(!pending.length){await updatePendingChip();return}
+      syncChip.classList.remove('hidden');syncChip.textContent='Syncing…'
+      for(const entry of pending){
+        try{
+          if(entry.kind==='photo')await flushPhoto(entry)
+          else{
+            const {error}=await supabase.rpc('technician_apply_mobile_action',{
+              p_client_action_id:entry.id,p_service_job_id:entry.job_id,p_action_type:entry.action_type,p_payload:entry.payload||{}
+            })
+            if(error)throw error
+          }
+          await dbDelete('pending',entry.id)
+        }catch(error){
+          if(isNetworkError(error))break
+          entry.attempts=(entry.attempts||0)+1;entry.last_error=String(error.message||error);await dbPut('pending',null,entry)
+        }
+      }
+      await updatePendingChip()
+      if(job&&navigator.onLine)await loadJob(job.id,false)
+      if(profile&&navigator.onLine)await loadQueue(false)
+    }
+
+    async function claimAndLoadProfile(){
+      let {data,error}=await supabase.rpc('technician_get_profile')
+      if(error){
+        const claim=await supabase.rpc('technician_claim_profile')
+        if(claim.error)throw claim.error
+        data=claim.data
+      }
+      profile=data
+      helloName.textContent='Hi, '+(profile.name||'Technician')
+      profileMeta.textContent=(profile.email||'')+(profile.phone?' • '+profile.phone:'')
+      await dbPut('cache','profile',profile)
+    }
+
+    async function loadQueue(useCache=true){
+      if(navigator.onLine){
+        const {data,error}=await supabase.rpc('technician_get_queue')
+        if(error)throw error
+        queue=Array.isArray(data)?data:[]
+        await dbPut('cache','queue',queue)
+      }else if(useCache){
+        queue=await dbGet('cache','queue')||[]
+      }
+      renderQueue()
+    }
+
+    function filteredQueue(){
+      if(activeFilter==='all')return queue.filter(x=>x.queue_group!=='closed')
+      return queue.filter(x=>x.queue_group===activeFilter)
+    }
+    function renderQueue(){
+      const rows=filteredQueue()
+      if(!rows.length){queueEl.innerHTML='<div class="empty">'+(navigator.onLine?'No assigned jobs in this view.':'No cached jobs in this view.')+'</div>';return}
+      queueEl.innerHTML=rows.map(j=>'<article class="job"><div class="jobtop"><div><div class="jobno">'+esc(j.job_number)+'</div><div class="customer">'+esc(j.customer?.name||'Customer')+'</div><div class="meta">'+esc(j.service_category||'')+'</div></div><div class="badges"><span class="badge '+esc(j.priority)+'">'+esc(j.priority)+'</span></div></div>'+
+        '<div class="meta">'+(j.scheduled_at?'Schedule: '+esc(fmt(j.scheduled_at)):'Unscheduled')+(j.technician_eta_at?'<br>ETA: '+esc(fmt(j.technician_eta_at)):'')+'</div>'+
+        '<div class="meta">'+esc(j.site_address||'')+'</div><div class="badges"><span class="badge '+esc(j.status)+'">'+esc(j.status.replaceAll('_',' '))+'</span></div>'+
+        '<div class="job-actions"><button class="btn btn-primary" data-open-job="'+esc(j.id)+'">Open Job</button><a class="btn btn-ghost" style="text-decoration:none;text-align:center" href="'+(j.customer?.phone?'tel:'+esc(j.customer.phone):'#')+'">Call</a></div></article>').join('')
+      queueEl.querySelectorAll('[data-open-job]').forEach(b=>b.addEventListener('click',()=>loadJob(b.dataset.openJob,true)))
+    }
+
+    async function loadJob(id,show=true){
+      if(navigator.onLine){
+        const {data,error}=await supabase.rpc('technician_get_job',{p_job_id:id})
+        if(error)throw error
+        job=data
+        await dbPut('cache','job:'+id,job)
+      }else{
+        job=await dbGet('cache','job:'+id)
+        if(!job)throw new Error('This job is not available offline yet. Open it once while online.')
+      }
+      fillJob()
+      if(show){detailView.classList.remove('hidden');document.body.style.overflow='hidden'}
+      await updatePendingChip()
+    }
+
+    function addMaterial(seed={}){
+      const row=document.createElement('div');row.className='material';row.dataset.m=String(++materialSeq)
+      row.innerHTML='<div><div class="mini">Description</div><input data-f="description" value="'+esc(seed.description||'')+'" placeholder="Cable / connector / part"></div>'+
+        '<div><div class="mini">Qty</div><input data-f="quantity" type="number" min="0.001" step="0.001" value="'+esc(seed.quantity??1)+'"></div>'+
+        '<div><div class="mini">Unit</div><input data-f="unit" value="'+esc(seed.unit||'Nos')+'"></div><button class="btn btn-danger" data-remove>×</button>'
+      el('mobileMaterials').appendChild(row);row.querySelector('[data-remove]').addEventListener('click',()=>row.remove())
+    }
+    function collectMaterials(){return [...el('mobileMaterials').children].map(r=>({description:r.querySelector('[data-f="description"]').value.trim(),quantity:Number(r.querySelector('[data-f="quantity"]').value||0),unit:r.querySelector('[data-f="unit"]').value.trim()||'Nos'})).filter(x=>x.description)}
+
+    function checklist(){return {tested:el('mcTested').checked,customer_demo:el('mcDemo').checked,site_clean:el('mcClean').checked,materials_recorded:el('mcMaterials').checked,photos_attached:el('mcPhotos').checked,customer_acknowledged:el('mcAck').checked}}
+    function applyChecklist(v={}){el('mcTested').checked=!!v.tested;el('mcDemo').checked=!!v.customer_demo;el('mcClean').checked=!!v.site_clean;el('mcMaterials').checked=!!v.materials_recorded;el('mcPhotos').checked=!!v.photos_attached;el('mcAck').checked=!!v.customer_acknowledged}
+
+    function stage(box,time,val,btnSelector,blocked){el(box).classList.toggle('done',!!val);el(time).textContent=fmt(val);const b=document.querySelector(btnSelector);b.disabled=!!val||blocked||job.status==='completed'||job.status==='cancelled'}
+    function fillJob(){
+      detailTitle.textContent=job.job_number;detailSub.textContent=job.status.replaceAll('_',' ')+' • '+job.priority
+      el('dCustomer').textContent=job.customer?.name||'Customer';el('dService').textContent=job.service_category||'—';el('dSchedule').textContent=fmt(job.scheduled_at);el('dPriority').textContent=job.priority||'—'
+      el('dAddress').textContent=job.site_address||'';el('dComplaint').textContent='Complaint: '+(job.complaint||'—')
+      el('callCustomerBtn').disabled=!job.customer?.phone
+      stage('mVisit','mVisitTime',job.visit_started_at,'[data-mobile-stage="visit_start"]',false)
+      stage('mArrival','mArrivalTime',job.arrived_at,'[data-mobile-stage="arrival"]',!job.visit_started_at)
+      stage('mWorkStart','mWorkStartTime',job.work_started_at,'[data-mobile-stage="work_start"]',!job.arrived_at)
+      stage('mWorkComplete','mWorkCompleteTime',job.work_completed_at,'[data-mobile-stage="work_complete"]',!job.work_started_at)
+      el('etaAt').value=toLocal(job.technician_eta_at);el('etaNote').value=job.technician_eta_note||''
+      el('mDiagnosis').value=job.diagnosis||'';el('mWorkPerformed').value=job.work_performed||'';el('mResolution').value=job.resolution_status||'';el('mUnresolved').value=job.unresolved_reason||''
+      el('mNextVisit').value=toLocal(job.next_visit_at);el('mCallbackRequired').value=String(!!job.callback_required);el('mCallbackAt').value=toLocal(job.callback_at);el('mWarranty').value=job.warranty_reference||'';el('mAmc').value=job.amc_reference||''
+      applyChecklist(job.completion_checklist||{})
+      el('mobileMaterials').innerHTML='';(job.materials||[]).forEach(addMaterial);if(!el('mobileMaterials').children.length)addMaterial()
+      el('mAckBy').value=job.customer_acknowledged_by||'';el('mAckAt').value=toLocal(job.customer_acknowledged_at);el('mAckText').value=job.customer_acknowledgement||''
+      const photos=job.attachments||[];el('photoMeta').textContent=photos.length+' attachment(s) saved.'
+      el('completeMobileJobBtn').disabled=job.status==='completed'||job.status==='cancelled';el('saveMobileJobBtn').disabled=job.billing_prepared||job.status==='cancelled'
+    }
+
+    function executionPayload(){return {diagnosis:el('mDiagnosis').value.trim()||null,work_performed:el('mWorkPerformed').value.trim()||null,resolution_status:el('mResolution').value||null,unresolved_reason:el('mUnresolved').value.trim()||null,next_visit_at:toIso(el('mNextVisit').value),callback_required:el('mCallbackRequired').value==='true',callback_at:toIso(el('mCallbackAt').value),completion_checklist:checklist(),warranty_reference:el('mWarranty').value.trim()||null,amc_reference:el('mAmc').value.trim()||null,customer_acknowledged_by:el('mAckBy').value.trim()||null,customer_acknowledgement:el('mAckText').value.trim()||null,customer_acknowledged_at:toIso(el('mAckAt').value)}}
+
+    async function saveJobMobile(silent=false){
+      if(!job)return false
+      setMsg(detailMsg,'')
+      try{
+        const a=await rpcAction(job.id,'save_execution',executionPayload())
+        const b=await rpcAction(job.id,'replace_materials',{materials:collectMaterials()})
+        if(!silent)setMsg(detailMsg,(a.queued||b.queued)?'Saved offline. Changes are queued for sync.':'Saved successfully.','ok')
+        if(navigator.onLine&&!a.queued&&!b.queued)await loadJob(job.id,false)
+        return true
+      }catch(error){setMsg(detailMsg,error.message||String(error),'err');return false}
+    }
+
+    async function stageAction(type,button){
+      button.disabled=true;setMsg(detailMsg,'')
+      try{
+        const r=await rpcAction(job.id,type,{})
+        if(r.queued){setMsg(detailMsg,'Action queued offline. It will sync automatically.','ok');const now=new Date().toISOString();if(type==='visit_start'){job.visit_started_at=now;job.status='in_progress'}if(type==='arrival')job.arrived_at=now;if(type==='work_start')job.work_started_at=now;if(type==='work_complete')job.work_completed_at=now;fillJob();await dbPut('cache','job:'+job.id,job)}
+        else await loadJob(job.id,false)
+      }catch(error){setMsg(detailMsg,error.message||String(error),'err');button.disabled=false}
+    }
+
+    async function saveEta(){
+      if(!el('etaAt').value){setMsg(detailMsg,'Choose an ETA date/time.','err');return}
+      try{const r=await rpcAction(job.id,'set_eta',{eta_at:toIso(el('etaAt').value),note:el('etaNote').value.trim()||null});setMsg(detailMsg,r.queued?'ETA queued offline.':'ETA saved; customer notification hook queued.','ok');if(navigator.onLine&&!r.queued)await loadJob(job.id,false)}catch(error){setMsg(detailMsg,error.message||String(error),'err')}
+    }
+
+    async function completeJobMobile(){
+      if(!el('mResolution').value){setMsg(detailMsg,'Choose a Resolution before completing the job.','err');return}
+      if(!job.work_completed_at){setMsg(detailMsg,'Record Work Complete first.','err');return}
+      if(!await saveJobMobile(true))return
+      if(navigator.onLine&&!confirm('Mark this job Completed?'))return
+      try{const r=await rpcAction(job.id,'complete_job',{});setMsg(detailMsg,r.queued?'Completion queued offline.':'Job completed.','ok');if(navigator.onLine&&!r.queued){await loadJob(job.id,false);await loadQueue(false)}}catch(error){setMsg(detailMsg,error.message||String(error),'err')}
+    }
+
+    function setupSignature(){
+      const canvas=el('mSignature'),ctx=canvas.getContext('2d');let drawing=false
+      function resize(){const ratio=devicePixelRatio||1,rect=canvas.getBoundingClientRect();canvas.width=Math.floor(rect.width*ratio);canvas.height=Math.floor(rect.height*ratio);ctx.setTransform(ratio,0,0,ratio,0,0);ctx.lineWidth=2;ctx.lineCap='round';ctx.strokeStyle='#0d1f42'}
+      resize();addEventListener('resize',resize)
+      const p=e=>{const r=canvas.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}}
+      canvas.addEventListener('pointerdown',e=>{drawing=true;canvas.setPointerCapture(e.pointerId);const q=p(e);ctx.beginPath();ctx.moveTo(q.x,q.y)})
+      canvas.addEventListener('pointermove',e=>{if(!drawing)return;const q=p(e);ctx.lineTo(q.x,q.y);ctx.stroke();signatureDirty=true})
+      canvas.addEventListener('pointerup',()=>drawing=false);canvas.addEventListener('pointercancel',()=>drawing=false)
+      el('mSigClear').addEventListener('click',()=>{ctx.clearRect(0,0,canvas.width,canvas.height);signatureDirty=false})
+      el('mSigQueue').addEventListener('click',()=>{if(!signatureDirty){setMsg(detailMsg,'Add a signature first.','err');return}canvas.toBlob(async blob=>{if(!blob)return;await queuePhoto(blob,'signature','customer-signature.png','image/png');signatureDirty=false;setMsg(detailMsg,'Signature saved/queued.','ok')},'image/png')})
+    }
+
+    async function photoQueue(){const f=el('mPhotoFile').files?.[0];if(!f){setMsg(detailMsg,'Choose a photo first.','err');return}if(!['image/jpeg','image/png','image/webp'].includes(f.type)){setMsg(detailMsg,'Use JPG, PNG or WEBP.','err');return}if(f.size>10485760){setMsg(detailMsg,'Photo exceeds 10 MB.','err');return}await queuePhoto(f,el('mPhotoType').value,f.name,f.type);el('mPhotoFile').value='';setMsg(detailMsg,navigator.onLine?'Photo uploaded/registered.':'Photo queued offline.','ok')}
+
+    async function login(){setMsg(authMsg,'');const email=authEmail.value.trim(),password=authPassword.value;if(!email||!password){setMsg(authMsg,'Enter email and password.','err');return}const {error}=await supabase.auth.signInWithPassword({email,password});if(error){setMsg(authMsg,error.message,'err');return}await bootAuthed()}
+    async function signup(){setMsg(authMsg,'');const email=authEmail.value.trim(),password=authPassword.value;if(!email||password.length<8){setMsg(authMsg,'Use your approved technician email and a password of at least 8 characters.','err');return}const {data,error}=await supabase.auth.signUp({email,password});if(error){setMsg(authMsg,error.message,'err');return}if(!data.session){setMsg(authMsg,'Account created. Check your email if confirmation is required, then sign in.','ok');return}await bootAuthed()}
+    async function bootAuthed(){try{await claimAndLoadProfile();authView.classList.add('hidden');mainView.classList.remove('hidden');await loadQueue(true);await flushPending()}catch(error){setMsg(authMsg,error.message||String(error),'err');authView.classList.remove('hidden');mainView.classList.add('hidden')}}
+    async function init(){updateNetwork();await updatePendingChip();if('serviceWorker'in navigator)navigator.serviceWorker.register('/technician-sw.js',{scope:'/technician'}).catch(()=>{});const {data:{session}}=await supabase.auth.getSession();if(session)await bootAuthed();else if(!navigator.onLine){profile=await dbGet('cache','profile');queue=await dbGet('cache','queue')||[];if(profile){helloName.textContent='Hi, '+profile.name;profileMeta.textContent='Offline cached mode';authView.classList.add('hidden');mainView.classList.remove('hidden');renderQueue()}}}
+
+    document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');activeFilter=b.dataset.filter;renderQueue()}))
+    document.querySelectorAll('[data-mobile-stage]').forEach(b=>b.addEventListener('click',()=>stageAction(b.dataset.mobileStage,b)))
+    el('loginBtn').addEventListener('click',login);el('signupBtn').addEventListener('click',signup);el('logoutBtn').addEventListener('click',async()=>{await supabase.auth.signOut();location.reload()})
+    el('detailBack').addEventListener('click',()=>{detailView.classList.add('hidden');document.body.style.overflow='';job=null})
+    el('callCustomerBtn').addEventListener('click',()=>{if(job?.customer?.phone)location.href='tel:'+job.customer.phone})
+    el('saveEtaBtn').addEventListener('click',saveEta);el('mobileAddMaterial').addEventListener('click',()=>addMaterial());el('saveMobileJobBtn').addEventListener('click',()=>saveJobMobile(false));el('completeMobileJobBtn').addEventListener('click',completeJobMobile)
+    el('mPhotoQueue').addEventListener('click',photoQueue);el('refreshJobBtn').addEventListener('click',()=>job&&loadJob(job.id,false))
+    addEventListener('online',async()=>{updateNetwork();await flushPending()});addEventListener('offline',updateNetwork)
+    setupSignature();init()
+  </script>
+</body>
+</html>
