@@ -21,10 +21,10 @@
     #dashboard{display:none;padding:16px 0 60px}.dash-head{display:flex;justify-content:space-between;gap:16px;align-items:center;margin:8px 0 22px}.dash-head h1{margin:0;font-size:34px}.dash-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.userline{font-size:13px;color:var(--muted);margin-top:5px}
     .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px}.stat span{font-size:12px;color:var(--muted)}.stat strong{display:block;font-size:30px;margin-top:4px}.stat-filter{cursor:pointer;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}.stat-filter:hover{transform:translateY(-1px);border-color:#b7d2f5;box-shadow:0 8px 24px rgba(11,89,216,.08)}.stat-filter:focus{outline:3px solid rgba(11,89,216,.15);outline-offset:2px}.stat-filter.active{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.08)}
     .table-card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden}.table-top{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:18px;border-bottom:1px solid var(--line)}.table-top h2{margin:0;font-size:20px}.table-top-actions{display:flex;gap:8px;flex-wrap:wrap}.table-tools{display:grid;grid-template-columns:repeat(6,minmax(120px,1fr));gap:10px;padding:14px 18px;border-bottom:1px solid var(--line);background:#fbfdff}.table-tools #searchInput{grid-column:span 2}.table-tools input,.table-tools select{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;font:inherit;font-size:13px;background:#fff;color:var(--ink);outline:none}.table-tools input:focus,.table-tools select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}.tool-btn{border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:10px;padding:10px 11px;font-weight:800;font-size:12px}.tool-btn:hover{background:#f3f8ff}.result-count{display:flex;align-items:center;justify-content:flex-end;color:var(--muted);font-size:12px;font-weight:700;min-height:40px}.scope-note{display:none;grid-column:1/-1;padding:9px 11px;border:1px solid #dbe8f8;border-radius:9px;background:#f7fbff;color:#5f7394;font-size:11px;font-weight:700;line-height:1.5}.scope-note.show{display:block}
-    .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid #eef3f9;font-size:13px;vertical-align:top}th{font-size:11px;letter-spacing:.06em;color:#5f7394;background:#fbfdff}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#eaf3ff;color:#1456b8}.contacted{background:#fff7e8;color:#9a5b00}.qualified{background:#ecfdf3;color:#087443}.closed{background:#f2f4f7;color:#475467}.spam{background:#fff1f0;color:#9f1c15}.status-select{border:1px solid #cddcf0;border-radius:9px;padding:7px 9px;font:inherit;font-size:12px;background:white;color:var(--ink);min-width:112px}.action-row{display:flex;gap:7px;flex-wrap:wrap}.action-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid #cfe0f7;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;color:var(--blue);background:#f8fbff;text-decoration:none}.action-link.wa-link{color:#087443;border-color:#b8ead0;background:#f2fff7}.action-link.manage-link{color:#6941c6;border-color:#d9d2f5;background:#f9f5ff}.followup-inline{font-size:10px;color:#6941c6;margin-top:7px;font-weight:700;line-height:1.4}.followup-badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:800;margin-top:7px}.followup-badge.overdue{background:#fff1f0;color:#b42318}.followup-badge.today{background:#fff7e8;color:#9a5b00}.followup-badge.upcoming{background:#eef4ff;color:#3538cd}.followup-badge.future{background:#ecfdf3;color:#087443}tr.row-overdue td{background:#fff8f7}tr.row-today td{background:#fffdf5}tr.row-upcoming td{background:#fafbff}.action-link.quick-contacted{color:#175cd3;border-color:#b2ccff;background:#eff8ff}.action-link.quick-contacted[disabled]{opacity:.55;cursor:not-allowed}.save-note{font-size:11px;color:var(--muted);margin-top:5px;min-height:15px}.modal-backdrop{position:fixed;inset:0;background:rgba(2,18,43,.58);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}.modal-backdrop.show{display:flex}.modal-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;border:1px solid var(--line);box-shadow:0 30px 90px rgba(2,18,43,.3);padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.modal-head h3{margin:0;font-size:22px}.modal-meta{font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}.modal-close{border:0;background:#eef5ff;color:var(--blue);border-radius:10px;width:38px;height:38px;font-size:20px}.modal-card label{margin-top:14px}.modal-card textarea,.modal-card input,.modal-card select{width:100%;border:1px solid #cddcf0;border-radius:11px;padding:12px 13px;font:inherit;outline:none;background:#fff;color:var(--ink)}.modal-card textarea{min-height:150px;resize:vertical}.modal-card textarea:focus,.modal-card input:focus,.modal-card select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.modal-grid .full{grid-column:1/-1}.modal-actions{display:flex;gap:10px;margin-top:18px}.modal-actions .btn{width:auto;flex:1}.modal-actions .btn-primary{margin-top:0}.modal-status{min-height:18px;margin-top:10px;font-size:12px;font-weight:700}.modal-status.ok{color:#087443}.modal-status.err{color:#9f1c15}.followup-presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.followup-preset{border:1px solid #cfe0f7;background:#f8fbff;color:var(--blue);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}.followup-preset.clear{color:#b42318;border-color:#f3c5c1;background:#fff7f6}.duplicate-note{font-size:11px;line-height:1.5;margin-top:6px;color:#9a5b00;font-weight:700;min-height:16px}.reuse-customer-btn{display:none;margin-top:7px;border:1px solid #f1c27d;background:#fff9ed;color:#8a4b00;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}.reuse-customer-btn.show{display:inline-flex}.customer-history{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}.customer-history h4{margin:0 0 10px;font-size:14px}.history-empty{font-size:12px;color:var(--muted)}.history-list{display:grid;gap:8px}.history-item{border:1px solid #e2eaf5;border-radius:10px;padding:10px 11px;background:#fbfdff;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.history-copy{min-width:0;flex:1}.history-item strong{font-size:12px}.history-meta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}.history-open{flex:0 0 auto;border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:8px;padding:6px 9px;font-size:10px;font-weight:800}.billing-settings-card{width:min(780px,100%)}.billing-section-title{grid-column:1/-1;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.04em}.billing-section-title.first{margin-top:0;padding-top:0;border-top:0}.billing-help{font-size:11px;color:var(--muted);line-height:1.5;margin-top:6px}
+    .table-scroll{overflow:auto}table{width:100%;border-collapse:collapse;min-width:1050px}th,td{text-align:left;padding:13px 16px;border-bottom:1px solid #eef3f9;font-size:13px;vertical-align:top}th{font-size:11px;letter-spacing:.06em;color:#5f7394;background:#fbfdff}.badge{display:inline-block;padding:5px 8px;border-radius:999px;font-size:11px;font-weight:800}.new{background:#eaf3ff;color:#1456b8}.contacted{background:#fff7e8;color:#9a5b00}.qualified{background:#ecfdf3;color:#087443}.closed{background:#f2f4f7;color:#475467}.spam{background:#fff1f0;color:#9f1c15}.status-select{border:1px solid #cddcf0;border-radius:9px;padding:7px 9px;font:inherit;font-size:12px;background:white;color:var(--ink);min-width:112px}.action-row{display:flex;gap:7px;flex-wrap:wrap}.action-link{display:inline-flex;align-items:center;justify-content:center;border:1px solid #cfe0f7;border-radius:9px;padding:7px 9px;font-size:11px;font-weight:800;color:var(--blue);background:#f8fbff;text-decoration:none}.action-link.wa-link{color:#087443;border-color:#b8ead0;background:#f2fff7}.action-link.manage-link{color:#6941c6;border-color:#d9d2f5;background:#f9f5ff}.followup-inline{font-size:10px;color:#6941c6;margin-top:7px;font-weight:700;line-height:1.4}.followup-badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 7px;font-size:10px;font-weight:800;margin-top:7px}.followup-badge.overdue{background:#fff1f0;color:#b42318}.followup-badge.today{background:#fff7e8;color:#9a5b00}.followup-badge.upcoming{background:#eef4ff;color:#3538cd}.followup-badge.future{background:#ecfdf3;color:#087443}tr.row-overdue td{background:#fff8f7}tr.row-today td{background:#fffdf5}tr.row-upcoming td{background:#fafbff}.action-link.quick-contacted{color:#175cd3;border-color:#b2ccff;background:#eff8ff}.action-link.quick-contacted[disabled]{opacity:.55;cursor:not-allowed}.save-note{font-size:11px;color:var(--muted);margin-top:5px;min-height:15px}.modal-backdrop{position:fixed;inset:0;background:rgba(2,18,43,.58);display:none;align-items:center;justify-content:center;padding:18px;z-index:100}.modal-backdrop.show{display:flex}.modal-card{width:min(560px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:20px;border:1px solid var(--line);box-shadow:0 30px 90px rgba(2,18,43,.3);padding:22px}.modal-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px}.modal-head h3{margin:0;font-size:22px}.modal-meta{font-size:12px;color:var(--muted);line-height:1.6;margin-top:6px}.modal-close{border:0;background:#eef5ff;color:var(--blue);border-radius:10px;width:38px;height:38px;font-size:20px}.modal-card label{margin-top:14px}.modal-card textarea,.modal-card input,.modal-card select{width:100%;border:1px solid #cddcf0;border-radius:11px;padding:12px 13px;font:inherit;outline:none;background:#fff;color:var(--ink)}.modal-card textarea{min-height:150px;resize:vertical}.modal-card textarea:focus,.modal-card input:focus,.modal-card select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}.modal-grid .full{grid-column:1/-1}.modal-actions{display:flex;gap:10px;margin-top:18px}.modal-actions .btn{width:auto;flex:1}.modal-actions .btn-primary{margin-top:0}.modal-status{min-height:18px;margin-top:10px;font-size:12px;font-weight:700}.modal-status.ok{color:#087443}.modal-status.err{color:#9f1c15}.followup-presets{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.followup-preset{border:1px solid #cfe0f7;background:#f8fbff;color:var(--blue);border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}.followup-preset.clear{color:#b42318;border-color:#f3c5c1;background:#fff7f6}.duplicate-note{font-size:11px;line-height:1.5;margin-top:6px;color:#9a5b00;font-weight:700;min-height:16px}.reuse-customer-btn{display:none;margin-top:7px;border:1px solid #f1c27d;background:#fff9ed;color:#8a4b00;border-radius:8px;padding:7px 9px;font-size:11px;font-weight:800}.reuse-customer-btn.show{display:inline-flex}.customer-history{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}.customer-history h4{margin:0 0 10px;font-size:14px}.history-empty{font-size:12px;color:var(--muted)}.history-list{display:grid;gap:8px}.history-item{border:1px solid #e2eaf5;border-radius:10px;padding:10px 11px;background:#fbfdff;display:flex;gap:10px;align-items:flex-start;justify-content:space-between}.history-copy{min-width:0;flex:1}.history-item strong{font-size:12px}.history-meta{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5}.history-open{flex:0 0 auto;border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:8px;padding:6px 9px;font-size:10px;font-weight:800}.billing-settings-card{width:min(780px,100%)}.billing-section-title{grid-column:1/-1;margin:18px 0 0;padding-top:14px;border-top:1px solid var(--line);font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.04em}.billing-section-title.first{margin-top:0;padding-top:0;border-top:0}.billing-help{font-size:11px;color:var(--muted);line-height:1.5;margin-top:6px}.customer-master-card{width:min(1040px,100%)}.customer-master-layout{display:grid;grid-template-columns:320px 1fr;gap:18px}.customer-list-panel{border:1px solid var(--line);border-radius:14px;background:#fbfdff;overflow:hidden}.customer-list-head{padding:14px;border-bottom:1px solid var(--line)}.customer-list-head input{margin-top:8px}.customer-list{max-height:610px;overflow:auto}.customer-list-item{width:100%;border:0;border-bottom:1px solid #e8eef7;background:#fff;padding:12px 14px;text-align:left}.customer-list-item:hover,.customer-list-item.active{background:#f3f8ff}.customer-list-item strong{display:block;font-size:13px;color:var(--ink)}.customer-list-meta{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.45}.customer-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.customer-tag{display:inline-flex;border-radius:999px;padding:3px 6px;font-size:9px;font-weight:800;background:#eef4ff;color:#3538cd}.customer-tag.ok{background:#ecfdf3;color:#087443}.customer-tag.warn{background:#fff7e8;color:#9a5b00}.customer-tag.stop{background:#fff1f0;color:#b42318}.customer-form-panel{min-width:0}.customer-form-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.customer-form-title h4{margin:0;font-size:16px}.check-row{display:flex;gap:18px;flex-wrap:wrap;margin-top:12px}.check-row label{display:flex;align-items:center;gap:8px;margin:0;font-size:12px}.check-row input{width:auto}.customer-duplicate-note{font-size:11px;line-height:1.5;margin-top:6px;color:#9a5b00;font-weight:700;min-height:16px}.customer-source-help{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.45}
     .empty{padding:34px;text-align:center;color:var(--muted)}.loader{padding:28px;text-align:center;color:var(--muted)}.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-top:1px solid var(--line);background:#fbfdff}.pager-info{font-size:12px;color:var(--muted);font-weight:700}.pager-actions{display:flex;gap:8px;align-items:center}.page-size-select{border:1px solid #cfe0f7;background:#fff;color:var(--ink);border-radius:9px;padding:8px 10px;font:inherit;font-size:12px;font-weight:700}.pager-btn{border:1px solid #cfe0f7;background:#fff;color:var(--blue);border-radius:9px;padding:8px 12px;font-weight:800;font-size:12px}.pager-btn:disabled{opacity:.45;cursor:not-allowed}
     @media(max-width:1100px){.table-tools{grid-template-columns:repeat(3,minmax(140px,1fr))}.table-tools #searchInput{grid-column:span 2}}
-    @media(max-width:800px){.stats{grid-template-columns:1fr 1fr}.dash-head{align-items:flex-start}.brand img{width:220px}.table-tools{grid-template-columns:1fr 1fr}.table-tools #searchInput{grid-column:1/-1}.result-count{grid-column:1/-1;justify-content:flex-start}}
+    @media(max-width:800px){.customer-master-layout{grid-template-columns:1fr}.customer-list{max-height:260px}.stats{grid-template-columns:1fr 1fr}.dash-head{align-items:flex-start}.brand img{width:220px}.table-tools{grid-template-columns:1fr 1fr}.table-tools #searchInput{grid-column:1/-1}.result-count{grid-column:1/-1;justify-content:flex-start}}
     @media(max-width:520px){.stats{grid-template-columns:1fr}.panel{padding:22px}.dash-head{display:block}.dash-head .btn-ghost{margin-top:12px}.panel h1{font-size:28px}.table-tools{grid-template-columns:1fr}.table-tools #searchInput{grid-column:auto}.result-count{grid-column:auto}.pager{align-items:flex-start;flex-direction:column}.pager-actions{width:100%}.pager-btn{flex:1}.modal-grid{grid-template-columns:1fr}.modal-grid .full{grid-column:auto}.table-top{align-items:flex-start}.table-top-actions{justify-content:flex-end}}
   </style>
 </head>
@@ -59,6 +59,7 @@
             <div id="userLine" class="userline"></div>
           </div>
           <div class="dash-actions">
+            <button id="customerMasterBtn" class="btn btn-ghost" type="button">Customer Master</button>
             <button id="billingSettingsBtn" class="btn btn-ghost" type="button">Billing Settings</button>
             <button id="logoutBtn" class="btn btn-ghost" type="button">Sign Out</button>
           </div>
@@ -149,6 +150,155 @@
     </section>
   </main>
 
+
+
+  <div id="customerMasterModal" class="modal-backdrop" aria-hidden="true">
+    <div class="modal-card customer-master-card" role="dialog" aria-modal="true" aria-labelledby="customerMasterTitle">
+      <div class="modal-head">
+        <div>
+          <h3 id="customerMasterTitle">Customer Master</h3>
+          <div class="modal-meta">Manage billing customers and communication preferences for future AI customer care.</div>
+        </div>
+        <button id="customerMasterCloseBtn" class="modal-close" type="button" aria-label="Close">×</button>
+      </div>
+
+      <div class="customer-master-layout">
+        <div class="customer-list-panel">
+          <div class="customer-list-head">
+            <button id="customerNewBtn" class="btn btn-ghost" type="button">+ New Customer</button>
+            <input id="customerSearchInput" type="search" placeholder="Search name, phone, email, GSTIN…" aria-label="Search customers">
+            <div id="customerListCount" class="billing-help">0 customers</div>
+          </div>
+          <div id="customerList" class="customer-list">
+            <div class="loader">Loading customers…</div>
+          </div>
+        </div>
+
+        <div class="customer-form-panel">
+          <div class="customer-form-title">
+            <h4 id="customerFormTitle">New Customer</h4>
+          </div>
+
+          <div class="modal-grid">
+            <div class="billing-section-title first">Customer identity</div>
+            <div>
+              <label for="customerName">Customer / Business name</label>
+              <input id="customerName" type="text" maxlength="160" autocomplete="name" required>
+            </div>
+            <div>
+              <label for="customerPhone">Phone / WhatsApp</label>
+              <input id="customerPhone" type="tel" maxlength="30" autocomplete="tel">
+              <div id="customerDuplicateNote" class="customer-duplicate-note" aria-live="polite"></div>
+            </div>
+            <div>
+              <label for="customerEmail">Email</label>
+              <input id="customerEmail" type="email" maxlength="320" autocomplete="email">
+            </div>
+            <div>
+              <label for="customerGstin">GSTIN (optional)</label>
+              <input id="customerGstin" type="text" maxlength="15">
+            </div>
+            <div>
+              <label for="customerSourceEnquiryId">Source enquiry ID</label>
+              <input id="customerSourceEnquiryId" type="number" min="1" step="1">
+              <div class="customer-source-help">Used to link the customer back to the original enquiry. Enquiry → Customer conversion will fill this automatically.</div>
+            </div>
+            <div>
+              <label for="customerCode">Customer code</label>
+              <input id="customerCode" type="text" maxlength="40" placeholder="Optional">
+            </div>
+
+            <div class="billing-section-title">Billing / site address</div>
+            <div class="full">
+              <label for="customerAddress1">Billing address line 1</label>
+              <input id="customerAddress1" type="text" maxlength="240">
+            </div>
+            <div class="full">
+              <label for="customerAddress2">Billing address line 2</label>
+              <input id="customerAddress2" type="text" maxlength="240">
+            </div>
+            <div>
+              <label for="customerCity">City</label>
+              <input id="customerCity" type="text" maxlength="120">
+            </div>
+            <div>
+              <label for="customerDistrict">District</label>
+              <input id="customerDistrict" type="text" maxlength="120">
+            </div>
+            <div>
+              <label for="customerState">State</label>
+              <input id="customerState" type="text" maxlength="120">
+            </div>
+            <div>
+              <label for="customerStateCode">State code</label>
+              <input id="customerStateCode" type="text" inputmode="numeric" maxlength="2">
+            </div>
+            <div>
+              <label for="customerPincode">PIN code</label>
+              <input id="customerPincode" type="text" inputmode="numeric" maxlength="10">
+            </div>
+            <div>
+              <label for="customerCountry">Country</label>
+              <input id="customerCountry" type="text" maxlength="120">
+            </div>
+            <div class="full">
+              <label for="customerSiteAddress">Service / site address</label>
+              <textarea id="customerSiteAddress" maxlength="1000" placeholder="Installation or service location, if different from billing address"></textarea>
+            </div>
+
+            <div class="billing-section-title">Communication & AI customer care readiness</div>
+            <div>
+              <label for="customerPreferredLanguage">Preferred language</label>
+              <select id="customerPreferredLanguage">
+                <option value="ml">Malayalam</option>
+                <option value="en">English</option>
+                <option value="hi">Hindi</option>
+                <option value="ta">Tamil</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div>
+              <label for="customerPreferredContact">Preferred contact channel</label>
+              <select id="customerPreferredContact">
+                <option value="whatsapp">WhatsApp</option>
+                <option value="call">Call</option>
+                <option value="email">Email</option>
+                <option value="sms">SMS</option>
+                <option value="none">None</option>
+              </select>
+            </div>
+            <div>
+              <label for="customerCallConsentSource">Call consent source</label>
+              <input id="customerCallConsentSource" type="text" maxlength="120" placeholder="admin, website, written consent…">
+            </div>
+            <div>
+              <label for="customerCallConsentAt">Call consent date & time</label>
+              <input id="customerCallConsentAt" type="datetime-local">
+            </div>
+            <div class="full">
+              <div class="check-row">
+                <label><input id="customerCallConsent" type="checkbox"> Customer has consented to calls</label>
+                <label><input id="customerDoNotCall" type="checkbox"> Do Not Call</label>
+              </div>
+              <div class="customer-source-help">Do Not Call takes precedence over consent for future automated calling workflows.</div>
+            </div>
+
+            <div class="billing-section-title">Notes</div>
+            <div class="full">
+              <label for="customerNotes">Internal customer notes</label>
+              <textarea id="customerNotes" maxlength="5000" placeholder="Billing, site, service or communication notes"></textarea>
+            </div>
+          </div>
+
+          <div id="customerMasterStatus" class="modal-status" aria-live="polite"></div>
+          <div class="modal-actions">
+            <button id="customerResetBtn" class="btn btn-ghost" type="button">Reset</button>
+            <button id="customerSaveBtn" class="btn btn-primary" type="button">Save Customer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="billingSettingsModal" class="modal-backdrop" aria-hidden="true">
     <div class="modal-card billing-settings-card" role="dialog" aria-modal="true" aria-labelledby="billingSettingsTitle">
@@ -535,6 +685,40 @@
     const loginForm = document.getElementById('loginForm')
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
+    const customerMasterBtn = document.getElementById('customerMasterBtn')
+    const customerMasterModal = document.getElementById('customerMasterModal')
+    const customerMasterCloseBtn = document.getElementById('customerMasterCloseBtn')
+    const customerNewBtn = document.getElementById('customerNewBtn')
+    const customerSearchInput = document.getElementById('customerSearchInput')
+    const customerListCount = document.getElementById('customerListCount')
+    const customerList = document.getElementById('customerList')
+    const customerFormTitle = document.getElementById('customerFormTitle')
+    const customerName = document.getElementById('customerName')
+    const customerPhone = document.getElementById('customerPhone')
+    const customerDuplicateNote = document.getElementById('customerDuplicateNote')
+    const customerEmail = document.getElementById('customerEmail')
+    const customerGstin = document.getElementById('customerGstin')
+    const customerSourceEnquiryId = document.getElementById('customerSourceEnquiryId')
+    const customerCode = document.getElementById('customerCode')
+    const customerAddress1 = document.getElementById('customerAddress1')
+    const customerAddress2 = document.getElementById('customerAddress2')
+    const customerCity = document.getElementById('customerCity')
+    const customerDistrict = document.getElementById('customerDistrict')
+    const customerState = document.getElementById('customerState')
+    const customerStateCode = document.getElementById('customerStateCode')
+    const customerPincode = document.getElementById('customerPincode')
+    const customerCountry = document.getElementById('customerCountry')
+    const customerSiteAddress = document.getElementById('customerSiteAddress')
+    const customerPreferredLanguage = document.getElementById('customerPreferredLanguage')
+    const customerPreferredContact = document.getElementById('customerPreferredContact')
+    const customerCallConsentSource = document.getElementById('customerCallConsentSource')
+    const customerCallConsentAt = document.getElementById('customerCallConsentAt')
+    const customerCallConsent = document.getElementById('customerCallConsent')
+    const customerDoNotCall = document.getElementById('customerDoNotCall')
+    const customerNotes = document.getElementById('customerNotes')
+    const customerMasterStatus = document.getElementById('customerMasterStatus')
+    const customerResetBtn = document.getElementById('customerResetBtn')
+    const customerSaveBtn = document.getElementById('customerSaveBtn')
     const billingSettingsBtn = document.getElementById('billingSettingsBtn')
     const billingSettingsModal = document.getElementById('billingSettingsModal')
     const billingSettingsCloseBtn = document.getElementById('billingSettingsCloseBtn')
@@ -623,6 +807,11 @@
     const manageSaveBtn = document.getElementById('manageSaveBtn')
 
     let allRows = []
+    let customerRows = []
+    let activeCustomerId = null
+    let activeCustomerRow = null
+    let customerDuplicateTimer = null
+    let customerDuplicateSeq = 0
     let serverStats = null
     let addExistingMatch = null
     let addDuplicateLookupTimer = null
@@ -650,6 +839,338 @@
     function showDashboard(){
       loginSection.style.display = 'none'
       dashboard.style.display = 'block'
+    }
+
+    function closeCustomerMasterModal(){
+      clearTimeout(customerDuplicateTimer)
+      customerDuplicateSeq += 1
+      customerMasterModal.classList.remove('show')
+      customerMasterModal.setAttribute('aria-hidden','true')
+      customerMasterStatus.textContent = ''
+      customerMasterStatus.className = 'modal-status'
+      document.body.style.overflow = ''
+    }
+
+    function resetCustomerForm(){
+      activeCustomerId = null
+      activeCustomerRow = null
+      customerFormTitle.textContent = 'New Customer'
+      customerName.value = ''
+      customerPhone.value = ''
+      customerDuplicateNote.textContent = ''
+      customerEmail.value = ''
+      customerGstin.value = ''
+      customerSourceEnquiryId.value = ''
+      customerCode.value = ''
+      customerAddress1.value = ''
+      customerAddress2.value = ''
+      customerCity.value = ''
+      customerDistrict.value = ''
+      customerState.value = ''
+      customerStateCode.value = ''
+      customerPincode.value = ''
+      customerCountry.value = 'India'
+      customerSiteAddress.value = ''
+      customerPreferredLanguage.value = 'ml'
+      customerPreferredContact.value = 'whatsapp'
+      customerCallConsentSource.value = ''
+      customerCallConsentAt.value = ''
+      customerCallConsent.checked = false
+      customerDoNotCall.checked = false
+      customerNotes.value = ''
+      customerMasterStatus.textContent = ''
+      customerMasterStatus.className = 'modal-status'
+      customerSaveBtn.textContent = 'Save Customer'
+      customerList.querySelectorAll('[data-customer-id]').forEach(el => el.classList.remove('active'))
+    }
+
+    function fillCustomerForm(row){
+      activeCustomerId = row.id
+      activeCustomerRow = row
+      customerFormTitle.textContent = row.name || 'Customer'
+      customerName.value = row.name || ''
+      customerPhone.value = row.phone || ''
+      customerDuplicateNote.textContent = ''
+      customerEmail.value = row.email || ''
+      customerGstin.value = row.gstin || ''
+      customerSourceEnquiryId.value = row.source_enquiry_id || ''
+      customerCode.value = row.customer_code || ''
+      customerAddress1.value = row.billing_address_line1 || ''
+      customerAddress2.value = row.billing_address_line2 || ''
+      customerCity.value = row.city || ''
+      customerDistrict.value = row.district || ''
+      customerState.value = row.state || ''
+      customerStateCode.value = row.state_code || ''
+      customerPincode.value = row.pincode || ''
+      customerCountry.value = row.country || 'India'
+      customerSiteAddress.value = row.site_address || ''
+      customerPreferredLanguage.value = row.preferred_language || 'ml'
+      customerPreferredContact.value = row.preferred_contact_channel || 'whatsapp'
+      customerCallConsentSource.value = row.call_consent_source || ''
+      customerCallConsentAt.value = toDateTimeLocal(row.call_consent_at)
+      customerCallConsent.checked = row.call_consent === true
+      customerDoNotCall.checked = row.do_not_call === true
+      customerNotes.value = row.notes || ''
+      customerMasterStatus.textContent = ''
+      customerMasterStatus.className = 'modal-status'
+      customerSaveBtn.textContent = 'Save Changes'
+
+      customerList.querySelectorAll('[data-customer-id]').forEach(el => {
+        el.classList.toggle('active', el.dataset.customerId === String(row.id))
+      })
+    }
+
+    function filteredCustomers(){
+      const q = customerSearchInput.value.trim().toLowerCase()
+      if (!q) return customerRows.slice()
+      return customerRows.filter(row => {
+        const haystack = [
+          row.name, row.phone, row.email, row.gstin, row.customer_code,
+          row.city, row.district, row.state, row.pincode
+        ].map(v => String(v || '').toLowerCase()).join(' ')
+        return haystack.includes(q)
+      })
+    }
+
+    function renderCustomerList(){
+      const rows = filteredCustomers()
+      customerListCount.textContent = rows.length + (rows.length === 1 ? ' customer' : ' customers')
+
+      if (!rows.length){
+        customerList.innerHTML = '<div class="empty">No customers match the current search.</div>'
+        return
+      }
+
+      customerList.innerHTML = rows.map(row => {
+        const contact = row.phone || row.email || 'No contact'
+        const callTag = row.do_not_call
+          ? '<span class="customer-tag stop">Do Not Call</span>'
+          : row.call_consent
+            ? '<span class="customer-tag ok">Call consent</span>'
+            : '<span class="customer-tag warn">No call consent</span>'
+        const lang = row.preferred_language ? '<span class="customer-tag">' + esc(String(row.preferred_language).toUpperCase()) + '</span>' : ''
+        return '<button class="customer-list-item' + (String(row.id) === String(activeCustomerId) ? ' active' : '') +
+          '" type="button" data-customer-id="' + esc(row.id) + '">' +
+          '<strong>' + esc(row.name || 'Customer') + '</strong>' +
+          '<div class="customer-list-meta">' + esc(contact) +
+          (row.gstin ? ' • GSTIN ' + esc(row.gstin) : '') + '</div>' +
+          '<div class="customer-tags">' + callTag + lang + '</div>' +
+          '</button>'
+      }).join('')
+
+      customerList.querySelectorAll('[data-customer-id]').forEach(button => {
+        button.addEventListener('click', () => {
+          const row = customerRows.find(item => String(item.id) === button.dataset.customerId)
+          if (row) fillCustomerForm(row)
+        })
+      })
+    }
+
+    async function loadCustomers(){
+      customerList.innerHTML = '<div class="loader">Loading customers…</div>'
+      const { data, error } = await supabase
+        .from('customers')
+        .select('id,customer_code,name,phone,phone_normalized,email,gstin,billing_address_line1,billing_address_line2,city,district,state,state_code,pincode,country,site_address,source_enquiry_id,preferred_language,preferred_contact_channel,call_consent,call_consent_at,call_consent_source,do_not_call,notes,created_at,updated_at')
+        .order('updated_at', { ascending:false })
+        .limit(1000)
+
+      if (error){
+        customerList.innerHTML = '<div class="empty">Could not load customers: ' + esc(error.message) + '</div>'
+        customerListCount.textContent = 'Load failed'
+        return
+      }
+
+      customerRows = data || []
+      renderCustomerList()
+
+      if (activeCustomerId){
+        const latest = customerRows.find(row => String(row.id) === String(activeCustomerId))
+        if (latest) fillCustomerForm(latest)
+      }
+    }
+
+    async function openCustomerMasterModal(){
+      customerMasterModal.classList.add('show')
+      customerMasterModal.setAttribute('aria-hidden','false')
+      document.body.style.overflow = 'hidden'
+      resetCustomerForm()
+      await loadCustomers()
+    }
+
+    async function checkCustomerDuplicatePhone(){
+      const key = phoneKey(customerPhone.value)
+      const lookupSeq = ++customerDuplicateSeq
+
+      if (key.length < 7){
+        customerDuplicateNote.textContent = ''
+        return
+      }
+
+      customerDuplicateNote.textContent = 'Checking existing customers…'
+
+      let query = supabase
+        .from('customers')
+        .select('id,name,phone,email')
+        .eq('phone_normalized', key)
+        .limit(5)
+
+      if (activeCustomerId) query = query.neq('id', activeCustomerId)
+
+      const { data, error } = await query
+      if (lookupSeq !== customerDuplicateSeq) return
+
+      if (error){
+        customerDuplicateNote.textContent = 'Could not check duplicate phone right now.'
+        return
+      }
+
+      const matches = data || []
+      if (!matches.length){
+        customerDuplicateNote.textContent = ''
+        return
+      }
+
+      customerDuplicateNote.textContent =
+        'This phone is already linked to ' + matches.length +
+        (matches.length === 1 ? ' other customer' : ' other customers') +
+        ' • latest match: ' + (matches[0].name || 'Customer')
+    }
+
+    function scheduleCustomerDuplicateCheck(){
+      clearTimeout(customerDuplicateTimer)
+      customerDuplicateSeq += 1
+      const key = phoneKey(customerPhone.value)
+      if (key.length < 7){
+        customerDuplicateNote.textContent = ''
+        return
+      }
+      customerDuplicateNote.textContent = 'Checking existing customers…'
+      customerDuplicateTimer = setTimeout(checkCustomerDuplicatePhone, 350)
+    }
+
+    async function saveCustomer(){
+      const name = customerName.value.trim()
+      const phone = customerPhone.value.trim()
+      const email = customerEmail.value.trim()
+      const gstin = customerGstin.value.trim().toUpperCase()
+      const sourceEnquiryRaw = customerSourceEnquiryId.value.trim()
+      const callConsent = customerCallConsent.checked
+      const doNotCall = customerDoNotCall.checked
+
+      if (name.length < 2){
+        customerMasterStatus.textContent = 'Enter a valid customer or business name.'
+        customerMasterStatus.className = 'modal-status err'
+        return
+      }
+
+      if (!phone && !email){
+        customerMasterStatus.textContent = 'Enter at least a phone number or email address.'
+        customerMasterStatus.className = 'modal-status err'
+        return
+      }
+
+      if (phone && phoneKey(phone).length < 7){
+        customerMasterStatus.textContent = 'Enter a valid phone number.'
+        customerMasterStatus.className = 'modal-status err'
+        return
+      }
+
+      if (gstin && !/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z][1-9A-Z]Z[0-9A-Z]$/.test(gstin)){
+        customerMasterStatus.textContent = 'GSTIN format looks invalid.'
+        customerMasterStatus.className = 'modal-status err'
+        return
+      }
+
+      let sourceEnquiryId = null
+      if (sourceEnquiryRaw){
+        sourceEnquiryId = Number(sourceEnquiryRaw)
+        if (!Number.isInteger(sourceEnquiryId) || sourceEnquiryId < 1){
+          customerMasterStatus.textContent = 'Source enquiry ID must be a valid positive number.'
+          customerMasterStatus.className = 'modal-status err'
+          return
+        }
+      }
+
+      let callConsentAt = null
+      if (callConsent){
+        if (customerCallConsentAt.value){
+          const parsed = new Date(customerCallConsentAt.value)
+          if (Number.isNaN(parsed.getTime())){
+            customerMasterStatus.textContent = 'Enter a valid call consent date and time.'
+            customerMasterStatus.className = 'modal-status err'
+            return
+          }
+          callConsentAt = parsed.toISOString()
+        } else {
+          callConsentAt = activeCustomerRow?.call_consent_at || new Date().toISOString()
+        }
+      }
+
+      const payload = {
+        customer_code: customerCode.value.trim() || null,
+        name,
+        phone: phone || null,
+        email: email || null,
+        gstin: gstin || null,
+        billing_address_line1: customerAddress1.value.trim() || null,
+        billing_address_line2: customerAddress2.value.trim() || null,
+        city: customerCity.value.trim() || null,
+        district: customerDistrict.value.trim() || null,
+        state: customerState.value.trim() || null,
+        state_code: customerStateCode.value.trim() || null,
+        pincode: customerPincode.value.trim() || null,
+        country: customerCountry.value.trim() || 'India',
+        site_address: customerSiteAddress.value.trim() || null,
+        source_enquiry_id: sourceEnquiryId,
+        preferred_language: customerPreferredLanguage.value,
+        preferred_contact_channel: customerPreferredContact.value,
+        call_consent: callConsent,
+        call_consent_at: callConsentAt,
+        call_consent_source: callConsent
+          ? (customerCallConsentSource.value.trim() || 'admin')
+          : null,
+        do_not_call: doNotCall,
+        notes: customerNotes.value.trim() || null
+      }
+
+      customerSaveBtn.disabled = true
+      customerSaveBtn.textContent = activeCustomerId ? 'Saving…' : 'Creating…'
+      customerMasterStatus.textContent = ''
+
+      let result
+      if (activeCustomerId){
+        result = await supabase
+          .from('customers')
+          .update(payload)
+          .eq('id', activeCustomerId)
+          .select('id,customer_code,name,phone,phone_normalized,email,gstin,billing_address_line1,billing_address_line2,city,district,state,state_code,pincode,country,site_address,source_enquiry_id,preferred_language,preferred_contact_channel,call_consent,call_consent_at,call_consent_source,do_not_call,notes,created_at,updated_at')
+          .single()
+      } else {
+        const { data:{ session } } = await supabase.auth.getSession()
+        if (session?.user?.id) payload.created_by = session.user.id
+        result = await supabase
+          .from('customers')
+          .insert(payload)
+          .select('id,customer_code,name,phone,phone_normalized,email,gstin,billing_address_line1,billing_address_line2,city,district,state,state_code,pincode,country,site_address,source_enquiry_id,preferred_language,preferred_contact_channel,call_consent,call_consent_at,call_consent_source,do_not_call,notes,created_at,updated_at')
+          .single()
+      }
+
+      customerSaveBtn.disabled = false
+
+      if (result.error){
+        customerSaveBtn.textContent = activeCustomerId ? 'Save Changes' : 'Save Customer'
+        customerMasterStatus.textContent = 'Could not save customer: ' + result.error.message
+        customerMasterStatus.className = 'modal-status err'
+        return
+      }
+
+      activeCustomerId = result.data.id
+      activeCustomerRow = result.data
+      await loadCustomers()
+      fillCustomerForm(result.data)
+      customerMasterStatus.textContent = 'Customer saved successfully.'
+      customerMasterStatus.className = 'modal-status ok'
+      customerSaveBtn.textContent = 'Save Changes'
     }
 
     function closeBillingSettingsModal(){
@@ -1667,6 +2188,29 @@
       showLogin()
     })
 
+    customerMasterBtn.addEventListener('click', openCustomerMasterModal)
+    customerMasterCloseBtn.addEventListener('click', closeCustomerMasterModal)
+    customerNewBtn.addEventListener('click', resetCustomerForm)
+    customerResetBtn.addEventListener('click', () => {
+      if (activeCustomerRow) fillCustomerForm(activeCustomerRow)
+      else resetCustomerForm()
+    })
+    customerSaveBtn.addEventListener('click', saveCustomer)
+    customerSearchInput.addEventListener('input', renderCustomerList)
+    customerPhone.addEventListener('input', scheduleCustomerDuplicateCheck)
+    customerCallConsent.addEventListener('change', () => {
+      if (customerCallConsent.checked && !customerCallConsentAt.value){
+        customerCallConsentAt.value = toDateTimeLocal(new Date())
+      }
+      if (!customerCallConsent.checked){
+        customerCallConsentAt.value = ''
+        customerCallConsentSource.value = ''
+      }
+    })
+    customerMasterModal.addEventListener('click', (event) => {
+      if (event.target === customerMasterModal) closeCustomerMasterModal()
+    })
+
     billingSettingsBtn.addEventListener('click', openBillingSettingsModal)
     billingSettingsCloseBtn.addEventListener('click', closeBillingSettingsModal)
     billingSettingsCancelBtn.addEventListener('click', closeBillingSettingsModal)
@@ -1996,7 +2540,8 @@
 
     document.addEventListener('keydown', (event) => {
       if (event.key !== 'Escape') return
-      if (billingSettingsModal.classList.contains('show')) closeBillingSettingsModal()
+      if (customerMasterModal.classList.contains('show')) closeCustomerMasterModal()
+      else if (billingSettingsModal.classList.contains('show')) closeBillingSettingsModal()
       else if (addModal.classList.contains('show')) closeAddModal()
       else if (manageModal.classList.contains('show')) closeManageModal()
     })
