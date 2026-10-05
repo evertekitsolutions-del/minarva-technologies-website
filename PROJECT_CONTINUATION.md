@@ -721,23 +721,129 @@ Verification:
 - Security Advisor reports no new database/RLS issue; the existing **Leaked Password Protection Disabled** warning remains
 - Performance Advisor currently reports unused-index informational notices only on this new/low-usage schema
 
+## Operations — Milestone 3A3 — COMPLETE
+
+Implemented:
+- dedicated technician mobile/PWA at `/technician`
+- technician password login + account creation through Supabase Auth
+- technician account can claim access only when its authenticated email exactly matches an active approved Technician Master record
+- `mobile_access_enabled` gate
+- technician last-mobile-seen timestamp
+- assigned-job queue only
+- Today / Upcoming / Overdue / All views
+- customer call shortcut
+- visit execution controls:
+  - Visit Start
+  - Arrival
+  - Work Start
+  - Work Complete
+- technician ETA + ETA note
+- technician ETA/status changes create customer-notification outbox hooks
+- quick diagnosis and work-performed notes
+- resolution / unresolved reason
+- next visit + callback
+- completion checklist
+- Warranty / AMC reference capture
+- mobile materials-used entry
+- admin-set existing material prices are preserved when technician changes quantities/descriptions
+- touch customer acknowledgement/signature
+- camera-oriented Before / After / Other photo capture
+- private Storage upload under assigned-job-only `/<job-id>/mobile/*` paths
+- technician can access only media for assigned jobs
+- IndexedDB offline cache for technician profile, queue and opened job
+- offline mutation queue
+- offline photo/signature Blob queue
+- automatic retry when connection returns
+- idempotent client action IDs prevent double-applying an uncertain/retried action
+- PWA manifest
+- scoped Service Worker
+- offline app-shell fallback
+- Supabase dynamic API responses are deliberately not cached by the Service Worker
+- installable standalone mobile experience
+- technician can complete a job from mobile after Work Complete + Resolution requirements are met
+- Service Operations admin screen now links directly to Technician Mobile
+- Technician creation guidance explains that the same real email is required for mobile account linking
+
+Access-control / API architecture:
+- `technician_mobile_actions` idempotency/audit table
+- `service_job_notification_outbox` notification-hook table
+- technician ETA fields on service jobs
+- technician mobile queue/profile/job/action RPCs
+- technician mobile functions expose only scoped public SECURITY INVOKER wrappers
+- privileged implementation functions were moved to the private schema
+- anonymous users cannot call technician RPCs
+- technician app does not receive direct broad Data API table access; assigned-job data is returned through scoped RPCs
+- duplicate permissive technician/admin SELECT policies were removed
+- service-job media Storage policies were consolidated:
+  - admin full access
+  - technician assigned-job mobile-folder access only
+  - technician delete restricted to own uploaded objects
+- customer Call Consent / Do Not Call remains enforced before any future call-channel notification hook can be marked pending
+- no outbound WhatsApp/SMS/email/call provider is triggered yet; only durable provider-agnostic hooks are queued
+
+Weak-network / retry behavior:
+- stage/ETA/execution/material/completion actions use client-generated action UUIDs
+- server records each mobile action exactly once
+- retrying the same action UUID returns the existing result instead of duplicating the action
+- photos/signatures use deterministic storage paths derived from the queued action UUID
+- pending actions persist in IndexedDB until sync succeeds
+
+PWA files:
+- `technician.html`
+- `technician-sw.js`
+- `technician.webmanifest`
+- `technician-icon.svg`
+
+Migrations:
+- `supabase/migrations/20261005_technician_mobile_pwa_foundation.sql`
+- `supabase/migrations/20261005_technician_mobile_security_hardening.sql`
+
+GitHub commits:
+- technician mobile DB / access / idempotency / notification-hook foundation: `b99716245a235b59835e7fb355c288893ad4d9f9`
+- Technician Mobile PWA: `3bb865f985eb269fc6ab517ec141a9f6af1afe68`
+- offline Service Worker: `3cfd881501bc7c0bc37c09842408409d980964a7`
+- PWA manifest: `54328a6525556afc64879b30c25f255fbc8184dc`
+- PWA icon: `2f0ef284313e931a73f21cfdba4eedb18e651499`
+- Service Operations → Technician Mobile navigation: `a5ac434555eed97b2a977f577d5d34259ef0c902`
+- technician RPC/RLS/Storage security hardening: `5cfb5b11fe4807466d4e67e53efda3095d67f323`
+
+Verification:
+- technician mobile tables/fields/RPCs present
+- authenticated RPC execution allowed
+- anonymous RPC execution blocked
+- technician Storage policies restricted to assigned-job mobile paths
+- public technician RPCs are SECURITY INVOKER after hardening
+- Security Advisor no longer reports the technician SECURITY DEFINER exposure findings
+- duplicate permissive-policy warnings introduced during the first technician-access pass were removed
+- current Security Advisor has only the pre-existing **Leaked Password Protection Disabled** Auth warning
+- current Performance Advisor reports unused-index informational notices only; these are expected on the newly created/low-usage schema
+- no fake technician/job/mobile-action data was created
+
 ## Immediate next milestone
 
-**Operations — Milestone 3A3: Technician Mobile / PWA Execution**
+**Customer Care — Milestone 3B1: Notification Dispatcher + Automated Calling Orchestration Foundation**
 
-Add:
-- technician-focused mobile service dashboard
-- assigned-job queue
-- Today / Upcoming / Overdue views
-- technician check-in/out UX
-- mobile photo capture
-- quick diagnosis/work notes
-- material-use entry optimized for phone
-- customer signature optimized for touch
-- offline/PWA shell foundation
-- safe sync / retry behavior for weak connectivity
-- technician role / access-control foundation
-- customer notification hooks for technician ETA / visit status
-- prepare schedule data for future route optimization and automated customer-care calling
+Build the provider-agnostic customer-care layer on top of the durable outbox:
+- notification template master
+- event → template mapping
+- Malayalam / English template variants
+- WhatsApp / SMS / Email / Call channel routing rules
+- consent-aware call eligibility
+- Do Not Call hard block
+- quiet-hours rules
+- retry / backoff / max-attempt rules
+- scheduled delivery
+- provider adapter interface
+- delivery attempt log
+- customer contact timeline
+- service-job ETA / arrived / completed notifications
+- invoice due / overdue reminders
+- follow-up reminder campaigns
+- automated-calling campaign foundation
+- call reason / script / language / variables
+- call outcome / retry / callback state
+- opt-out / escalation-to-human hooks
+- dashboard for Pending / Sent / Failed / Suppressed
+- **no paid calling provider required for this milestone**; keep adapters provider-neutral so a provider can be connected later without redesigning the core
 
-Keep advanced route optimization, GPS tracking, automated calling provider integration, and spare-parts inventory consumption for later small milestones.
+Keep advanced route optimization, GPS tracking, live technician tracking and physical spare-parts inventory consumption for later small milestones.
