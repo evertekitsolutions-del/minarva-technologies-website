@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Minarva Technologies — Job Sheet</title>
+  <meta name="theme-color" content="#0754c7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--navy:#061d48;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--red:#b42318;--amber:#9a5b00;--bg:#f4f8ff}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select,textarea{font:inherit}.shell{width:min(1260px,calc(100% - 28px));margin:auto}.top{padding:18px 0}.brand{display:flex;justify-content:space-between;gap:14px;align-items:center}.brand img{width:240px;height:52px;object-fit:contain;object-position:left center}
+    .nav,.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),#1381ff);color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn-danger{background:#fff1f0;color:var(--red)}.btn-warn{background:#fff7e8;color:var(--amber)}.btn:disabled{opacity:.5;cursor:not-allowed}
+    .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin:8px 0 16px}.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--blue);font-weight:800}.head h1{margin:5px 0 0;font-size:32px;letter-spacing:-.03em}.meta{font-size:10px;color:var(--muted);line-height:1.55}.statusline{font-size:11px;margin-top:5px;color:var(--muted)}
+    .grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(360px,.75fr);gap:16px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px rgba(7,51,111,.07);overflow:hidden}.card-head{padding:15px 17px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;align-items:center}.card-head h2{margin:0;font-size:18px}.card-body{padding:17px}
+    .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}.box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdff}.box span{font-size:9px;color:var(--muted);font-weight:800}.box strong{display:block;font-size:12px;margin-top:4px}
+    .stagebar{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.stage{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fff}.stage.done{background:#ecfdf3;border-color:#abefc6}.stage b{display:block;font-size:10px}.stage time{font-size:9px;color:var(--muted)}.stage .btn{width:100%;margin-top:7px;padding:8px;font-size:10px}
+    .section-title{font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.04em;margin:20px 0 10px;padding-top:14px;border-top:1px solid var(--line)}.section-title.first{border-top:0;padding-top:0;margin-top:0}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}label{display:block;font-size:10px;font-weight:800;color:#334155;margin-bottom:5px}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);outline:none}textarea{min-height:90px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}
+    .checklist{display:grid;grid-template-columns:1fr 1fr;gap:8px}.check{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;padding:9px;background:#fbfdff;font-size:10px;font-weight:700}.check input{width:auto}
+    .materials{display:grid;gap:8px}.material{display:grid;grid-template-columns:1.5fr .5fr .55fr .7fr .7fr auto;gap:7px;align-items:end;border:1px solid var(--line);border-radius:11px;padding:9px;background:#fbfdff}.material .mini{font-size:8px;color:var(--muted);font-weight:800;margin-bottom:4px}.material-total{font-size:10px;font-weight:800;text-align:right;padding-bottom:10px}.totals{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.total{border:1px solid var(--line);border-radius:11px;padding:10px}.total span{font-size:9px;color:var(--muted)}.total strong{display:block;margin-top:3px;font-size:14px}.total.grand{background:#eff8ff;border-color:#b2ccff}.total.grand strong{color:var(--blue)}
+    .uploadbar{display:grid;grid-template-columns:160px 1fr auto;gap:8px}.attachments{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-top:10px}.attachment{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fbfdff}.attachment img{display:block;width:100%;height:160px;object-fit:cover;background:#eef2f6}.attachment .cap{padding:8px;font-size:9px}.attachment .cap strong{display:block;font-size:10px;margin-bottom:3px}.attachment .btn{padding:7px 9px;font-size:9px;margin-top:6px}
+    .signature-wrap{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdff}.signature-canvas{width:100%;height:180px;border:1px dashed #a9bdd7;border-radius:9px;background:#fff;touch-action:none;display:block}.signature-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .event-list{max-height:280px;overflow:auto;border:1px solid var(--line);border-radius:12px}.event{padding:9px 11px;border-bottom:1px solid #edf2f8;font-size:10px}.event:last-child{border-bottom:0}.call-box{border:1px solid #b2ccff;background:#f3f8ff;border-radius:12px;padding:11px}.call-box p{font-size:10px;margin:4px 0}.status-msg{min-height:18px;font-size:11px;font-weight:700;margin-top:9px}.ok{color:var(--green)}.err{color:var(--red)}
+    .preview{display:none;position:fixed;inset:0;background:rgba(5,20,45,.72);z-index:999;padding:18px;overflow:auto}.preview.show{display:block}.preview-wrap{width:min(980px,100%);margin:auto}.preview-toolbar{position:sticky;top:0;z-index:2;display:flex;justify-content:flex-end;gap:8px;padding:10px;background:rgba(246,250,255,.97);border-radius:14px 14px 0 0;border:1px solid #dbe8f8}.sheet{width:210mm;min-height:297mm;margin:0 auto 30px;background:#fff;padding:13mm 13mm 16mm;box-shadow:0 16px 50px rgba(0,0,0,.2);color:#111827}.p-head{display:flex;justify-content:space-between;gap:20px;padding-bottom:12px;border-bottom:2px solid var(--blue)}.p-logo{max-width:250px;max-height:60px;object-fit:contain;object-position:left center}.p-title{text-align:right}.p-title h1{margin:0;color:var(--blue);font-size:26px;letter-spacing:.08em}.p-title div{font-size:10px;color:#475467;margin-top:4px}.p-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:15px 0}.p-box{border:1px solid #d7e3f2;border-radius:8px;padding:10px}.p-box h3{font-size:9px;color:var(--blue);letter-spacing:.08em;text-transform:uppercase;margin:0 0 5px}.p-box p{font-size:9px;line-height:1.5;margin:2px 0}.p-table{width:100%;border-collapse:collapse;font-size:8px;margin-top:10px}.p-table th{background:#edf5ff;padding:6px;border:1px solid #cbdcf1;text-align:left}.p-table td{padding:6px;border:1px solid #d9e4f2;vertical-align:top}.p-table .num{text-align:right}.p-section{font-size:9px;line-height:1.55;margin-top:12px}.p-section h4{margin:0 0 5px;color:var(--blue);font-size:9px}.p-sign{height:70px;object-fit:contain;max-width:220px}.p-footer{margin-top:24px;padding-top:9px;border-top:1px solid #d9e4f2;display:flex;justify-content:space-between;font-size:8px;color:#667085}
+    @media print{@page{size:A4;margin:0}body{background:#fff!important}body>*{visibility:hidden!important}.preview,.preview *{visibility:visible!important}.preview{display:block!important;position:absolute!important;inset:0!important;padding:0!important;background:#fff!important;overflow:visible!important}.preview-wrap{width:auto!important}.preview-toolbar{display:none!important}.sheet{position:absolute;left:0;top:0;width:210mm;min-height:297mm;margin:0;padding:13mm;box-shadow:none!important}}
+    @media(max-width:980px){.grid{grid-template-columns:1fr}.summary{grid-template-columns:1fr 1fr}.stagebar{grid-template-columns:1fr 1fr}.attachments{grid-template-columns:1fr 1fr}}
+    @media(max-width:650px){.head{display:block}.head .actions{margin-top:10px}.head h1{font-size:27px}.brand{display:block}.brand .nav{margin-top:10px}.form-grid,.summary,.stagebar,.checklist,.totals,.attachments,.uploadbar{grid-template-columns:1fr}.material{grid-template-columns:1fr 1fr}.material>div:first-child{grid-column:1/-1}.sheet{width:100%;min-height:auto;padding:18px}.p-grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <div class="brand">
+      <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+      <div class="nav">
+        <button id="jobsBtn" class="btn btn-ghost" type="button">Service Jobs</button>
+        <button id="adminBtn" class="btn btn-ghost" type="button">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell" style="padding-bottom:60px">
+    <div class="head">
+      <div>
+        <div class="eyebrow">SERVICE EXECUTION</div>
+        <h1 id="pageTitle">Job Sheet</h1>
+        <div id="userLine" class="statusline">Checking admin access…</div>
+      </div>
+      <div class="actions">
+        <button id="previewBtn" class="btn btn-ghost" type="button">Print Preview</button>
+        <button id="billingBtn" class="btn btn-ghost" type="button">Prepare Billing</button>
+        <button id="completeJobBtn" class="btn btn-primary" type="button">Complete Job</button>
+      </div>
+    </div>
+
+    <div id="loadingCard" class="card"><div class="card-body"><div class="meta">Loading job sheet…</div></div></div>
+
+    <div id="workspace" class="grid" style="display:none">
+      <section class="card">
+        <div class="card-head"><h2>Visit & Work Execution</h2><span id="jobBadge" class="meta"></span></div>
+        <div class="card-body">
+          <div class="summary">
+            <div class="box"><span>CUSTOMER</span><strong id="sumCustomer">—</strong></div>
+            <div class="box"><span>SERVICE</span><strong id="sumService">—</strong></div>
+            <div class="box"><span>TECHNICIAN</span><strong id="sumTech">—</strong></div>
+            <div class="box"><span>STATUS</span><strong id="sumStatus">—</strong></div>
+          </div>
+
+          <div class="section-title first">Visit timeline</div>
+          <div class="stagebar">
+            <div id="stageVisit" class="stage"><b>1. Visit Start</b><time id="visitTime">Not recorded</time><button class="btn btn-ghost" data-stage="visit_start">Start Visit</button></div>
+            <div id="stageArrival" class="stage"><b>2. Arrival</b><time id="arrivalTime">Not recorded</time><button class="btn btn-ghost" data-stage="arrival">Mark Arrived</button></div>
+            <div id="stageWork" class="stage"><b>3. Work Start</b><time id="workStartTime">Not recorded</time><button class="btn btn-ghost" data-stage="work_start">Start Work</button></div>
+            <div id="stageComplete" class="stage"><b>4. Work Complete</b><time id="workCompleteTime">Not recorded</time><button class="btn btn-ghost" data-stage="work_complete">Complete Work</button></div>
+          </div>
+
+          <div class="section-title">Diagnosis & work</div>
+          <div class="form-grid">
+            <div class="full"><label for="diagnosis">Diagnosis / findings</label><textarea id="diagnosis" maxlength="5000" placeholder="Fault diagnosis, inspection findings, root cause…"></textarea></div>
+            <div class="full"><label for="workPerformed">Work performed</label><textarea id="workPerformed" maxlength="5000" placeholder="Repair, configuration, replacement, installation, testing…"></textarea></div>
+            <div><label for="resolutionStatus">Resolution</label><select id="resolutionStatus"><option value="">Choose…</option><option value="resolved">Resolved</option><option value="partially_resolved">Partially Resolved</option><option value="unresolved">Unresolved</option><option value="awaiting_parts">Awaiting Parts</option><option value="return_visit_required">Return Visit Required</option></select></div>
+            <div><label for="nextVisitAt">Next visit</label><input id="nextVisitAt" type="datetime-local"></div>
+            <div class="full"><label for="unresolvedReason">Unresolved / return-visit reason</label><textarea id="unresolvedReason" maxlength="3000"></textarea></div>
+            <div><label for="callbackRequired">Callback required</label><select id="callbackRequired"><option value="false">No</option><option value="true">Yes</option></select></div>
+            <div><label for="callbackAt">Callback date/time</label><input id="callbackAt" type="datetime-local"></div>
+            <div><label for="warrantyReference">Warranty reference</label><input id="warrantyReference" type="text" maxlength="240" placeholder="Warranty / serial / date"></div>
+            <div><label for="amcReference">AMC reference</label><input id="amcReference" type="text" maxlength="240" placeholder="AMC contract / plan"></div>
+          </div>
+
+          <div class="section-title">Completion checklist</div>
+          <div class="checklist">
+            <label class="check"><input id="checkTested" type="checkbox"> System/device tested</label>
+            <label class="check"><input id="checkDemo" type="checkbox"> Customer demo/explanation completed</label>
+            <label class="check"><input id="checkClean" type="checkbox"> Site cleaned / handed over</label>
+            <label class="check"><input id="checkMaterials" type="checkbox"> Materials used recorded</label>
+            <label class="check"><input id="checkPhotos" type="checkbox"> Before/after photos attached</label>
+            <label class="check"><input id="checkAck" type="checkbox"> Customer acknowledgement recorded</label>
+          </div>
+
+          <div class="section-title">Materials / parts used</div>
+          <div id="materials" class="materials"></div>
+          <button id="addMaterialBtn" class="btn btn-ghost" type="button" style="margin-top:9px">+ Add Material</button>
+
+          <div class="section-title">Actual charges</div>
+          <div class="form-grid">
+            <div><label for="serviceActual">Actual service charge</label><input id="serviceActual" type="number" min="0" step="0.01" value="0"></div>
+            <div><label>Parts total</label><div class="box"><strong id="partsActual">₹0.00</strong></div></div>
+          </div>
+          <div class="totals">
+            <div class="total"><span>SERVICE</span><strong id="totalService">₹0.00</strong></div>
+            <div class="total"><span>PARTS</span><strong id="totalParts">₹0.00</strong></div>
+            <div class="total grand"><span>ACTUAL TOTAL</span><strong id="grandActual">₹0.00</strong></div>
+          </div>
+
+          <div class="section-title">Customer acknowledgement</div>
+          <div class="form-grid">
+            <div><label for="ackBy">Acknowledged by</label><input id="ackBy" type="text" maxlength="200" placeholder="Customer / representative name"></div>
+            <div><label for="ackAt">Acknowledgement time</label><input id="ackAt" type="datetime-local"></div>
+            <div class="full"><label for="ackText">Acknowledgement / remarks</label><textarea id="ackText" maxlength="3000" placeholder="Customer confirms work/status and remarks"></textarea></div>
+          </div>
+
+          <div class="section-title">Customer signature</div>
+          <div class="signature-wrap">
+            <canvas id="signatureCanvas" class="signature-canvas"></canvas>
+            <div class="signature-actions">
+              <button id="clearSignatureBtn" class="btn btn-ghost" type="button">Clear</button>
+              <button id="saveSignatureBtn" class="btn btn-primary" type="button">Save Signature</button>
+            </div>
+            <div class="meta" style="margin-top:5px">Signature is stored privately with the job record.</div>
+          </div>
+
+          <div class="section-title">Before / after photos & attachments</div>
+          <div class="uploadbar">
+            <select id="attachmentType"><option value="before_photo">Before Photo</option><option value="after_photo">After Photo</option><option value="other">Other Image</option></select>
+            <input id="attachmentFile" type="file" accept="image/jpeg,image/png,image/webp" capture="environment">
+            <button id="uploadAttachmentBtn" class="btn btn-primary" type="button">Upload</button>
+          </div>
+          <div class="meta" style="margin-top:5px">Private images only. Maximum 10 MB each.</div>
+          <div id="attachmentGrid" class="attachments"></div>
+
+          <div id="saveStatus" class="status-msg"></div>
+          <div class="actions" style="justify-content:flex-end;margin-top:16px">
+            <button id="saveExecutionBtn" class="btn btn-primary" type="button">Save Job Sheet</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="card">
+        <div class="card-head"><h2>Job Information</h2></div>
+        <div class="card-body">
+          <div id="jobInfoBox" class="call-box"></div>
+
+          <div class="section-title">AI Customer-Care Follow-up Readiness</div>
+          <div id="callReadiness" class="call-box"></div>
+
+          <div class="section-title">Lifecycle History</div>
+          <div id="eventList" class="event-list"></div>
+
+          <div class="section-title">Billing</div>
+          <div id="billingInfo" class="call-box"></div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div id="printModal" class="preview" aria-hidden="true">
+    <div class="preview-wrap">
+      <div class="preview-toolbar">
+        <button id="closePreviewBtn" class="btn btn-ghost" type="button">Close</button>
+        <button id="printBtn" class="btn btn-primary" type="button">Print / Save PDF</button>
+      </div>
+      <article id="printSheet" class="sheet"></article>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+
+    const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    const BUCKET='service-job-media'
+
+    const jobsBtn=document.getElementById('jobsBtn')
+    const adminBtn=document.getElementById('adminBtn')
+    const userLine=document.getElementById('userLine')
+    const pageTitle=document.getElementById('pageTitle')
+    const loadingCard=document.getElementById('loadingCard')
+    const workspace=document.getElementById('workspace')
+    const jobBadge=document.getElementById('jobBadge')
+    const sumCustomer=document.getElementById('sumCustomer')
+    const sumService=document.getElementById('sumService')
+    const sumTech=document.getElementById('sumTech')
+    const sumStatus=document.getElementById('sumStatus')
+    const visitTime=document.getElementById('visitTime')
+    const arrivalTime=document.getElementById('arrivalTime')
+    const workStartTime=document.getElementById('workStartTime')
+    const workCompleteTime=document.getElementById('workCompleteTime')
+    const diagnosis=document.getElementById('diagnosis')
+    const workPerformed=document.getElementById('workPerformed')
+    const resolutionStatus=document.getElementById('resolutionStatus')
+    const unresolvedReason=document.getElementById('unresolvedReason')
+    const nextVisitAt=document.getElementById('nextVisitAt')
+    const callbackRequired=document.getElementById('callbackRequired')
+    const callbackAt=document.getElementById('callbackAt')
+    const warrantyReference=document.getElementById('warrantyReference')
+    const amcReference=document.getElementById('amcReference')
+    const checkTested=document.getElementById('checkTested')
+    const checkDemo=document.getElementById('checkDemo')
+    const checkClean=document.getElementById('checkClean')
+    const checkMaterials=document.getElementById('checkMaterials')
+    const checkPhotos=document.getElementById('checkPhotos')
+    const checkAck=document.getElementById('checkAck')
+    const materials=document.getElementById('materials')
+    const addMaterialBtn=document.getElementById('addMaterialBtn')
+    const serviceActual=document.getElementById('serviceActual')
+    const partsActual=document.getElementById('partsActual')
+    const totalService=document.getElementById('totalService')
+    const totalParts=document.getElementById('totalParts')
+    const grandActual=document.getElementById('grandActual')
+    const ackBy=document.getElementById('ackBy')
+    const ackAt=document.getElementById('ackAt')
+    const ackText=document.getElementById('ackText')
+    const signatureCanvas=document.getElementById('signatureCanvas')
+    const clearSignatureBtn=document.getElementById('clearSignatureBtn')
+    const saveSignatureBtn=document.getElementById('saveSignatureBtn')
+    const attachmentType=document.getElementById('attachmentType')
+    const attachmentFile=document.getElementById('attachmentFile')
+    const uploadAttachmentBtn=document.getElementById('uploadAttachmentBtn')
+    const attachmentGrid=document.getElementById('attachmentGrid')
+    const saveStatus=document.getElementById('saveStatus')
+    const saveExecutionBtn=document.getElementById('saveExecutionBtn')
+    const jobInfoBox=document.getElementById('jobInfoBox')
+    const callReadiness=document.getElementById('callReadiness')
+    const eventList=document.getElementById('eventList')
+    const billingInfo=document.getElementById('billingInfo')
+    const previewBtn=document.getElementById('previewBtn')
+    const billingBtn=document.getElementById('billingBtn')
+    const completeJobBtn=document.getElementById('completeJobBtn')
+    const printModal=document.getElementById('printModal')
+    const printSheet=document.getElementById('printSheet')
+    const closePreviewBtn=document.getElementById('closePreviewBtn')
+    const printBtn=document.getElementById('printBtn')
+
+    let job=null
+    let settings={}
+    let materialSeq=0
+    let signedAttachmentUrls=new Map()
+    let signatureDirty=false
+
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    const nl2br=v=>esc(v||'').replace(/\n/g,'<br>')
+    const money=v=>'₹'+Number(v||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})
+
+    function toLocalInput(value){
+      if(!value)return ''
+      const d=new Date(value)
+      if(Number.isNaN(d.getTime()))return ''
+      const local=new Date(d.getTime()-d.getTimezoneOffset()*60000)
+      return local.toISOString().slice(0,16)
+    }
+    function toIso(value){
+      if(!value)return null
+      const d=new Date(value)
+      return Number.isNaN(d.getTime())?null:d.toISOString()
+    }
+    function fmt(value){return value?new Date(value).toLocaleString():'Not recorded'}
+    function customer(){return Array.isArray(job?.customers)?job.customers[0]:job?.customers||{}}
+    function technician(){return Array.isArray(job?.technicians)?job.technicians[0]:job?.technicians||{}}
+    function quotation(){return Array.isArray(job?.quotations)?job.quotations[0]:job?.quotations||{}}
+
+    function addMaterial(seed={}){
+      const id=++materialSeq
+      const row=document.createElement('div')
+      row.className='material'
+      row.dataset.material=String(id)
+      row.innerHTML=
+        '<div><div class="mini">Description</div><input data-f="description" maxlength="1000" value="'+esc(seed.description||'')+'" placeholder="Cable, connector, HDD, SSD, adapter…"></div>'+
+        '<div><div class="mini">Qty</div><input data-f="quantity" type="number" min="0.001" step="0.001" value="'+esc(seed.quantity??1)+'"></div>'+
+        '<div><div class="mini">Unit</div><input data-f="unit" maxlength="30" value="'+esc(seed.unit||'Nos')+'"></div>'+
+        '<div><div class="mini">Unit price</div><input data-f="unit_price" type="number" min="0" step="0.01" value="'+esc(seed.unit_price??0)+'"></div>'+
+        '<div class="material-total" data-material-total>'+money(seed.line_total||0)+'</div>'+
+        '<button class="btn btn-danger" type="button" data-remove>Remove</button>'
+      materials.appendChild(row)
+      row.querySelectorAll('input').forEach(el=>el.addEventListener('input',updateTotals))
+      row.querySelector('[data-remove]').addEventListener('click',()=>{row.remove();if(!materials.children.length)addMaterial();updateTotals()})
+      updateTotals()
+    }
+
+    function collectMaterials(){
+      return Array.from(materials.children).map(row=>{
+        const get=n=>row.querySelector('[data-f="'+n+'"]')
+        return {
+          description:get('description').value.trim(),
+          quantity:Number(get('quantity').value||0),
+          unit:get('unit').value.trim()||'Nos',
+          unit_price:Number(get('unit_price').value||0)
+        }
+      }).filter(x=>x.description||x.quantity||x.unit_price)
+    }
+
+    function updateTotals(){
+      let parts=0
+      Array.from(materials.children).forEach(row=>{
+        const q=Number(row.querySelector('[data-f="quantity"]').value||0)
+        const p=Number(row.querySelector('[data-f="unit_price"]').value||0)
+        const total=Math.round(q*p*100)/100
+        parts+=total
+        row.querySelector('[data-material-total]').textContent=money(total)
+      })
+      const svc=Number(serviceActual.value||0)
+      partsActual.textContent=money(parts)
+      totalService.textContent=money(svc)
+      totalParts.textContent=money(parts)
+      grandActual.textContent=money(svc+parts)
+    }
+
+    function checklistJson(){
+      return {
+        tested:checkTested.checked,
+        customer_demo:checkDemo.checked,
+        site_clean:checkClean.checked,
+        materials_recorded:checkMaterials.checked,
+        photos_attached:checkPhotos.checked,
+        customer_acknowledged:checkAck.checked
+      }
+    }
+
+    function applyChecklist(v={}){
+      checkTested.checked=Boolean(v.tested)
+      checkDemo.checked=Boolean(v.customer_demo)
+      checkClean.checked=Boolean(v.site_clean)
+      checkMaterials.checked=Boolean(v.materials_recorded)
+      checkPhotos.checked=Boolean(v.photos_attached)
+      checkAck.checked=Boolean(v.customer_acknowledged)
+    }
+
+    function stageState(){
+      const stages=[
+        ['stageVisit','visitTime',job.visit_started_at],
+        ['stageArrival','arrivalTime',job.arrived_at],
+        ['stageWork','workStartTime',job.work_started_at],
+        ['stageComplete','workCompleteTime',job.work_completed_at]
+      ]
+      stages.forEach(([box,time,value])=>{
+        document.getElementById(box).classList.toggle('done',Boolean(value))
+        document.getElementById(time).textContent=fmt(value)
+      })
+      const buttons=[...document.querySelectorAll('[data-stage]')]
+      buttons.forEach(btn=>{
+        const s=btn.dataset.stage
+        const disabled=
+          job.status==='completed'||job.status==='cancelled'||
+          (s==='visit_start'&&Boolean(job.visit_started_at))||
+          (s==='arrival'&&(!job.visit_started_at||Boolean(job.arrived_at)))||
+          (s==='work_start'&&(!job.arrived_at||Boolean(job.work_started_at)))||
+          (s==='work_complete'&&(!job.work_started_at||Boolean(job.work_completed_at)))
+        btn.disabled=disabled
+      })
+    }
+
+    async function markStage(stage,button){
+      button.disabled=true
+      const {error}=await supabase.rpc('mark_service_job_stage',{p_service_job_id:job.id,p_stage:stage})
+      if(error){alert('Could not record stage: '+error.message);button.disabled=false;return}
+      await reloadJob()
+    }
+
+    async function saveExecution(showSuccess=true){
+      if(!job)return false
+      const mats=collectMaterials()
+      for(let i=0;i<mats.length;i++){
+        if(!mats[i].description){saveStatus.textContent='Material line '+(i+1)+': description is required.';saveStatus.className='status-msg err';return false}
+        if(!Number.isFinite(mats[i].quantity)||mats[i].quantity<=0){saveStatus.textContent='Material line '+(i+1)+': quantity is invalid.';saveStatus.className='status-msg err';return false}
+        if(!Number.isFinite(mats[i].unit_price)||mats[i].unit_price<0){saveStatus.textContent='Material line '+(i+1)+': unit price is invalid.';saveStatus.className='status-msg err';return false}
+      }
+      const resolution=resolutionStatus.value||null
+      if(['unresolved','awaiting_parts','return_visit_required'].includes(resolution)&&!unresolvedReason.value.trim()){
+        saveStatus.textContent='Enter the unresolved / return-visit reason.'
+        saveStatus.className='status-msg err'
+        return false
+      }
+      if(callbackRequired.value==='true'&&!callbackAt.value){
+        saveStatus.textContent='Select a callback date/time.'
+        saveStatus.className='status-msg err'
+        return false
+      }
+      const svc=Number(serviceActual.value||0)
+      if(!Number.isFinite(svc)||svc<0){saveStatus.textContent='Actual service charge is invalid.';saveStatus.className='status-msg err';return false}
+
+      saveExecutionBtn.disabled=true
+      saveExecutionBtn.textContent='Saving…'
+      saveStatus.textContent=''
+
+      const {error}=await supabase.rpc('save_service_job_execution',{
+        p_service_job_id:job.id,
+        p_diagnosis:diagnosis.value.trim()||null,
+        p_work_performed:workPerformed.value.trim()||null,
+        p_resolution_status:resolution,
+        p_unresolved_reason:unresolvedReason.value.trim()||null,
+        p_next_visit_at:toIso(nextVisitAt.value),
+        p_callback_required:callbackRequired.value==='true',
+        p_callback_at:toIso(callbackAt.value),
+        p_completion_checklist:checklistJson(),
+        p_warranty_reference:warrantyReference.value.trim()||null,
+        p_amc_reference:amcReference.value.trim()||null,
+        p_service_charge_actual:svc,
+        p_customer_acknowledged_by:ackBy.value.trim()||null,
+        p_customer_acknowledgement:ackText.value.trim()||null,
+        p_customer_acknowledged_at:toIso(ackAt.value),
+        p_materials:mats
+      })
+
+      saveExecutionBtn.disabled=false
+      saveExecutionBtn.textContent='Save Job Sheet'
+      if(error){
+        saveStatus.textContent='Could not save job sheet: '+error.message
+        saveStatus.className='status-msg err'
+        return false
+      }
+      await reloadJob()
+      if(showSuccess){
+        saveStatus.textContent='Job sheet saved successfully.'
+        saveStatus.className='status-msg ok'
+      }
+      return true
+    }
+
+    async function completeJob(){
+      if(job.status==='completed')return
+      if(!job.work_completed_at){alert('Record Work Complete before closing the job.');return}
+      if(!resolutionStatus.value){alert('Choose a resolution status before closing the job.');return}
+      if(!await saveExecution(false))return
+      if(!confirm('Mark '+job.job_number+' as Completed?'))return
+      completeJobBtn.disabled=true
+      const {error}=await supabase.from('service_jobs').update({status:'completed'}).eq('id',job.id)
+      completeJobBtn.disabled=false
+      if(error){alert('Could not complete job: '+error.message);return}
+      await reloadJob()
+      saveStatus.textContent='Job completed successfully.'
+      saveStatus.className='status-msg ok'
+    }
+
+    function fileExt(file){
+      const m={'image/jpeg':'jpg','image/png':'png','image/webp':'webp'}
+      return m[file.type]||'bin'
+    }
+
+    async function uploadBlob(blob,type,name,mime){
+      if(!job)throw new Error('Job not loaded')
+      if(blob.size>10485760)throw new Error('File exceeds 10 MB')
+      const path=job.id+'/'+type+'/'+Date.now()+'-'+crypto.randomUUID()+'.'+fileExt({type:mime})
+      const {error:uploadError}=await supabase.storage.from(BUCKET).upload(path,blob,{contentType:mime,upsert:false})
+      if(uploadError)throw uploadError
+      const {data:{session}}=await supabase.auth.getSession()
+      const {error:metaError}=await supabase.from('service_job_attachments').insert({
+        service_job_id:job.id,
+        attachment_type:type,
+        storage_bucket:BUCKET,
+        storage_path:path,
+        original_name:name||null,
+        mime_type:mime||null,
+        size_bytes:blob.size,
+        uploaded_by:session?.user?.id||null
+      })
+      if(metaError){
+        await supabase.storage.from(BUCKET).remove([path])
+        throw metaError
+      }
+    }
+
+    async function uploadAttachment(){
+      const file=attachmentFile.files?.[0]
+      if(!file){alert('Choose an image first.');return}
+      if(!['image/jpeg','image/png','image/webp'].includes(file.type)){alert('Use JPG, PNG or WEBP image.');return}
+      uploadAttachmentBtn.disabled=true
+      uploadAttachmentBtn.textContent='Uploading…'
+      try{
+        await uploadBlob(file,attachmentType.value,file.name,file.type)
+        attachmentFile.value=''
+        await reloadJob()
+      }catch(error){alert('Upload failed: '+error.message)}
+      uploadAttachmentBtn.disabled=false
+      uploadAttachmentBtn.textContent='Upload'
+    }
+
+    async function deleteAttachment(id,path){
+      if(!confirm('Remove this attachment?'))return
+      const {error:storageError}=await supabase.storage.from(BUCKET).remove([path])
+      if(storageError){alert('Could not remove file: '+storageError.message);return}
+      const {error}=await supabase.from('service_job_attachments').delete().eq('id',id)
+      if(error){alert('File removed, but attachment metadata cleanup failed: '+error.message);return}
+      await reloadJob()
+    }
+
+    async function signedUrl(path){
+      if(signedAttachmentUrls.has(path))return signedAttachmentUrls.get(path)
+      const {data,error}=await supabase.storage.from(BUCKET).createSignedUrl(path,3600)
+      if(error)return ''
+      const url=data?.signedUrl||''
+      signedAttachmentUrls.set(path,url)
+      return url
+    }
+
+    async function renderAttachments(){
+      const rows=job.service_job_attachments||[]
+      if(!rows.length){attachmentGrid.innerHTML='<div class="meta">No photos or signature attachments yet.</div>';return}
+      const cards=[]
+      for(const a of rows){
+        const url=await signedUrl(a.storage_path)
+        cards.push('<div class="attachment">'+
+          (url?'<img src="'+esc(url)+'" alt="'+esc(a.attachment_type)+'">':'<div class="meta" style="padding:20px">Preview unavailable</div>')+
+          '<div class="cap"><strong>'+esc(a.attachment_type.replaceAll('_',' '))+'</strong>'+esc(a.original_name||'')+
+          '<br><button class="btn btn-danger" type="button" data-del-id="'+esc(a.id)+'" data-del-path="'+esc(a.storage_path)+'">Remove</button></div></div>')
+      }
+      attachmentGrid.innerHTML=cards.join('')
+      attachmentGrid.querySelectorAll('[data-del-id]').forEach(btn=>btn.addEventListener('click',()=>deleteAttachment(btn.dataset.delId,btn.dataset.delPath)))
+    }
+
+    function setupSignature(){
+      const ctx=signatureCanvas.getContext('2d')
+      let drawing=false
+      function resize(){
+        const ratio=window.devicePixelRatio||1
+        const rect=signatureCanvas.getBoundingClientRect()
+        const old=ctx.getImageData(0,0,signatureCanvas.width||1,signatureCanvas.height||1)
+        signatureCanvas.width=Math.max(1,Math.floor(rect.width*ratio))
+        signatureCanvas.height=Math.max(1,Math.floor(rect.height*ratio))
+        ctx.setTransform(ratio,0,0,ratio,0,0)
+        ctx.lineWidth=2
+        ctx.lineCap='round'
+        ctx.strokeStyle='#0d1f42'
+        if(old.width>1&&old.height>1)ctx.putImageData(old,0,0)
+      }
+      resize()
+      window.addEventListener('resize',resize)
+      const point=e=>{
+        const r=signatureCanvas.getBoundingClientRect()
+        return {x:e.clientX-r.left,y:e.clientY-r.top}
+      }
+      signatureCanvas.addEventListener('pointerdown',e=>{drawing=true;signatureCanvas.setPointerCapture(e.pointerId);const p=point(e);ctx.beginPath();ctx.moveTo(p.x,p.y)})
+      signatureCanvas.addEventListener('pointermove',e=>{if(!drawing)return;const p=point(e);ctx.lineTo(p.x,p.y);ctx.stroke();signatureDirty=true})
+      signatureCanvas.addEventListener('pointerup',()=>{drawing=false})
+      signatureCanvas.addEventListener('pointercancel',()=>{drawing=false})
+      clearSignatureBtn.addEventListener('click',()=>{ctx.clearRect(0,0,signatureCanvas.width,signatureCanvas.height);signatureDirty=false})
+      saveSignatureBtn.addEventListener('click',()=>{
+        if(!signatureDirty){alert('Add a signature first.');return}
+        signatureCanvas.toBlob(async blob=>{
+          if(!blob)return
+          saveSignatureBtn.disabled=true
+          try{
+            await uploadBlob(blob,'signature','customer-signature.png','image/png')
+            signatureDirty=false
+            await reloadJob()
+          }catch(error){alert('Could not save signature: '+error.message)}
+          saveSignatureBtn.disabled=false
+        },'image/png')
+      })
+    }
+
+    function renderCallReadiness(){
+      const c=customer()
+      const hasPhone=Boolean(String(c.phone||'').trim())
+      const eligible=!['completed','cancelled'].includes(job.status)&&hasPhone&&c.call_consent===true&&c.do_not_call!==true
+      const reasons=[]
+      if(['completed','cancelled'].includes(job.status))reasons.push('job is completed/cancelled')
+      if(!hasPhone)reasons.push('customer phone missing')
+      if(c.call_consent!==true)reasons.push('call consent not recorded')
+      if(c.do_not_call===true)reasons.push('Do Not Call enabled')
+      callReadiness.innerHTML='<p><strong>'+(eligible?'AI follow-up call eligible':'AI follow-up call blocked')+'</strong></p>'+
+        '<p>Language: '+esc(c.preferred_language||'not set')+' • Channel: '+esc(c.preferred_contact_channel||'not set')+'</p>'+
+        '<p>Consent: '+(c.call_consent?'Yes':'No')+' • Do Not Call: '+(c.do_not_call?'Yes':'No')+'</p>'+
+        (eligible?'<p>No call is placed from this screen; this record is ready for a future consent-aware automation.</p>':'<p>Blocked because: '+esc(reasons.join(', ')||'not eligible')+'.</p>')
+    }
+
+    function renderBilling(){
+      const q=quotation()
+      const prepared=Boolean(job.billing_quotation_id)
+      billingBtn.textContent=prepared?'Open Billing Quotation':'Prepare Billing'
+      billingBtn.disabled=job.status!=='completed'&&!prepared
+      billingInfo.innerHTML=prepared
+        ? '<p><strong>Billing prepared</strong></p><p>Quotation: '+esc(q.quotation_number||job.billing_quotation_id)+'</p><p>Prepared: '+esc(fmt(job.billing_prepared_at))+'</p>'
+        : '<p><strong>Not prepared yet</strong></p><p>Complete the job, then generate a Draft quotation from the actual service charge and materials without retyping.</p>'
+    }
+
+    async function prepareBilling(){
+      if(job.billing_quotation_id){
+        location.href='/quotations?quotation='+encodeURIComponent(job.billing_quotation_id)
+        return
+      }
+      if(job.status!=='completed'){alert('Complete the service job before preparing billing.');return}
+      if(!confirm('Create a Draft quotation from this completed job?'))return
+      billingBtn.disabled=true
+      billingBtn.textContent='Preparing…'
+      const {data,error}=await supabase.rpc('prepare_service_job_billing',{p_service_job_id:job.id})
+      if(error){alert('Could not prepare billing: '+error.message);billingBtn.disabled=false;billingBtn.textContent='Prepare Billing';return}
+      location.href='/quotations?quotation='+encodeURIComponent(data.quotation_id)
+    }
+
+    function renderEvents(){
+      const rows=(job.service_job_events||[]).slice().sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))
+      eventList.innerHTML=rows.length?rows.map(e=>'<div class="event"><strong>'+esc(e.event_type.replaceAll('_',' '))+'</strong> • '+esc(fmt(e.created_at))+
+        (e.from_status||e.to_status?'<div class="meta">'+esc(e.from_status||'')+(e.to_status?' → '+esc(e.to_status):'')+'</div>':'')+
+        (e.note?'<div class="meta">'+esc(e.note)+'</div>':'')+'</div>').join(''):'<div class="meta" style="padding:12px">No lifecycle history.</div>'
+    }
+
+    async function renderPrint(){
+      const c=customer(),t=technician(),q=quotation()
+      const mats=job.service_job_materials||[]
+      const sig=(job.service_job_attachments||[]).filter(a=>a.attachment_type==='signature').sort((a,b)=>new Date(b.created_at)-new Date(a.created_at))[0]
+      const sigUrl=sig?await signedUrl(sig.storage_path):''
+      const addr=[settings.address_line1,settings.address_line2,settings.city,settings.district,settings.state,settings.pincode,settings.country].filter(Boolean).join(', ')
+      const materialRows=mats.map((m,i)=>'<tr><td>'+(i+1)+'</td><td>'+esc(m.description)+'</td><td>'+esc(m.quantity)+'</td><td>'+esc(m.unit)+'</td><td class="num">'+esc(money(m.unit_price))+'</td><td class="num">'+esc(money(m.line_total))+'</td></tr>').join('')
+      const checklist=job.completion_checklist||{}
+      printSheet.innerHTML=
+        '<div class="p-head"><div><img class="p-logo" src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg"><div style="font-size:8px;line-height:1.5;margin-top:6px">'+esc(addr)+(settings.phone?'<br>Phone: '+esc(settings.phone):'')+(settings.email?'<br>Email: '+esc(settings.email):'')+'</div></div>'+
+        '<div class="p-title"><h1>SERVICE JOB SHEET</h1><div><strong>'+esc(job.job_number)+'</strong></div><div>Status: '+esc(job.status.toUpperCase())+'</div></div></div>'+
+        '<div class="p-grid"><div class="p-box"><h3>Customer / Site</h3><p><strong>'+esc(c.name||'Customer')+'</strong></p><p>'+esc(c.phone||'')+'</p><p>'+esc(job.site_address||'')+'</p></div>'+
+        '<div class="p-box"><h3>Service Reference</h3><p>Service: '+esc(job.service_category)+'</p><p>Technician: '+esc(t.name||'Unassigned')+'</p><p>Enquiry: '+esc(job.enquiry_id||'—')+'</p><p>Invoice: '+esc(job.invoice_id||'—')+'</p></div></div>'+
+        '<div class="p-section"><h4>Complaint / Requested Service</h4>'+nl2br(job.complaint||'—')+'</div>'+
+        '<div class="p-section"><h4>Diagnosis</h4>'+nl2br(job.diagnosis||'—')+'</div>'+
+        '<div class="p-section"><h4>Work Performed</h4>'+nl2br(job.work_performed||'—')+'</div>'+
+        '<div class="p-grid"><div class="p-box"><h3>Visit Timeline</h3><p>Visit start: '+esc(fmt(job.visit_started_at))+'</p><p>Arrival: '+esc(fmt(job.arrived_at))+'</p><p>Work start: '+esc(fmt(job.work_started_at))+'</p><p>Work complete: '+esc(fmt(job.work_completed_at))+'</p></div>'+
+        '<div class="p-box"><h3>Resolution</h3><p>'+esc((job.resolution_status||'—').replaceAll('_',' '))+'</p><p>'+esc(job.unresolved_reason||'')+'</p><p>Next visit: '+esc(fmt(job.next_visit_at))+'</p><p>Callback: '+esc(job.callback_required?fmt(job.callback_at):'No')+'</p></div></div>'+
+        '<div class="p-section"><h4>Parts / Materials Used</h4><table class="p-table"><thead><tr><th>#</th><th>Description</th><th>Qty</th><th>Unit</th><th>Rate</th><th>Amount</th></tr></thead><tbody>'+materialRows+'</tbody></table></div>'+
+        '<div class="p-grid"><div class="p-box"><h3>Completion Checklist</h3><p>Tested: '+(checklist.tested?'Yes':'No')+'</p><p>Customer demo: '+(checklist.customer_demo?'Yes':'No')+'</p><p>Site clean: '+(checklist.site_clean?'Yes':'No')+'</p><p>Materials recorded: '+(checklist.materials_recorded?'Yes':'No')+'</p><p>Photos attached: '+(checklist.photos_attached?'Yes':'No')+'</p></div>'+
+        '<div class="p-box"><h3>Actual Charges</h3><p>Service: '+esc(money(job.service_charge_actual))+'</p><p>Parts: '+esc(money(job.parts_actual))+'</p><p><strong>Total: '+esc(money(job.total_actual))+'</strong></p><p>Warranty: '+esc(job.warranty_reference||'—')+'</p><p>AMC: '+esc(job.amc_reference||'—')+'</p></div></div>'+
+        '<div class="p-grid"><div class="p-box"><h3>Customer Acknowledgement</h3><p><strong>'+esc(job.customer_acknowledged_by||'—')+'</strong></p><p>'+nl2br(job.customer_acknowledgement||'')+'</p><p>'+esc(fmt(job.customer_acknowledged_at))+'</p></div>'+
+        '<div class="p-box"><h3>Customer Signature</h3>'+(sigUrl?'<img class="p-sign" src="'+esc(sigUrl)+'">':'<p>Signature not attached</p>')+'</div></div>'+
+        '<div class="p-footer"><span>Minarva Technologies • Service Job Sheet</span><span>Technician / Authorised Signatory</span></div>'
+      printModal.classList.add('show')
+      printModal.setAttribute('aria-hidden','false')
+      document.body.style.overflow='hidden'
+    }
+
+    function fill(){
+      const c=customer(),t=technician()
+      pageTitle.textContent='Job Sheet — '+job.job_number
+      jobBadge.textContent=job.priority.toUpperCase()+' • '+job.status.replaceAll('_',' ').toUpperCase()
+      sumCustomer.textContent=c.name||'Customer'
+      sumService.textContent=job.service_category||'—'
+      sumTech.textContent=t.name||'Unassigned'
+      sumStatus.textContent=job.status.replaceAll('_',' ')
+      diagnosis.value=job.diagnosis||''
+      workPerformed.value=job.work_performed||''
+      resolutionStatus.value=job.resolution_status||''
+      unresolvedReason.value=job.unresolved_reason||''
+      nextVisitAt.value=toLocalInput(job.next_visit_at)
+      callbackRequired.value=String(Boolean(job.callback_required))
+      callbackAt.value=toLocalInput(job.callback_at)
+      warrantyReference.value=job.warranty_reference||''
+      amcReference.value=job.amc_reference||''
+      applyChecklist(job.completion_checklist||{})
+      materials.innerHTML=''
+      ;(job.service_job_materials||[]).sort((a,b)=>a.line_no-b.line_no).forEach(addMaterial)
+      if(!materials.children.length)addMaterial()
+      serviceActual.value=Number(job.service_charge_actual||0)
+      ackBy.value=job.customer_acknowledged_by||''
+      ackAt.value=toLocalInput(job.customer_acknowledged_at)
+      ackText.value=job.customer_acknowledgement||''
+      updateTotals()
+      stageState()
+      renderEvents()
+      renderCallReadiness()
+      renderBilling()
+      jobInfoBox.innerHTML='<p><strong>'+esc(job.job_number)+'</strong></p><p>Site: '+esc(job.site_address||'—')+'</p><p>Equipment: '+esc(job.equipment_details||'—')+'</p><p>Scheduled: '+esc(fmt(job.scheduled_at))+'</p><p>Follow-up: '+esc(fmt(job.follow_up_at))+'</p>'+
+        '<p>Estimate: '+esc(money(job.total_estimate))+' • Actual: '+esc(money(job.total_actual))+'</p>'
+      completeJobBtn.disabled=job.status==='completed'||job.status==='cancelled'
+      completeJobBtn.textContent=job.status==='completed'?'Completed':'Complete Job'
+      saveExecutionBtn.disabled=Boolean(job.billing_quotation_id)||job.status==='cancelled'
+      addMaterialBtn.disabled=Boolean(job.billing_quotation_id)||job.status==='cancelled'
+      serviceActual.disabled=Boolean(job.billing_quotation_id)||job.status==='cancelled'
+      renderAttachments()
+    }
+
+    async function fetchJob(){
+      const id=new URLSearchParams(location.search).get('job')
+      if(!id)throw new Error('Missing job ID.')
+      const {data,error}=await supabase
+        .from('service_jobs')
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,visit_started_at,arrived_at,work_started_at,work_completed_at,diagnosis,work_performed,resolution_status,unresolved_reason,next_visit_at,callback_required,callback_at,completion_checklist,warranty_reference,amc_reference,service_charge_actual,parts_actual,total_actual,customer_acknowledged_by,customer_acknowledgement,customer_acknowledged_at,billing_quotation_id,billing_prepared_at,created_at,updated_at,customers(id,name,phone,email,preferred_language,preferred_contact_channel,call_consent,do_not_call),technicians(id,name,phone),quotations:billing_quotation_id(id,quotation_number),service_job_materials(id,line_no,description,quantity,unit,unit_price,line_total,notes),service_job_attachments(id,attachment_type,storage_path,original_name,mime_type,size_bytes,created_at),service_job_events(id,event_type,from_status,to_status,note,created_at)')
+        .eq('id',id).maybeSingle()
+      if(error)throw error
+      if(!data)throw new Error('Service job not found.')
+      return data
+    }
+
+    async function reloadJob(){
+      signedAttachmentUrls.clear()
+      job=await fetchJob()
+      fill()
+    }
+
+    async function loadSettings(){
+      const {data}=await supabase.from('business_billing_settings').select('*').eq('singleton',true).maybeSingle()
+      settings=data||{}
+    }
+
+    async function verifyAdmin(){
+      const {data:{session}}=await supabase.auth.getSession()
+      if(!session?.user){location.href='/admin';return false}
+      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+      if(error||!data||data.active!==true){location.href='/admin';return false}
+      userLine.textContent=(data.email||session.user.email||'')+' • '+data.role
+      return true
+    }
+
+    async function init(){
+      try{
+        if(!await verifyAdmin())return
+        await loadSettings()
+        job=await fetchJob()
+        loadingCard.style.display='none'
+        workspace.style.display='grid'
+        fill()
+        setupSignature()
+      }catch(error){
+        loadingCard.innerHTML='<div class="card-body"><div class="err"><strong>Could not load Job Sheet.</strong><br>'+esc(error?.message||error)+'</div></div>'
+      }
+    }
+
+    document.querySelectorAll('[data-stage]').forEach(btn=>btn.addEventListener('click',()=>markStage(btn.dataset.stage,btn)))
+    addMaterialBtn.addEventListener('click',()=>addMaterial())
+    serviceActual.addEventListener('input',updateTotals)
+    saveExecutionBtn.addEventListener('click',()=>saveExecution(true))
+    uploadAttachmentBtn.addEventListener('click',uploadAttachment)
+    completeJobBtn.addEventListener('click',completeJob)
+    billingBtn.addEventListener('click',prepareBilling)
+    previewBtn.addEventListener('click',renderPrint)
+    closePreviewBtn.addEventListener('click',()=>{printModal.classList.remove('show');printModal.setAttribute('aria-hidden','true');document.body.style.overflow=''})
+    printBtn.addEventListener('click',()=>window.print())
+    printModal.addEventListener('click',e=>{if(e.target===printModal)closePreviewBtn.click()})
+    jobsBtn.addEventListener('click',()=>{location.href='/service-jobs'})
+    adminBtn.addEventListener('click',()=>{location.href='/admin'})
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&printModal.classList.contains('show'))closePreviewBtn.click()})
+    supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+    init()
+  </script>
+</body>
+</html>
