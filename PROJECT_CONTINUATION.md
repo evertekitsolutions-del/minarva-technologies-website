@@ -307,20 +307,57 @@ Security verification:
 - Security Advisor shows no new database/RLS issue; the pre-existing leaked-password-protection Auth warning remains
 - Performance Advisor shows only unused-index informational notices on low-usage/new indexes
 
-## Immediate next milestone
+## Billing Foundation — Milestone 2C1 — COMPLETE
 
-**Billing Foundation — Milestone 2C1: Product / Service Catalogue UI**
-
-Add secure catalogue management:
-- list/search catalogue items
-- create/edit Product or Service
-- SKU
-- HSN/SAC
+Implemented in `admin.html`:
+- authenticated **Catalogue** entry point in Admin Dashboard
+- catalogue list + search
+- Product / Service type filter
+- Active / Inactive filter
+- create catalogue item
+- edit catalogue item
+- SKU / item code
+- HSN / SAC
 - unit
 - unit price
-- GST/tax rate
-- active/inactive status
-- fast reuse of the standardized Minarva service categories
-- prepare catalogue selection for quotation line items
+- GST / tax rate
+- active / inactive status
+- description for quotation/invoice line reuse
+- standardized Minarva service presets for fast service creation
+- service-name normalization for catalogue services
+- duplicate SKU error handling
+- responsive catalogue layout
+- admin-only RLS remains the database authority
 
-Keep quotation creation for the following small milestone after Catalogue UI is completed and verified.
+GitHub commit:
+- `6976a63523a556e2842ab1053f706d67b686f14f`
+
+No fake product/service data was created.
+
+Security verification after UI milestone:
+- no new database/RLS finding
+- the existing Supabase Auth **Leaked Password Protection Disabled** warning remains
+
+## Immediate next milestone
+
+**Billing Foundation — Milestone 2C2: Quotation Creation UI**
+
+Add the first usable quotation workflow:
+- Quotation list
+- Create quotation
+- select linked customer
+- optional source enquiry link
+- add catalogue items/services as quotation lines
+- custom manual line allowed
+- quantity
+- unit
+- unit price
+- discount
+- tax rate
+- subtotal / taxable / tax / total calculation
+- quotation date + validity
+- notes + terms
+- Draft / Sent status
+- prepare professional quotation numbering
+
+Keep PDF/print and quotation → invoice conversion for the following milestones after quotation creation is completed and verified.
