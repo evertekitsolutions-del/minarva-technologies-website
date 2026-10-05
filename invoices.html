@@ -87,6 +87,7 @@
           <div class="card-head">
             <h2>Invoice Detail</h2>
             <div class="actions">
+              <button id="serviceJobBtn" class="btn btn-ghost" type="button">Service Job</button>
               <button id="previewBtn" class="btn btn-ghost" type="button">Preview / PDF</button>
               <button id="cancelInvoiceBtn" class="btn btn-danger" type="button">Cancel Invoice</button>
             </div>
@@ -183,6 +184,7 @@
     const adminBtn=document.getElementById('adminBtn')
     const detailEmpty=document.getElementById('detailEmpty')
     const detailPane=document.getElementById('detailPane')
+    const serviceJobBtn=document.getElementById('serviceJobBtn')
     const previewBtn=document.getElementById('previewBtn')
     const cancelInvoiceBtn=document.getElementById('cancelInvoiceBtn')
     const detailNumber=document.getElementById('detailNumber')
@@ -630,6 +632,12 @@
     adminBtn.addEventListener('click',()=>{location.href='/admin'})
     recordPaymentBtn.addEventListener('click',recordPayment)
     cancelInvoiceBtn.addEventListener('click',cancelInvoice)
+    serviceJobBtn.addEventListener('click',()=>{
+      if(!activeInvoice)return
+      location.href='/service-jobs?customer='+encodeURIComponent(activeInvoice.customer_id)+
+        '&invoice='+encodeURIComponent(activeInvoice.id)+
+        (activeInvoice.enquiry_id?'&enquiry='+encodeURIComponent(activeInvoice.enquiry_id):'')
+    })
     previewBtn.addEventListener('click',openPreview)
     printCloseBtn.addEventListener('click',closePreview)
     printBtn.addEventListener('click',()=>window.print())
