@@ -247,20 +247,42 @@ GitHub commit:
 
 The browser uses the existing Supabase publishable key + authenticated session; admin-only RLS remains the authority for reads/writes.
 
-## Immediate next milestone
+## Billing Foundation — Milestone 2B1 — COMPLETE
 
-**Billing Foundation — Milestone 2B: Customer Master UI**
-
-Add secure Customer Master management to the Admin system:
-- list/search customers
+Implemented in `admin.html`:
+- authenticated **Customer Master** entry point
+- customer list + search
 - create customer
 - edit customer
-- phone normalization / duplicate awareness
-- GST and address fields
-- preferred language / preferred contact channel
-- call consent + consent source/date
-- Do Not Call
-- link source enquiry to customer
-- prepare **Enquiry → Customer** conversion
+- database-wide duplicate-phone awareness using `phone_normalized`
+- optional customer code
+- GSTIN
+- billing address + separate service/site address
+- source enquiry ID linkage field
+- preferred language
+- preferred contact channel
+- call consent flag
+- consent source + consent date/time
+- Do Not Call flag
+- internal customer notes
+- responsive Customer Master layout
+- admin-only RLS remains the database authority
 
-Keep quotation creation for the next small milestone after Customer Master is completed and verified.
+GitHub commit:
+- `9a7a15599cd4393e0e950456b4961d427fa05767`
+
+No fake production customer data was created.
+
+## Immediate next milestone
+
+**Billing Foundation — Milestone 2B2: Enquiry → Customer Conversion**
+
+Add a direct **Create/Link Customer** action from an enquiry:
+- detect an existing customer by normalized phone before creating
+- if found, offer link/open existing Customer Master record
+- if not found, prefill Customer Master from enquiry name/phone/email
+- preserve `source_enquiry_id`
+- carry communication preferences safely without assuming call consent
+- return to the enquiry with linked-customer confirmation
+
+After this is completed and verified, continue to Product / Service Catalogue UI.
