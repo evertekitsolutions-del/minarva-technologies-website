@@ -548,26 +548,108 @@ Security verification:
 - current Security Advisor shows no new database/RLS problem; only the pre-existing **Leaked Password Protection Disabled** Auth warning remains
 - new unindexed-FK findings introduced by payment ledger were fixed; remaining Performance Advisor findings are unused-index informational notices on a new/low-usage database
 
-## Immediate next milestone
+## Operations — Milestone 3A1 — COMPLETE
 
-**Operations — Milestone 3A1: Service Job / Ticket Foundation**
-
-Build the own-business service operations workflow:
-- create service job from Enquiry / Customer / Invoice
-- job/ticket number
-- customer + site address
+Implemented:
+- secure `technicians` master table
+- secure `service_jobs` table
+- immutable/read-only lifecycle `service_job_events` history
+- financial-year-aware service ticket numbering
+- format: `JOB-MT-2026-27-0001`
+- reusable private atomic document-sequence allocator
+- **root-cause fix** for the earlier SECURITY INVOKER invoice-conversion counter access: invoice conversion now uses the protected allocator instead of requiring direct access to the private counter table
+- authenticated `create_service_job(...)` RPC
+- create service job from:
+  - Enquiry
+  - Customer Master
+  - Invoice
+  - standalone Service Jobs workspace
+- source-enquiry and source-invoice/customer consistency checks
+- customer + service/site address
 - service category
 - device/equipment details
-- complaint / requested work
-- priority
-- status lifecycle
+- complaint / requested service
+- requested/planned work
+- priority: Low / Normal / High / Urgent
+- lifecycle statuses: Open / Scheduled / In Progress / On Hold / Completed / Cancelled
+- automatic Completed timestamp
 - assigned technician foundation
+- quick Technician creation UI
 - visit date / schedule
+- follow-up date/time
 - internal notes
 - customer-facing notes
-- service charge / parts estimate foundation
-- job list/search/filter
-- link completed job back to billing/customer history
-- prepare job/follow-up data for future AI customer-care calls and reminders
+- service-charge estimate
+- parts estimate
+- generated total estimate
+- dedicated authenticated `/service-jobs` workspace
+- job list/search
+- status filter
+- priority filter
+- create + edit workflow
+- lifecycle history display
+- Admin Dashboard **Service Jobs** navigation
+- direct Enquiry → Service Job shortcut
+- direct Manage Enquiry → Service Job shortcut
+- direct Customer Master → Service Job shortcut
+- direct Invoice → Service Job shortcut
+- completed jobs remain permanently linked through Customer / Enquiry / Invoice references for future billing and customer history
+- security-invoker `service_job_followup_candidates` view
+- follow-up candidate data includes preferred language/contact channel, Call Consent and Do Not Call
+- **AI follow-up call eligibility requires explicit Call Consent and Do Not Call = false**
+- Service Jobs UI visibly shows AI follow-up eligible / blocked state
+- no automated calls are placed by this milestone
+- no fake technician or service-job data created
 
-Keep technician mobile workflow, spare-parts consumption, job-sheet print/signature and advanced scheduling for later small milestones.
+Integrity / audit safeguards:
+- job number is immutable after creation
+- creation audit fields cannot be rewritten
+- edited enquiry/invoice links must still belong to the selected customer
+- inactive/nonexistent technician assignment is rejected
+- Scheduled status requires a schedule date/time
+- status, assignment and schedule changes are automatically written to lifecycle history
+- anonymous users cannot read the service tables or execute service-job creation
+- admin-only RLS remains the authority
+
+Migrations:
+- `supabase/migrations/20261005_service_job_foundation.sql`
+- `supabase/migrations/20261005_service_job_integrity_hardening.sql`
+
+GitHub commits:
+- service-job DB / numbering / lifecycle foundation: `c1f7727b32877c287c94df197f1d6aaf1c2bc37f`
+- Service Jobs workspace: `121082f00b2669e4e19c1cadf6a7e77355e1bceb`
+- service-job edit integrity hardening: `11e1f91af4496aecb80553a6d9de601d5a5a575a`
+- Admin / Enquiry / Customer shortcuts: `062133ec83c92f021be6903ad6a6523c29df686f`
+- Invoice → Service Job shortcut: `11d453a3dc9eeb4324f48da8fed2cf5b31da03e8`
+
+Verification:
+- technicians / service_jobs / service_job_events tables present
+- service-job follow-up view present
+- create-service-job RPC is SECURITY INVOKER
+- authenticated execution allowed
+- anonymous execution blocked
+- lifecycle trigger active
+- update-integrity trigger active
+- Security Advisor reports no new database/RLS finding; only the existing **Leaked Password Protection Disabled** Auth warning remains
+- Performance Advisor reports only unused-index informational notices on the new/low-usage schema
+
+## Immediate next milestone
+
+**Operations — Milestone 3A2: Job Sheet / Visit Execution**
+
+Add the next service-operation layer:
+- professional service job-sheet detail view
+- A4 job-sheet Print / Save PDF
+- technician visit start / arrival / work-start / work-complete timestamps
+- diagnosis / work-performed
+- parts/materials used
+- service charge + parts actual amounts
+- customer acknowledgement / signature foundation
+- before/after photo attachment foundation
+- resolution / unresolved reason
+- next visit / callback requirement
+- completion checklist
+- warranty / AMC reference foundation
+- convert completed service work to billing/invoice preparation without retyping
+
+Keep full technician mobile/PWA workflow and advanced route/schedule optimization for later milestones.
