@@ -445,20 +445,65 @@ GitHub commits:
 
 No fake quotation/customer/product data was created.
 
+## Billing Foundation — Milestone 2D1 — COMPLETE
+
+Implemented:
+- invoice header + invoice line-item tables
+- source quotation reference retained and unique
+- financial-year-aware invoice numbering using existing private document counter
+- format: `INV-MT-2026-27-0001`
+- atomic authenticated `convert_quotation_to_invoice(...)` RPC
+- conversion allowed only from Sent / Accepted quotations
+- quotation customer, enquiry, tax mode, totals, notes, terms and line items copied without retyping
+- source quotation automatically marked `converted`
+- duplicate quotation → invoice conversion blocked
+- GST / Non-GST totals preserved from the quotation
+- payment foundation fields: `amount_paid`, generated `balance_due`, generated `payment_status`
+- payment states: Unpaid / Partially Paid / Paid
+- security-invoker customer outstanding summary view
+- dedicated authenticated `/invoices` workspace
+- invoice search + status/payment filters
+- invoiced / paid / outstanding summary cards
+- Admin Dashboard **Invoices** navigation
+- **Convert to Invoice** action on eligible quotation rows
+- conversion redirects directly to the created invoice in the invoice workspace
+- billing-settings singleton defaults are guaranteed without overwriting saved settings
+- no fake invoice or payment data created
+
+Migration:
+- `supabase/migrations/20261005_invoice_conversion_foundation.sql`
+- `supabase/migrations/20261005_ensure_billing_settings_default.sql`
+
+GitHub commits:
+- invoice DB + atomic conversion foundation: `4f3ded6a4e81286f5798c71bbe6738d2e25b69b9`
+- billing-settings default guard: `f7eccc1b45ac167b6fb5deba9f94e2453b896b5d`
+- invoice workspace: `a8aaa1a6856c61f583aa3087f81d54cb63ee257b`
+- quotation conversion UI: `d11d3860846266e8f42b72f9340096205bcf7dc9`
+- Admin invoices navigation: `e31ad0dc7020e04a54f3300fd656ad63208f6dff`
+
+Security verification:
+- invoice and invoice-item tables are protected by admin-only RLS
+- conversion RPC runs as SECURITY INVOKER
+- authenticated admin execution is allowed
+- anonymous execution is blocked
+- outstanding view uses security-invoker semantics so underlying RLS remains authoritative
+- Security Advisor checked after the milestone; the existing Auth leaked-password-protection warning remains if still reported
+- Performance Advisor checked after the milestone; unused-index notices on newly created/low-usage indexes are informational
+
 ## Immediate next milestone
 
-**Billing Foundation — Milestone 2D1: Quotation → Invoice Conversion Foundation**
+**Billing Foundation — Milestone 2D2: Invoice Detail / Print + Payment Recording**
 
-Build the invoice foundation from accepted/sent quotations:
-- invoice header + invoice line items
-- professional financial-year-aware invoice numbering
-- convert quotation → invoice without retyping customer/items
-- preserve source quotation reference
-- GST / Non-GST tax mode and totals
-- payment status foundation: Unpaid / Partially Paid / Paid
-- amount paid + balance due
-- invoice list
-- customer outstanding balance preparation
-- admin-only RLS and atomic server-side conversion
+Add:
+- open a saved invoice
+- professional A4 invoice preview
+- browser Print / Save PDF
+- payment-entry ledger
+- record payment date / amount / method / reference / notes
+- automatic amount-paid / balance / payment-status update
+- prevent overpayment
+- customer payment history
+- invoice cancellation rules and audit-safe behavior
+- prepare payment/outstanding information for future AI customer-care reminder calls
 
-Keep invoice print/PDF and payment-entry UI for the next small milestone after conversion foundation is completed and verified.
+Keep service-job/ticket workflow for the following phase after invoice/payment workflow is completed and verified.
