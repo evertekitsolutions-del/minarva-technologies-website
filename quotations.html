@@ -32,7 +32,7 @@
   <div class="shell top">
     <div class="brand">
       <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
-      <button id="backBtn" class="btn btn-ghost" type="button">← Admin</button>
+      <div class="nav"><button id="invoicesNavBtn" class="btn btn-ghost" type="button">Invoices</button><button id="backBtn" class="btn btn-ghost" type="button">← Admin</button></div>
     </div>
   </div>
 
@@ -163,6 +163,7 @@
     const backBtn = document.getElementById('backBtn')
     const newQuoteBtn = document.getElementById('newQuoteBtn')
     const refreshBtn = document.getElementById('refreshBtn')
+    const invoicesNavBtn = document.getElementById('invoicesNavBtn')
     const editorTitle = document.getElementById('editorTitle')
     const numberPreview = document.getElementById('numberPreview')
     const previewCurrentBtn = document.getElementById('previewCurrentBtn')
@@ -475,6 +476,9 @@
           '<div class="quote-actions">' +
             '<button class="btn btn-ghost" type="button" data-open-quote="' + esc(row.id) + '">Open</button>' +
             '<button class="btn btn-ghost" type="button" data-preview-quote="' + esc(row.id) + '">Preview</button>' +
+            ((row.status === 'sent' || row.status === 'accepted')
+              ? '<button class="btn btn-primary" type="button" data-convert-quote="' + esc(row.id) + '">Convert to Invoice</button>'
+              : '') +
           '</div></div></div></div>'
       }).join('')
 
@@ -508,6 +512,36 @@
       quoteList.querySelectorAll('[data-preview-quote]').forEach(button => {
         button.addEventListener('click', () => openPrintPreview(button.dataset.previewQuote))
       })
+      quoteList.querySelectorAll('[data-convert-quote]').forEach(button => {
+        button.addEventListener('click', () => convertQuotationToInvoice(button.dataset.convertQuote, button))
+      })
+    }
+
+    async function convertQuotationToInvoice(id, button){
+      const row = quotations.find(item => String(item.id) === String(id))
+      if (!row) return
+      if (!confirm('Convert ' + (row.quotation_number || 'this quotation') + ' to an invoice? The quotation will be marked Converted.')) return
+
+      const original = button.textContent
+      button.disabled = true
+      button.textContent = 'Converting…'
+
+      const today = localDateValue(new Date())
+      const {data,error} = await supabase.rpc('convert_quotation_to_invoice',{
+        p_quotation_id:id,
+        p_invoice_date:today,
+        p_due_date:null
+      })
+
+      if (error){
+        button.disabled = false
+        button.textContent = original
+        alert('Could not convert quotation: ' + error.message)
+        return
+      }
+
+      await loadQuotations()
+      location.href = '/invoices?invoice=' + encodeURIComponent(data.id)
     }
 
     async function loadQuotations(){
@@ -860,6 +894,7 @@
       }
     }
 
+    invoicesNavBtn.addEventListener('click',()=>{ location.href='/invoices' })
     backBtn.addEventListener('click',()=>{ location.href='/admin' })
     newQuoteBtn.addEventListener('click',()=>{ applyDefaults(); window.scrollTo({top:0,behavior:'smooth'}) })
     refreshBtn.addEventListener('click',loadQuotations)
