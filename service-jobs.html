@@ -87,7 +87,7 @@
       <section class="card">
         <div class="card-head">
           <h2 id="formTitle">New Service Job</h2>
-          <div class="actions"><button id="resetBtn" class="btn btn-ghost" type="button">Reset</button><button id="saveBtn" class="btn btn-primary" type="button">Create Job</button></div>
+          <div class="actions"><button id="jobSheetBtn" class="btn btn-ghost" type="button" style="display:none">Job Sheet / Visit</button><button id="resetBtn" class="btn btn-ghost" type="button">Reset</button><button id="saveBtn" class="btn btn-primary" type="button">Create Job</button></div>
         </div>
         <div class="form-body">
           <div class="form-grid">
@@ -143,7 +143,7 @@
             </div>
             <div>
               <label for="status">Status</label>
-              <select id="status"><option value="open">Open</option><option value="scheduled">Scheduled</option><option value="in_progress">In Progress</option><option value="on_hold">On Hold</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+              <select id="status"><option value="open">Open</option><option value="scheduled">Scheduled</option><option value="in_progress">In Progress</option><option value="on_hold">On Hold</option><option value="completed" disabled>Completed — use Job Sheet</option><option value="cancelled">Cancelled</option></select>
               <div id="statusHelp" class="help">New jobs start Open, or Scheduled when a visit time is supplied.</div>
             </div>
 
@@ -236,6 +236,7 @@
     const priorityFilter=document.getElementById('priorityFilter')
     const jobList=document.getElementById('jobList')
     const formTitle=document.getElementById('formTitle')
+    const jobSheetBtn=document.getElementById('jobSheetBtn')
     const customerSelect=document.getElementById('customerSelect')
     const serviceCategory=document.getElementById('serviceCategory')
     const enquiryId=document.getElementById('enquiryId')
@@ -398,6 +399,7 @@
     function resetForm(){
       activeJob=null
       formTitle.textContent='New Service Job'
+      jobSheetBtn.style.display='none'
       saveBtn.textContent='Create Job'
       customerSelect.value=''
       serviceCategory.value=''
@@ -431,6 +433,7 @@
     function fillForm(j){
       activeJob=j
       formTitle.textContent=j.job_number||'Service Job'
+      jobSheetBtn.style.display=''
       saveBtn.textContent='Save Changes'
       customerSelect.value=j.customer_id||''
       serviceCategory.value=j.service_category||''
@@ -649,6 +652,7 @@
     statusFilter.addEventListener('change',renderList)
     priorityFilter.addEventListener('change',renderList)
     saveBtn.addEventListener('click',saveJob)
+    jobSheetBtn.addEventListener('click',()=>{if(activeJob)location.href='/job-sheet?job='+encodeURIComponent(activeJob.id)})
     resetBtn.addEventListener('click',resetForm)
     newJobBtn.addEventListener('click',()=>{resetForm();window.scrollTo({top:0,behavior:'smooth'})})
     technicianBtn.addEventListener('click',openTechnicianModal)
