@@ -819,31 +819,132 @@ Verification:
 - current Performance Advisor reports unused-index informational notices only; these are expected on the newly created/low-usage schema
 - no fake technician/job/mobile-action data was created
 
+## Customer Care — Milestone 3B1 — COMPLETE
+
+Implemented:
+- provider-neutral customer-care orchestration layer
+- Malayalam / English notification template master
+- 16 seeded template variants
+- 48 event/channel routes covering WhatsApp / SMS / Email / Call
+- event → template routing
+- channel preference resolution
+- channel-specific opt-out table
+- explicit Call Consent enforcement
+- Do Not Call hard block
+- quiet-hours engine
+- default timezone: `Asia/Kolkata`
+- default quiet hours: 20:00 → 09:00
+- scheduled delivery timestamps
+- retry / exponential backoff / max-attempt foundation
+- provider-adapter registry
+- four disabled provider placeholders; **no credentials or paid provider added**
+- generic customer contact outbox
+- delivery-attempt log
+- customer contact timeline
+- automated call job queue
+- call reason / language / rendered script / variables
+- call outcome
+- retry
+- callback-required state
+- escalation-to-human state
+- opt-out hook
+- call opt-out also sets Customer Master **Do Not Call**
+- service-job durable notification hooks are mirrored into the generic customer-care outbox
+- ETA / Visit Started / Arrived / Work Started / Work Completed / Job Completed routes
+- invoice Due Soon / Due Today / Overdue reminder generator
+- configurable overdue schedule
+- campaign master
+- campaign members
+- Service Follow-up / Invoice Reminder / Automated Call / Manual campaign foundation
+- explicit customer selection when creating a campaign in the admin UI
+- provider-neutral campaign enqueue RPC
+- Customer Care admin dashboard
+- Pending / Ready / Sent / Failed / Suppressed KPI cards
+- Automated Call Queue view
+- Recent Customer Contact Timeline
+- provider-adapter status
+- editable quiet hours / retry settings
+- manual Generate Invoice Reminders action
+- manual Prepare Dispatch action
+- Admin Dashboard → Customer Care navigation
+- no fake customer/contact/call data created
+- no external WhatsApp/SMS/email/call request is sent in this milestone
+
+Automatic scheduler:
+- Supabase `pg_cron` enabled
+- `minarva-customer-care-tick` scheduled every 15 minutes
+- scheduler generates eligible invoice reminders
+- scheduler prepares due contact attempts
+- quiet-hours logic can defer items automatically
+- because all provider adapters are intentionally disabled/unconfigured, prepared items stop safely at **Ready** and cannot make a real outbound call/message
+
+Core tables:
+- `customer_care_settings`
+- `customer_care_provider_adapters`
+- `notification_template_variants`
+- `notification_event_routes`
+- `customer_contact_preferences`
+- `customer_care_campaigns`
+- `customer_care_campaign_members`
+- `customer_contact_outbox`
+- `notification_delivery_attempts`
+- `customer_contact_timeline`
+- `automated_call_jobs`
+
+Core RPC / worker foundation:
+- `customer_care_generate_invoice_reminders(...)`
+- `customer_care_prepare_dispatch(...)`
+- `customer_care_enqueue_campaign(...)`
+- `customer_care_record_attempt_result(...)`
+- `customer_care_set_opt_out(...)`
+- private scheduler / renderer / service-hook mirror workers
+
+Migrations:
+- `supabase/migrations/20261005_customer_care_orchestration_foundation.sql`
+- `supabase/migrations/20261005_customer_care_scheduler.sql`
+- `supabase/migrations/20261005_customer_care_fk_indexes.sql`
+
+GitHub commits:
+- customer-care DB / templates / routes / attempts / calls / campaigns: `293c586648f0970d2d359120747a44bc135f3e55`
+- automatic 15-minute scheduler: `24224419c51c28056f932c8efa3341644163fd6b`
+- Customer Care admin dashboard: `0355c99f0ab03b98a6eb785175d1315b662c3294`
+- Admin Dashboard → Customer Care navigation: `49b8729488c75f1411fa376daa8df24416125360`
+- customer-care FK/index hardening: `9fa1e0437aa63a4635f322e25dec9df81a3c9661`
+
+Verification:
+- 16 template variants present
+- 48 event/channel routes present
+- 4 provider placeholders present
+- 0 provider adapters enabled
+- contact outbox / attempts / timeline / campaigns / call-jobs present
+- authenticated admin RPC execution allowed
+- anonymous execution blocked
+- `pg_cron` enabled
+- scheduler active at `*/15 * * * *`
+- Security Advisor reports no new DB/RLS problem; only the existing **Leaked Password Protection Disabled** Auth warning remains
+- unindexed-foreign-key findings introduced by this milestone were fixed
+- current Performance Advisor findings are unused-index informational notices on the new/low-usage schema
+
 ## Immediate next milestone
 
-**Customer Care — Milestone 3B1: Notification Dispatcher + Automated Calling Orchestration Foundation**
+**Customer Care — Milestone 3B2: Provider Adapter Runtime + Free/Test Delivery Mode**
 
-Build the provider-agnostic customer-care layer on top of the durable outbox:
-- notification template master
-- event → template mapping
-- Malayalam / English template variants
-- WhatsApp / SMS / Email / Call channel routing rules
-- consent-aware call eligibility
-- Do Not Call hard block
-- quiet-hours rules
-- retry / backoff / max-attempt rules
-- scheduled delivery
-- provider adapter interface
-- delivery attempt log
-- customer contact timeline
-- service-job ETA / arrived / completed notifications
-- invoice due / overdue reminders
-- follow-up reminder campaigns
-- automated-calling campaign foundation
-- call reason / script / language / variables
-- call outcome / retry / callback state
-- opt-out / escalation-to-human hooks
-- dashboard for Pending / Sent / Failed / Suppressed
-- **no paid calling provider required for this milestone**; keep adapters provider-neutral so a provider can be connected later without redesigning the core
+Build the runtime that will eventually send through real providers without changing the orchestration core:
+- Supabase Edge Function dispatcher worker
+- signed/authorized worker access
+- adapter contract for WhatsApp / SMS / Email / Automated Call
+- provider configuration references without exposing secrets to the browser
+- Mock/Test adapter that never contacts real customers
+- deterministic delivery-result callbacks into `customer_care_record_attempt_result(...)`
+- provider health / readiness checks
+- delivery idempotency
+- dead-letter / manual retry controls
+- test-recipient allowlist
+- sandbox-only send mode
+- dashboard controls for Test / Disabled / Live state
+- provider connection checklist
+- free-first adapter research and selection
+- keep **Live outbound disabled by default**
+- do not activate paid telephony until explicitly approved
 
-Keep advanced route optimization, GPS tracking, live technician tracking and physical spare-parts inventory consumption for later small milestones.
+After the adapter runtime is verified in sandbox/test mode, proceed to the AI voice-conversation engine and real telephony provider integration as a separate milestone.
