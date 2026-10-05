@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Minarva Technologies — Invoices</title>
+  <meta name="theme-color" content="#0754c7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--navy:#061d48;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--amber:#9a5b00;--red:#b42318}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select{font:inherit}.shell{width:min(1180px,calc(100% - 28px));margin:auto}.top{padding:20px 0}.brand{display:flex;justify-content:space-between;align-items:center;gap:14px}.brand img{width:245px;height:54px;object-fit:contain;object-position:left center}
+    .nav{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn-primary{background:linear-gradient(135deg,var(--blue),#1381ff);color:#fff}
+    .head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin:10px 0 18px}.eyebrow{font-size:12px;letter-spacing:.13em;color:var(--blue);font-weight:800}.head h1{font-size:34px;letter-spacing:-.035em;margin:5px 0 0}.userline{font-size:12px;color:var(--muted);margin-top:5px}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(7,51,111,.05)}.stat span{font-size:10px;color:var(--muted);font-weight:800}.stat strong{display:block;font-size:20px;margin-top:5px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 12px 34px rgba(7,51,111,.07)}.tools{display:grid;grid-template-columns:1fr 190px 170px auto;gap:8px;padding:14px;border-bottom:1px solid var(--line);background:#fbfdff}input,select{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);outline:none}
+    .invoice-list{display:grid}.invoice{padding:15px 17px;border-bottom:1px solid #edf2f8}.invoice:last-child{border-bottom:0}.row{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.number{font-size:13px;color:var(--blue);font-weight:800}.customer{font-size:13px;font-weight:800;margin-top:4px}.meta{font-size:10px;color:var(--muted);line-height:1.55;margin-top:5px}.amount{text-align:right;font-size:15px;font-weight:800}.balance{font-size:11px;color:var(--red);font-weight:800;margin-top:4px;text-align:right}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}.badge{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800}.unpaid{background:#fff1f0;color:#b42318}.partially_paid{background:#fff7e8;color:#9a5b00}.paid{background:#ecfdf3;color:#087443}.issued{background:#eef4ff;color:#3538cd}.cancelled{background:#f2f4f7;color:#475467}.highlight{background:#f2f8ff}
+    .empty,.loader{padding:34px;text-align:center;color:var(--muted);font-size:12px}.footnote{font-size:10px;color:var(--muted);padding:12px 15px;background:#fbfdff;border-top:1px solid var(--line)}
+    @media(max-width:820px){.stats{grid-template-columns:1fr 1fr}.tools{grid-template-columns:1fr 1fr}.tools .wide{grid-column:1/-1}.head{display:block}.head .nav{margin-top:12px}}
+    @media(max-width:560px){.brand{display:block}.brand .nav{margin-top:10px}.head h1{font-size:28px}.stats,.tools{grid-template-columns:1fr}.tools .wide{grid-column:auto}.row{display:block}.amount,.balance{text-align:left;margin-top:8px}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <div class="brand">
+      <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+      <div class="nav">
+        <button id="quotationBtn" class="btn btn-ghost" type="button">Quotations</button>
+        <button id="adminBtn" class="btn btn-ghost" type="button">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell" style="padding-bottom:60px">
+    <div class="head">
+      <div>
+        <div class="eyebrow">BILLING & CRM</div>
+        <h1>Invoices</h1>
+        <div id="userLine" class="userline">Checking admin access…</div>
+      </div>
+      <div class="nav"><button id="refreshBtn" class="btn btn-primary" type="button">Refresh</button></div>
+    </div>
+
+    <section class="stats">
+      <div class="stat"><span>INVOICES</span><strong id="invoiceCount">0</strong></div>
+      <div class="stat"><span>INVOICED</span><strong id="invoicedTotal">₹0.00</strong></div>
+      <div class="stat"><span>PAID</span><strong id="paidTotal">₹0.00</strong></div>
+      <div class="stat"><span>OUTSTANDING</span><strong id="outstandingTotal">₹0.00</strong></div>
+    </section>
+
+    <section class="card">
+      <div class="tools">
+        <input id="searchInput" class="wide" type="search" placeholder="Search invoice, quotation, customer or phone…">
+        <select id="paymentFilter">
+          <option value="all">All payment statuses</option>
+          <option value="unpaid">Unpaid</option>
+          <option value="partially_paid">Partially Paid</option>
+          <option value="paid">Paid</option>
+        </select>
+        <select id="statusFilter">
+          <option value="all">All invoice statuses</option>
+          <option value="issued">Issued</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button id="clearBtn" class="btn btn-ghost" type="button">Clear</button>
+      </div>
+      <div id="invoiceList" class="invoice-list"><div class="loader">Loading invoices…</div></div>
+      <div class="footnote">Payment entry and invoice print/PDF are intentionally kept for the next small milestone.</div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+
+    const supabase = createClient(
+      'https://kwullzwhlzziosjsejud.supabase.co',
+      'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
+    )
+
+    const userLine=document.getElementById('userLine')
+    const invoiceCount=document.getElementById('invoiceCount')
+    const invoicedTotal=document.getElementById('invoicedTotal')
+    const paidTotal=document.getElementById('paidTotal')
+    const outstandingTotal=document.getElementById('outstandingTotal')
+    const searchInput=document.getElementById('searchInput')
+    const paymentFilter=document.getElementById('paymentFilter')
+    const statusFilter=document.getElementById('statusFilter')
+    const invoiceList=document.getElementById('invoiceList')
+    const refreshBtn=document.getElementById('refreshBtn')
+    const clearBtn=document.getElementById('clearBtn')
+    const quotationBtn=document.getElementById('quotationBtn')
+    const adminBtn=document.getElementById('adminBtn')
+    let rows=[]
+
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+
+    function money(value,currency='INR'){
+      const amount=Number(value||0)
+      try{return new Intl.NumberFormat('en-IN',{style:'currency',currency,maximumFractionDigits:2}).format(amount)}
+      catch{return currency+' '+amount.toFixed(2)}
+    }
+
+    function filtered(){
+      const q=searchInput.value.trim().toLowerCase()
+      return rows.filter(row=>{
+        if(paymentFilter.value!=='all'&&row.payment_status!==paymentFilter.value)return false
+        if(statusFilter.value!=='all'&&row.status!==statusFilter.value)return false
+        if(!q)return true
+        const customer=Array.isArray(row.customers)?row.customers[0]:row.customers
+        const quote=Array.isArray(row.quotations)?row.quotations[0]:row.quotations
+        return [row.invoice_number,quote?.quotation_number,customer?.name,customer?.phone,row.enquiry_id]
+          .map(v=>String(v||'').toLowerCase()).join(' ').includes(q)
+      })
+    }
+
+    function paintStats(){
+      const issued=rows.filter(r=>r.status==='issued')
+      invoiceCount.textContent=issued.length
+      const total=issued.reduce((s,r)=>s+Number(r.total_amount||0),0)
+      const paid=issued.reduce((s,r)=>s+Number(r.amount_paid||0),0)
+      const balance=issued.reduce((s,r)=>s+Number(r.balance_due||0),0)
+      invoicedTotal.textContent=money(total)
+      paidTotal.textContent=money(paid)
+      outstandingTotal.textContent=money(balance)
+    }
+
+    function render(){
+      const target=new URLSearchParams(location.search).get('invoice')
+      const list=filtered()
+      if(!list.length){
+        invoiceList.innerHTML='<div class="empty">No invoices found.</div>'
+        return
+      }
+      invoiceList.innerHTML=list.map(row=>{
+        const customer=Array.isArray(row.customers)?row.customers[0]:row.customers
+        const quote=Array.isArray(row.quotations)?row.quotations[0]:row.quotations
+        return '<article class="invoice '+(target===String(row.id)?'highlight':'')+'">'+
+          '<div class="row"><div>'+
+            '<div class="number">'+esc(row.invoice_number)+'</div>'+
+            '<div class="customer">'+esc(customer?.name||'Customer')+'</div>'+
+            '<div class="meta">'+esc(row.invoice_date||'')+
+              (row.due_date?' • Due '+esc(row.due_date):'')+
+              (quote?.quotation_number?' • From '+esc(quote.quotation_number):'')+
+              (row.enquiry_id?' • Enquiry #'+esc(row.enquiry_id):'')+
+              (customer?.phone?' • '+esc(customer.phone):'')+
+            '</div>'+
+            '<div class="badges"><span class="badge '+esc(row.status)+'">'+esc(row.status)+'</span>'+
+              '<span class="badge '+esc(row.payment_status)+'">'+esc(String(row.payment_status||'').replace('_',' '))+'</span></div>'+
+          '</div><div>'+
+            '<div class="amount">'+esc(money(row.total_amount,row.currency||'INR'))+'</div>'+
+            '<div class="meta">Paid '+esc(money(row.amount_paid,row.currency||'INR'))+'</div>'+
+            '<div class="balance">Balance '+esc(money(row.balance_due,row.currency||'INR'))+'</div>'+
+          '</div></div></article>'
+      }).join('')
+    }
+
+    async function loadInvoices(){
+      invoiceList.innerHTML='<div class="loader">Loading invoices…</div>'
+      const {data,error}=await supabase
+        .from('invoices')
+        .select('id,invoice_number,source_quotation_id,customer_id,enquiry_id,invoice_date,due_date,status,currency,tax_mode,total_amount,amount_paid,balance_due,payment_status,created_at,customers(name,phone),quotations(quotation_number)')
+        .order('invoice_date',{ascending:false})
+        .order('created_at',{ascending:false})
+        .limit(1000)
+
+      if(error){
+        invoiceList.innerHTML='<div class="empty">Could not load invoices: '+esc(error.message)+'</div>'
+        return
+      }
+      rows=data||[]
+      paintStats()
+      render()
+    }
+
+    async function verifyAdmin(){
+      const {data:{session}}=await supabase.auth.getSession()
+      if(!session?.user){location.href='/admin';return false}
+      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+      if(error||!data||data.active!==true){location.href='/admin';return false}
+      userLine.textContent=(data.email||session.user.email||'')+' • '+data.role
+      return true
+    }
+
+    async function init(){
+      if(!await verifyAdmin())return
+      await loadInvoices()
+    }
+
+    refreshBtn.addEventListener('click',loadInvoices)
+    clearBtn.addEventListener('click',()=>{searchInput.value='';paymentFilter.value='all';statusFilter.value='all';render()})
+    searchInput.addEventListener('input',render)
+    paymentFilter.addEventListener('change',render)
+    statusFilter.addEventListener('change',render)
+    quotationBtn.addEventListener('click',()=>{location.href='/quotations'})
+    adminBtn.addEventListener('click',()=>{location.href='/admin'})
+    supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+    init()
+  </script>
+</body>
+</html>
