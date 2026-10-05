@@ -59,6 +59,7 @@
             <div id="userLine" class="userline"></div>
           </div>
           <div class="dash-actions">
+            <button id="invoicesBtn" class="btn btn-ghost" type="button">Invoices</button>
             <button id="quotationsBtn" class="btn btn-ghost" type="button">Quotations</button>
             <button id="catalogueBtn" class="btn btn-ghost" type="button">Catalogue</button>
             <button id="customerMasterBtn" class="btn btn-ghost" type="button">Customer Master</button>
@@ -824,6 +825,7 @@
     const loginForm = document.getElementById('loginForm')
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
+    const invoicesBtn = document.getElementById('invoicesBtn')
     const quotationsBtn = document.getElementById('quotationsBtn')
     const catalogueBtn = document.getElementById('catalogueBtn')
     const catalogueModal = document.getElementById('catalogueModal')
@@ -2860,6 +2862,7 @@
       showLogin()
     })
 
+    invoicesBtn.addEventListener('click', () => { location.href = '/invoices' })
     quotationsBtn.addEventListener('click', () => { location.href = '/quotations' })
     catalogueBtn.addEventListener('click', openCatalogueModal)
     catalogueCloseBtn.addEventListener('click', closeCatalogueModal)
