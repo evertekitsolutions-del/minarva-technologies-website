@@ -273,16 +273,54 @@ GitHub commit:
 
 No fake production customer data was created.
 
+## Billing Foundation — Milestone 2B2 — COMPLETE
+
+Implemented:
+- durable `enquiries.customer_id -> customers.id` foreign-key link
+- indexed enquiry/customer linkage
+- safe backfill only for unambiguous existing `source_enquiry_id` relationships
+- public website cannot insert `customer_id`; authenticated admin update path remains RLS-controlled
+- direct **Create/Link Customer** action on every enquiry row
+- direct **Create / Link Customer** action inside Manage Enquiry
+- linked enquiries show **Open Customer**
+- existing customer detection by normalized phone
+- single match opens the existing customer and offers explicit linking
+- multiple matches require the admin to select the correct customer before linking
+- no match prefills Customer Master from enquiry name / phone / email
+- new customer preserves `source_enquiry_id`
+- preferred contact can be suggested from enquiry source, but **call consent is never inferred**
+- new customer creation from an enquiry automatically links only after successful customer creation
+- linked customer confirmation returns to Manage Enquiry
+- core enquiry loads now include `customer_id`
+
+Migration:
+- `supabase/migrations/20261005_enquiry_customer_link.sql`
+
+GitHub commits:
+- migration fix/final: `d2a100597f6c6052a997f4a3045ff3ed72be6cc8`
+- enquiry → customer UI workflow: `8a3ca2c24018d6c19c9401e21267257ec0990954`
+
+Security verification:
+- new customer link is nullable and FK-protected
+- anonymous website role has no INSERT privilege on `customer_id`
+- authenticated admin can update the link subject to existing admin RLS
+- Security Advisor shows no new database/RLS issue; the pre-existing leaked-password-protection Auth warning remains
+- Performance Advisor shows only unused-index informational notices on low-usage/new indexes
+
 ## Immediate next milestone
 
-**Billing Foundation — Milestone 2B2: Enquiry → Customer Conversion**
+**Billing Foundation — Milestone 2C1: Product / Service Catalogue UI**
 
-Add a direct **Create/Link Customer** action from an enquiry:
-- detect an existing customer by normalized phone before creating
-- if found, offer link/open existing Customer Master record
-- if not found, prefill Customer Master from enquiry name/phone/email
-- preserve `source_enquiry_id`
-- carry communication preferences safely without assuming call consent
-- return to the enquiry with linked-customer confirmation
+Add secure catalogue management:
+- list/search catalogue items
+- create/edit Product or Service
+- SKU
+- HSN/SAC
+- unit
+- unit price
+- GST/tax rate
+- active/inactive status
+- fast reuse of the standardized Minarva service categories
+- prepare catalogue selection for quotation line items
 
-After this is completed and verified, continue to Product / Service Catalogue UI.
+Keep quotation creation for the following small milestone after Catalogue UI is completed and verified.
