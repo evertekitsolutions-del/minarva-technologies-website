@@ -490,20 +490,84 @@ Security verification:
 - Security Advisor checked after the milestone; the existing Auth leaked-password-protection warning remains if still reported
 - Performance Advisor checked after the milestone; unused-index notices on newly created/low-usage indexes are informational
 
-## Immediate next milestone
+## Billing Foundation — Milestone 2D2 — COMPLETE
 
-**Billing Foundation — Milestone 2D2: Invoice Detail / Print + Payment Recording**
-
-Add:
-- open a saved invoice
+Implemented:
+- open any saved invoice
+- full invoice detail with source quotation / enquiry references
+- line-item detail and totals
 - professional A4 invoice preview
 - browser Print / Save PDF
-- payment-entry ledger
-- record payment date / amount / method / reference / notes
-- automatic amount-paid / balance / payment-status update
-- prevent overpayment
-- customer payment history
-- invoice cancellation rules and audit-safe behavior
-- prepare payment/outstanding information for future AI customer-care reminder calls
+- payment-entry form
+- payment date
+- payment amount
+- payment method: Cash / UPI / Bank Transfer / Card / Cheque / Other
+- payment reference
+- payment notes
+- audit-safe `invoice_payments` ledger
+- atomic `record_invoice_payment(...)` RPC
+- server-side overpayment prevention
+- automatic `amount_paid`, generated `balance_due`, generated `payment_status`
+- payment states: Unpaid / Partially Paid / Paid
+- customer-wide payment history
+- void-payment correction workflow with mandatory reason
+- payment rows cannot be hard-deleted
+- posted payment financial/history fields are immutable
+- voided payments remain visible in audit history
+- atomic `void_invoice_payment(...)` RPC
+- invoice cancellation workflow with mandatory reason
+- invoices are never deleted by cancellation
+- invoices with active payment history cannot be cancelled until payment corrections are completed
+- direct invoice amount/status mutation is guarded; approved RPC workflows are the authority
+- atomic `cancel_invoice(...)` RPC
+- security-invoker `invoice_collection_candidates` view for future collection automation
+- collection candidate data includes outstanding balance, due date, days overdue, preferred language/contact channel, call consent and Do Not Call state
+- **AI call eligibility requires explicit call consent and Do Not Call = false**
+- invoice screen clearly shows AI-call eligible / blocked state and reason
+- no automated call is placed by this milestone
+- converted invoice URL now opens the created invoice detail directly
+- no fake payment or invoice data created
 
-Keep service-job/ticket workflow for the following phase after invoice/payment workflow is completed and verified.
+Migrations:
+- `supabase/migrations/20261005_invoice_payment_ledger.sql`
+- `supabase/migrations/20261005_invoice_payment_fk_indexes.sql`
+
+GitHub commits:
+- payment ledger + audit-safe RPC foundation: `122d8dc5e49430360bf142458b9eac439287661a`
+- Invoice Detail / A4 Print / Payment UI: `782031ddb253c7422db7269525dce7d17d6945d7`
+- payment audit-actor FK index cleanup: `482040bfe0df4924509bb562f154de2ec601bdbd`
+
+Security verification:
+- payment table is admin-RLS protected
+- anonymous users cannot read payment records
+- anonymous users cannot execute payment / void / cancel RPCs
+- authenticated admin execution is allowed
+- authenticated role has no DELETE privilege on payment history
+- payment audit trigger is active
+- invoice financial/status mutation guard is active
+- current Security Advisor shows no new database/RLS problem; only the pre-existing **Leaked Password Protection Disabled** Auth warning remains
+- new unindexed-FK findings introduced by payment ledger were fixed; remaining Performance Advisor findings are unused-index informational notices on a new/low-usage database
+
+## Immediate next milestone
+
+**Operations — Milestone 3A1: Service Job / Ticket Foundation**
+
+Build the own-business service operations workflow:
+- create service job from Enquiry / Customer / Invoice
+- job/ticket number
+- customer + site address
+- service category
+- device/equipment details
+- complaint / requested work
+- priority
+- status lifecycle
+- assigned technician foundation
+- visit date / schedule
+- internal notes
+- customer-facing notes
+- service charge / parts estimate foundation
+- job list/search/filter
+- link completed job back to billing/customer history
+- prepare job/follow-up data for future AI customer-care calls and reminders
+
+Keep technician mobile workflow, spare-parts consumption, job-sheet print/signature and advanced scheduling for later small milestones.
