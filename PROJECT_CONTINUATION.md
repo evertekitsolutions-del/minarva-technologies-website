@@ -633,23 +633,111 @@ Verification:
 - Security Advisor reports no new database/RLS finding; only the existing **Leaked Password Protection Disabled** Auth warning remains
 - Performance Advisor reports only unused-index informational notices on the new/low-usage schema
 
+## Operations — Milestone 3A2 — COMPLETE
+
+Implemented:
+- dedicated authenticated `/job-sheet?job=<uuid>` execution workspace
+- professional service job-sheet detail view
+- A4 Print Preview + browser Print / Save PDF
+- visit timeline controls:
+  - Visit Start
+  - Arrival
+  - Work Start
+  - Work Complete
+- chronological visit-stage validation
+- diagnosis / findings
+- work performed
+- resolution states:
+  - Resolved
+  - Partially Resolved
+  - Unresolved
+  - Awaiting Parts
+  - Return Visit Required
+- unresolved / return-visit reason
+- next visit date/time
+- callback-required flag + callback time
+- completion checklist
+- Warranty reference
+- AMC reference
+- actual service charge
+- parts/materials-used ledger
+- automatic parts actual total
+- automatic overall actual total
+- customer acknowledgement name / remarks / date-time
+- handwritten customer-signature canvas
+- private signature storage
+- private Before Photo / After Photo / Other Image upload
+- private Storage bucket: `service-job-media`
+- 10 MB image limit
+- JPG / PNG / WEBP restriction
+- signed private preview URLs
+- attachment metadata linked to service job
+- attachment removal flow
+- lifecycle history additions for visit execution / billing preparation
+- Completed status now requires Work Complete timestamp + Resolution
+- billing-sensitive fields lock after billing preparation
+- direct Service Job → Job Sheet navigation
+- Completed status in the basic Service Jobs editor now directs users to the Job Sheet workflow
+- completed service work can generate a Draft quotation without retyping
+- service charge + used materials are copied into the Draft quotation
+- quotation stores `source_service_job_id`
+- service job stores `billing_quotation_id` + billing-prepared timestamp
+- Job Sheet opens the generated billing quotation directly
+- Quotations workspace supports `?quotation=<uuid>` deep-link opening
+- no automated customer call is placed here; existing consent / Do Not Call logic remains visible for future AI follow-up
+
+Database / RPC:
+- `service_job_materials`
+- `service_job_attachments`
+- new execution / acknowledgement / resolution / actual-charge fields on `service_jobs`
+- `mark_service_job_stage(...)`
+- `save_service_job_execution(...)`
+- `prepare_service_job_billing(...)`
+- private Storage RLS policies restricted to active authenticated admins
+- anonymous stage / execution / billing access is blocked
+- service-job media bucket is private
+- service-job execution remains linked to Customer / Enquiry / Invoice / Quotation history
+
+Migration:
+- `supabase/migrations/20261005_service_job_visit_execution.sql`
+
+GitHub commits:
+- Job Sheet / execution DB + Storage + billing-prep foundation: `ac99e3b0a1739d46eca9da22bf46f93ded4ed7b3`
+- dedicated Job Sheet execution workspace: `42e4e18862b35e4feae1d011563436091c6ff4a7`
+- Service Jobs → Job Sheet navigation + completion workflow guard: `e67a3bd33bb0334b8354b5c2c6051f5cd4eaba4`
+- service-job billing quotation deep link: `673eaab2eea801a758b1fda78dae9e45549bc630`
+
+Verification:
+- service-job materials table present
+- service-job attachments table present
+- private media bucket present
+- visit / billing fields present
+- visit-stage RPC present
+- execution-save RPC present
+- billing-preparation RPC present
+- authenticated admin execution allowed
+- anonymous execution blocked
+- Storage policies are active-admin-only
+- Security Advisor reports no new database/RLS issue; the existing **Leaked Password Protection Disabled** warning remains
+- Performance Advisor currently reports unused-index informational notices only on this new/low-usage schema
+
 ## Immediate next milestone
 
-**Operations — Milestone 3A2: Job Sheet / Visit Execution**
+**Operations — Milestone 3A3: Technician Mobile / PWA Execution**
 
-Add the next service-operation layer:
-- professional service job-sheet detail view
-- A4 job-sheet Print / Save PDF
-- technician visit start / arrival / work-start / work-complete timestamps
-- diagnosis / work-performed
-- parts/materials used
-- service charge + parts actual amounts
-- customer acknowledgement / signature foundation
-- before/after photo attachment foundation
-- resolution / unresolved reason
-- next visit / callback requirement
-- completion checklist
-- warranty / AMC reference foundation
-- convert completed service work to billing/invoice preparation without retyping
+Add:
+- technician-focused mobile service dashboard
+- assigned-job queue
+- Today / Upcoming / Overdue views
+- technician check-in/out UX
+- mobile photo capture
+- quick diagnosis/work notes
+- material-use entry optimized for phone
+- customer signature optimized for touch
+- offline/PWA shell foundation
+- safe sync / retry behavior for weak connectivity
+- technician role / access-control foundation
+- customer notification hooks for technician ETA / visit status
+- prepare schedule data for future route optimization and automated customer-care calling
 
-Keep full technician mobile/PWA workflow and advanced route/schedule optimization for later milestones.
+Keep advanced route optimization, GPS tracking, automated calling provider integration, and spare-parts inventory consumption for later small milestones.
