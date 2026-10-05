@@ -59,6 +59,7 @@
             <div id="userLine" class="userline"></div>
           </div>
           <div class="dash-actions">
+            <button id="quotationsBtn" class="btn btn-ghost" type="button">Quotations</button>
             <button id="catalogueBtn" class="btn btn-ghost" type="button">Catalogue</button>
             <button id="customerMasterBtn" class="btn btn-ghost" type="button">Customer Master</button>
             <button id="billingSettingsBtn" class="btn btn-ghost" type="button">Billing Settings</button>
@@ -520,6 +521,11 @@
           <input id="billingQuotationPrefix" type="text" maxlength="12">
         </div>
         <div>
+          <label for="billingCompanyCode">Document company code</label>
+          <input id="billingCompanyCode" type="text" maxlength="12" placeholder="MT">
+          <div class="billing-help">Used in numbers such as QT-MT-2026-27-0001.</div>
+        </div>
+        <div>
           <label for="billingInvoicePrefix">Invoice prefix</label>
           <input id="billingInvoicePrefix" type="text" maxlength="12">
         </div>
@@ -817,6 +823,7 @@
     const loginForm = document.getElementById('loginForm')
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
+    const quotationsBtn = document.getElementById('quotationsBtn')
     const catalogueBtn = document.getElementById('catalogueBtn')
     const catalogueModal = document.getElementById('catalogueModal')
     const catalogueCloseBtn = document.getElementById('catalogueCloseBtn')
@@ -899,6 +906,7 @@
     const billingTaxMode = document.getElementById('billingTaxMode')
     const billingCurrency = document.getElementById('billingCurrency')
     const billingQuotationPrefix = document.getElementById('billingQuotationPrefix')
+    const billingCompanyCode = document.getElementById('billingCompanyCode')
     const billingInvoicePrefix = document.getElementById('billingInvoicePrefix')
     const billingFyStartMonth = document.getElementById('billingFyStartMonth')
     const billingQuotationValidDays = document.getElementById('billingQuotationValidDays')
@@ -1836,6 +1844,7 @@
       billingTaxMode.value = data.default_tax_mode || 'none'
       billingCurrency.value = (data.default_currency || 'INR').toUpperCase()
       billingQuotationPrefix.value = data.quotation_prefix || 'QT'
+      billingCompanyCode.value = data.document_company_code || 'MT'
       billingInvoicePrefix.value = data.invoice_prefix || 'INV'
       billingFyStartMonth.value = String(data.financial_year_start_month || 4)
       billingQuotationValidDays.value = String(data.default_quotation_valid_days || 15)
@@ -1882,6 +1891,7 @@
       const pan = billingPan.value.trim().toUpperCase()
       const currency = billingCurrency.value.trim().toUpperCase()
       const quotationPrefix = billingQuotationPrefix.value.trim().toUpperCase()
+      const companyCode = billingCompanyCode.value.trim().toUpperCase()
       const invoicePrefix = billingInvoicePrefix.value.trim().toUpperCase()
       const validDays = Number(billingQuotationValidDays.value || 15)
       const fyStartMonth = Number(billingFyStartMonth.value || 4)
@@ -1906,6 +1916,12 @@
 
       if (!/^[A-Z]{3}$/.test(currency)){
         billingSettingsStatus.textContent = 'Currency must be a 3-letter code such as INR.'
+        billingSettingsStatus.className = 'modal-status err'
+        return
+      }
+
+      if (!/^[A-Z0-9]{1,12}$/.test(companyCode)){
+        billingSettingsStatus.textContent = 'Company code must use 1–12 letters or numbers, for example MT.'
         billingSettingsStatus.className = 'modal-status err'
         return
       }
@@ -1949,6 +1965,7 @@
         default_currency: currency,
         default_tax_mode: billingTaxMode.value,
         quotation_prefix: quotationPrefix,
+        document_company_code: companyCode,
         invoice_prefix: invoicePrefix,
         financial_year_start_month: fyStartMonth,
         default_quotation_valid_days: validDays,
@@ -2830,6 +2847,7 @@
       showLogin()
     })
 
+    quotationsBtn.addEventListener('click', () => { location.href = '/quotations' })
     catalogueBtn.addEventListener('click', openCatalogueModal)
     catalogueCloseBtn.addEventListener('click', closeCatalogueModal)
     catalogueNewBtn.addEventListener('click', resetCatalogueForm)
