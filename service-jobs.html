@@ -1,0 +1,665 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Minarva Technologies — Service Jobs</title>
+  <meta name="theme-color" content="#0754c7">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--navy:#061d48;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--red:#b42318;--amber:#9a5b00}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select,textarea{font:inherit}.shell{width:min(1320px,calc(100% - 28px));margin:auto}.top{padding:20px 0}.brand{display:flex;align-items:center;justify-content:space-between;gap:16px}.brand img{width:245px;height:54px;object-fit:contain;object-position:left center}
+    .nav,.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),#1381ff);color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn-danger{background:#fff1f0;color:var(--red)}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .head{display:flex;justify-content:space-between;gap:18px;align-items:flex-end;margin:10px 0 18px}.eyebrow{font-size:12px;letter-spacing:.13em;color:var(--blue);font-weight:800}.head h1{margin:5px 0 0;font-size:34px;letter-spacing:-.035em}.userline{font-size:12px;color:var(--muted);margin-top:5px}
+    .stats{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:16px}.stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 24px rgba(7,51,111,.05)}.stat span{font-size:9px;color:var(--muted);font-weight:800}.stat strong{display:block;font-size:20px;margin-top:5px}
+    .workspace{display:grid;grid-template-columns:minmax(350px,.72fr) minmax(0,1.28fr);gap:16px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 12px 34px rgba(7,51,111,.07)}.card-head{padding:16px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.card-head h2{margin:0;font-size:18px}
+    .tools{display:grid;grid-template-columns:1fr 140px 130px;gap:8px;padding:13px;border-bottom:1px solid var(--line);background:#fbfdff}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);outline:none}textarea{min-height:86px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}
+    .job-list{max-height:850px;overflow:auto}.job{padding:14px 15px;border-bottom:1px solid #edf2f8;cursor:pointer}.job:hover,.job.active{background:#f2f8ff}.job:last-child{border-bottom:0}.job-row{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.job-no{font-weight:800;color:var(--blue);font-size:13px}.job-customer{font-size:12px;font-weight:800;margin-top:4px}.meta{font-size:10px;color:var(--muted);line-height:1.55;margin-top:5px}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.badge{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800}.open{background:#eef4ff;color:#3538cd}.scheduled{background:#f0f9ff;color:#026aa2}.in_progress{background:#fff7e8;color:#9a5b00}.on_hold{background:#fef3f2;color:#b42318}.completed{background:#ecfdf3;color:#087443}.cancelled{background:#f2f4f7;color:#475467}.low{background:#f2f4f7;color:#475467}.normal{background:#eef4ff;color:#3538cd}.high{background:#fff7e8;color:#9a5b00}.urgent{background:#fff1f0;color:#b42318}.eligible{background:#ecfdf3;color:#087443}.blocked{background:#fff1f0;color:#b42318}
+    .form-body{padding:18px}.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px}.full{grid-column:1/-1}.section-title{grid-column:1/-1;font-size:12px;font-weight:800;color:var(--blue);letter-spacing:.04em;margin:15px 0 0;padding-top:14px;border-top:1px solid var(--line)}.section-title.first{border-top:0;margin-top:0;padding-top:0}label{display:block;font-size:10px;font-weight:800;color:#334155;margin-bottom:5px}.help{font-size:9px;color:var(--muted);line-height:1.45;margin-top:4px}.status-msg{min-height:17px;font-size:11px;font-weight:700;margin-top:10px}.status-msg.ok{color:var(--green)}.status-msg.err{color:var(--red)}
+    .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:12px}.info-box{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdff}.info-box span{font-size:9px;color:var(--muted);font-weight:800}.info-box strong{display:block;margin-top:3px;font-size:12px}
+    .event-list{max-height:220px;overflow:auto;border:1px solid var(--line);border-radius:12px}.event{padding:9px 11px;border-bottom:1px solid #edf2f8;font-size:10px}.event:last-child{border-bottom:0}.call-box{border:1px solid #b2ccff;background:#f3f8ff;border-radius:13px;padding:12px}.call-box p{font-size:10px;margin:4px 0;line-height:1.5}
+    .modal{display:none;position:fixed;inset:0;background:rgba(5,20,45,.7);z-index:999;padding:20px}.modal.show{display:grid;place-items:center}.modal-card{width:min(560px,100%);background:#fff;border-radius:18px;padding:18px}.modal-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.modal-head h3{margin:0}.close{border:0;background:#eef5ff;border-radius:9px;width:36px;height:36px;font-size:22px;cursor:pointer}
+    @media(max-width:1050px){.workspace{grid-template-columns:1fr}.job-list{max-height:420px}.stats{grid-template-columns:repeat(3,1fr)}}
+    @media(max-width:650px){.head{display:block}.head .actions{margin-top:12px}.head h1{font-size:28px}.stats{grid-template-columns:1fr 1fr}.tools,.form-grid,.info-grid{grid-template-columns:1fr}.full,.section-title{grid-column:auto}.brand{display:block}.brand .nav{margin-top:10px}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <div class="brand">
+      <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+      <div class="nav">
+        <button id="invoicesBtn" class="btn btn-ghost" type="button">Invoices</button>
+        <button id="adminBtn" class="btn btn-ghost" type="button">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell" style="padding-bottom:60px">
+    <div class="head">
+      <div>
+        <div class="eyebrow">SERVICE OPERATIONS</div>
+        <h1>Service Jobs / Tickets</h1>
+        <div id="userLine" class="userline">Checking admin access…</div>
+      </div>
+      <div class="actions">
+        <button id="technicianBtn" class="btn btn-ghost" type="button">+ Technician</button>
+        <button id="newJobBtn" class="btn btn-primary" type="button">+ New Service Job</button>
+      </div>
+    </div>
+
+    <section class="stats">
+      <div class="stat"><span>OPEN</span><strong id="openCount">0</strong></div>
+      <div class="stat"><span>SCHEDULED</span><strong id="scheduledCount">0</strong></div>
+      <div class="stat"><span>IN PROGRESS</span><strong id="progressCount">0</strong></div>
+      <div class="stat"><span>ON HOLD</span><strong id="holdCount">0</strong></div>
+      <div class="stat"><span>COMPLETED</span><strong id="completedCount">0</strong></div>
+    </section>
+
+    <div class="workspace">
+      <section class="card">
+        <div class="card-head"><h2>Job List</h2><span id="listCount" class="meta">0 jobs</span></div>
+        <div class="tools">
+          <input id="searchInput" type="search" placeholder="Search job, customer, phone, service…">
+          <select id="statusFilter">
+            <option value="all">All statuses</option>
+            <option value="open">Open</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="in_progress">In Progress</option>
+            <option value="on_hold">On Hold</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <select id="priorityFilter">
+            <option value="all">All priorities</option>
+            <option value="urgent">Urgent</option>
+            <option value="high">High</option>
+            <option value="normal">Normal</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+        <div id="jobList" class="job-list"><div class="loader">Loading service jobs…</div></div>
+      </section>
+
+      <section class="card">
+        <div class="card-head">
+          <h2 id="formTitle">New Service Job</h2>
+          <div class="actions"><button id="resetBtn" class="btn btn-ghost" type="button">Reset</button><button id="saveBtn" class="btn btn-primary" type="button">Create Job</button></div>
+        </div>
+        <div class="form-body">
+          <div class="form-grid">
+            <div class="section-title first">Customer & source</div>
+            <div>
+              <label for="customerSelect">Customer</label>
+              <select id="customerSelect"><option value="">Loading customers…</option></select>
+            </div>
+            <div>
+              <label for="serviceCategory">Service category</label>
+              <input id="serviceCategory" type="text" maxlength="200" list="serviceCategories" placeholder="CCTV Service">
+              <datalist id="serviceCategories">
+                <option value="CCTV Camera Sales / Installation / Service"></option>
+                <option value="Computer & Laptop Sales / Service / Upgrades"></option>
+                <option value="Networking & Support"></option>
+                <option value="Solar Solutions"></option>
+                <option value="Inverters / Power Solutions"></option>
+                <option value="Home & Office Automation"></option>
+                <option value="Biometric & Access Control"></option>
+                <option value="Video Door Phone / Security Alarm"></option>
+                <option value="On-site Technical Support"></option>
+              </datalist>
+            </div>
+            <div>
+              <label for="enquiryId">Source enquiry ID</label>
+              <input id="enquiryId" type="number" min="1" step="1" placeholder="Optional">
+            </div>
+            <div>
+              <label for="invoiceId">Source invoice ID</label>
+              <input id="invoiceId" type="text" maxlength="36" placeholder="Optional UUID">
+            </div>
+            <div class="full">
+              <label for="siteAddress">Service / site address</label>
+              <textarea id="siteAddress" maxlength="1500" placeholder="Defaults from Customer Master when available"></textarea>
+            </div>
+
+            <div class="section-title">Job details</div>
+            <div class="full">
+              <label for="equipmentDetails">Device / equipment details</label>
+              <textarea id="equipmentDetails" maxlength="3000" placeholder="Brand, model, serial, camera count, PC/laptop details, inverter model, etc."></textarea>
+            </div>
+            <div class="full">
+              <label for="complaint">Complaint / requested service</label>
+              <textarea id="complaint" maxlength="5000" placeholder="Customer-reported issue or service requirement"></textarea>
+            </div>
+            <div class="full">
+              <label for="requestedWork">Requested / planned work</label>
+              <textarea id="requestedWork" maxlength="5000" placeholder="Inspection, replacement, installation, upgrade, repair…"></textarea>
+            </div>
+            <div>
+              <label for="priority">Priority</label>
+              <select id="priority"><option value="low">Low</option><option value="normal" selected>Normal</option><option value="high">High</option><option value="urgent">Urgent</option></select>
+            </div>
+            <div>
+              <label for="status">Status</label>
+              <select id="status"><option value="open">Open</option><option value="scheduled">Scheduled</option><option value="in_progress">In Progress</option><option value="on_hold">On Hold</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+              <div id="statusHelp" class="help">New jobs start Open, or Scheduled when a visit time is supplied.</div>
+            </div>
+
+            <div class="section-title">Assignment & schedule</div>
+            <div>
+              <label for="technicianSelect">Assigned technician</label>
+              <select id="technicianSelect"><option value="">Unassigned</option></select>
+            </div>
+            <div>
+              <label for="scheduledAt">Visit / schedule</label>
+              <input id="scheduledAt" type="datetime-local">
+            </div>
+            <div>
+              <label for="followUpAt">Follow-up</label>
+              <input id="followUpAt" type="datetime-local">
+            </div>
+            <div>
+              <label for="serviceEstimate">Service charge estimate</label>
+              <input id="serviceEstimate" type="number" min="0" step="0.01" value="0">
+            </div>
+            <div>
+              <label for="partsEstimate">Parts estimate</label>
+              <input id="partsEstimate" type="number" min="0" step="0.01" value="0">
+            </div>
+            <div>
+              <label>Estimate total</label>
+              <div class="info-box"><strong id="estimateTotal">₹0.00</strong></div>
+            </div>
+
+            <div class="section-title">Notes</div>
+            <div class="full">
+              <label for="internalNotes">Internal notes</label>
+              <textarea id="internalNotes" maxlength="5000"></textarea>
+            </div>
+            <div class="full">
+              <label for="customerNotes">Customer-facing notes</label>
+              <textarea id="customerNotes" maxlength="5000"></textarea>
+            </div>
+          </div>
+
+          <div id="jobInfo" class="info-grid" style="display:none">
+            <div class="info-box"><span>JOB NUMBER</span><strong id="jobNumberInfo">—</strong></div>
+            <div class="info-box"><span>CREATED</span><strong id="jobCreatedInfo">—</strong></div>
+            <div class="info-box"><span>COMPLETED</span><strong id="jobCompletedInfo">—</strong></div>
+          </div>
+
+          <div id="formStatusMsg" class="status-msg"></div>
+
+          <div class="section-title" style="margin-top:18px">Lifecycle History</div>
+          <div id="eventList" class="event-list"><div class="empty" style="padding:14px">Save or open a job to view lifecycle history.</div></div>
+
+          <div class="section-title" style="margin-top:18px">AI Customer-Care Follow-up Readiness</div>
+          <div id="callReadiness" class="call-box"><p>Select a customer to evaluate follow-up readiness.</p></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div id="technicianModal" class="modal" aria-hidden="true">
+    <div class="modal-card">
+      <div class="modal-head"><div><h3>Add Technician</h3><div class="meta">Foundation record for job assignment. Login/mobile technician access comes later.</div></div><button id="technicianCloseBtn" class="close" type="button">×</button></div>
+      <div class="form-grid" style="margin-top:14px">
+        <div><label for="techName">Name</label><input id="techName" type="text" maxlength="160"></div>
+        <div><label for="techPhone">Phone</label><input id="techPhone" type="tel" maxlength="30"></div>
+        <div><label for="techEmail">Email</label><input id="techEmail" type="email" maxlength="320"></div>
+        <div class="full"><label for="techNotes">Notes</label><textarea id="techNotes" maxlength="2000"></textarea></div>
+      </div>
+      <div id="techStatusMsg" class="status-msg"></div>
+      <div class="actions" style="justify-content:flex-end;margin-top:12px"><button id="techSaveBtn" class="btn btn-primary" type="button">Save Technician</button></div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+    const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+
+    const userLine=document.getElementById('userLine')
+    const invoicesBtn=document.getElementById('invoicesBtn')
+    const adminBtn=document.getElementById('adminBtn')
+    const technicianBtn=document.getElementById('technicianBtn')
+    const newJobBtn=document.getElementById('newJobBtn')
+    const openCount=document.getElementById('openCount')
+    const scheduledCount=document.getElementById('scheduledCount')
+    const progressCount=document.getElementById('progressCount')
+    const holdCount=document.getElementById('holdCount')
+    const completedCount=document.getElementById('completedCount')
+    const listCount=document.getElementById('listCount')
+    const searchInput=document.getElementById('searchInput')
+    const statusFilter=document.getElementById('statusFilter')
+    const priorityFilter=document.getElementById('priorityFilter')
+    const jobList=document.getElementById('jobList')
+    const formTitle=document.getElementById('formTitle')
+    const customerSelect=document.getElementById('customerSelect')
+    const serviceCategory=document.getElementById('serviceCategory')
+    const enquiryId=document.getElementById('enquiryId')
+    const invoiceId=document.getElementById('invoiceId')
+    const siteAddress=document.getElementById('siteAddress')
+    const equipmentDetails=document.getElementById('equipmentDetails')
+    const complaint=document.getElementById('complaint')
+    const requestedWork=document.getElementById('requestedWork')
+    const priority=document.getElementById('priority')
+    const status=document.getElementById('status')
+    const statusHelp=document.getElementById('statusHelp')
+    const technicianSelect=document.getElementById('technicianSelect')
+    const scheduledAt=document.getElementById('scheduledAt')
+    const followUpAt=document.getElementById('followUpAt')
+    const serviceEstimate=document.getElementById('serviceEstimate')
+    const partsEstimate=document.getElementById('partsEstimate')
+    const estimateTotal=document.getElementById('estimateTotal')
+    const internalNotes=document.getElementById('internalNotes')
+    const customerNotes=document.getElementById('customerNotes')
+    const resetBtn=document.getElementById('resetBtn')
+    const saveBtn=document.getElementById('saveBtn')
+    const formStatusMsg=document.getElementById('formStatusMsg')
+    const jobInfo=document.getElementById('jobInfo')
+    const jobNumberInfo=document.getElementById('jobNumberInfo')
+    const jobCreatedInfo=document.getElementById('jobCreatedInfo')
+    const jobCompletedInfo=document.getElementById('jobCompletedInfo')
+    const eventList=document.getElementById('eventList')
+    const callReadiness=document.getElementById('callReadiness')
+    const technicianModal=document.getElementById('technicianModal')
+    const technicianCloseBtn=document.getElementById('technicianCloseBtn')
+    const techName=document.getElementById('techName')
+    const techPhone=document.getElementById('techPhone')
+    const techEmail=document.getElementById('techEmail')
+    const techNotes=document.getElementById('techNotes')
+    const techStatusMsg=document.getElementById('techStatusMsg')
+    const techSaveBtn=document.getElementById('techSaveBtn')
+
+    let jobs=[]
+    let customers=[]
+    let technicians=[]
+    let activeJob=null
+
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    const money=v=>'₹'+Number(v||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})
+
+    function toLocalInput(value){
+      if(!value)return ''
+      const d=new Date(value)
+      if(Number.isNaN(d.getTime()))return ''
+      const local=new Date(d.getTime()-d.getTimezoneOffset()*60000)
+      return local.toISOString().slice(0,16)
+    }
+
+    function toIso(value){
+      if(!value)return null
+      const d=new Date(value)
+      return Number.isNaN(d.getTime())?null:d.toISOString()
+    }
+
+    function customerById(id){return customers.find(c=>String(c.id)===String(id))}
+    function techById(id){return technicians.find(t=>String(t.id)===String(id))}
+
+    function renderStats(){
+      const count=s=>jobs.filter(j=>j.status===s).length
+      openCount.textContent=count('open')
+      scheduledCount.textContent=count('scheduled')
+      progressCount.textContent=count('in_progress')
+      holdCount.textContent=count('on_hold')
+      completedCount.textContent=count('completed')
+    }
+
+    function filteredJobs(){
+      const q=searchInput.value.trim().toLowerCase()
+      return jobs.filter(j=>{
+        if(statusFilter.value!=='all'&&j.status!==statusFilter.value)return false
+        if(priorityFilter.value!=='all'&&j.priority!==priorityFilter.value)return false
+        if(!q)return true
+        const c=Array.isArray(j.customers)?j.customers[0]:j.customers
+        const t=Array.isArray(j.technicians)?j.technicians[0]:j.technicians
+        return [j.job_number,j.service_category,j.complaint,j.equipment_details,c?.name,c?.phone,t?.name]
+          .map(v=>String(v||'').toLowerCase()).join(' ').includes(q)
+      })
+    }
+
+    function renderList(){
+      const rows=filteredJobs()
+      listCount.textContent=rows.length+(rows.length===1?' job':' jobs')
+      if(!rows.length){
+        jobList.innerHTML='<div class="empty">No service jobs found.</div>'
+        return
+      }
+      jobList.innerHTML=rows.map(j=>{
+        const c=Array.isArray(j.customers)?j.customers[0]:j.customers
+        const t=Array.isArray(j.technicians)?j.technicians[0]:j.technicians
+        return '<article class="job '+(activeJob?.id===j.id?'active':'')+'" data-job-id="'+esc(j.id)+'">'+
+          '<div class="job-row"><div><div class="job-no">'+esc(j.job_number)+'</div><div class="job-customer">'+esc(c?.name||'Customer')+'</div>'+
+          '<div class="meta">'+esc(j.service_category||'')+(t?.name?' • '+esc(t.name):' • Unassigned')+
+          (j.scheduled_at?' • '+esc(new Date(j.scheduled_at).toLocaleString()):'')+'</div>'+
+          '<div class="badges"><span class="badge '+esc(j.status)+'">'+esc(j.status.replace('_',' '))+'</span><span class="badge '+esc(j.priority)+'">'+esc(j.priority)+'</span></div>'+
+          '</div><div class="meta">'+esc(j.complaint||'').slice(0,90)+'</div></div></article>'
+      }).join('')
+      jobList.querySelectorAll('[data-job-id]').forEach(el=>el.addEventListener('click',()=>openJob(el.dataset.jobId)))
+    }
+
+    async function loadCustomers(){
+      const {data,error}=await supabase
+        .from('customers')
+        .select('id,name,phone,email,site_address,billing_address_line1,billing_address_line2,city,district,state,pincode,preferred_language,preferred_contact_channel,call_consent,call_consent_at,call_consent_source,do_not_call')
+        .order('name',{ascending:true}).limit(3000)
+      if(error)throw error
+      customers=data||[]
+      customerSelect.innerHTML='<option value="">Choose customer…</option>'+customers.map(c=>'<option value="'+esc(c.id)+'">'+esc(c.name)+(c.phone?' • '+esc(c.phone):'')+'</option>').join('')
+    }
+
+    async function loadTechnicians(){
+      const {data,error}=await supabase.from('technicians').select('id,name,phone,email,active,notes').order('active',{ascending:false}).order('name',{ascending:true}).limit(1000)
+      if(error)throw error
+      technicians=data||[]
+      technicianSelect.innerHTML='<option value="">Unassigned</option>'+technicians.filter(t=>t.active).map(t=>'<option value="'+esc(t.id)+'">'+esc(t.name)+(t.phone?' • '+esc(t.phone):'')+'</option>').join('')
+    }
+
+    async function loadJobs(){
+      jobList.innerHTML='<div class="loader">Loading service jobs…</div>'
+      const {data,error}=await supabase
+        .from('service_jobs')
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,created_at,updated_at,customers(name,phone),technicians(name,phone)')
+        .order('created_at',{ascending:false}).limit(1500)
+      if(error){jobList.innerHTML='<div class="empty">Could not load jobs: '+esc(error.message)+'</div>';return}
+      jobs=data||[]
+      renderStats();renderList()
+    }
+
+    function defaultSiteAddress(c){
+      if(!c)return ''
+      if(c.site_address)return c.site_address
+      return [c.billing_address_line1,c.billing_address_line2,c.city,c.district,c.state,c.pincode].filter(Boolean).join(', ')
+    }
+
+    function renderCallReadiness(){
+      const c=customerById(customerSelect.value)
+      if(!c){callReadiness.innerHTML='<p>Select a customer to evaluate follow-up readiness.</p>';return}
+      const hasPhone=Boolean(String(c.phone||'').trim())
+      const activeStatus=!['completed','cancelled'].includes(status.value)
+      const eligible=activeStatus&&hasPhone&&c.call_consent===true&&c.do_not_call!==true
+      const reasons=[]
+      if(!activeStatus)reasons.push('job is completed/cancelled')
+      if(!hasPhone)reasons.push('customer phone missing')
+      if(c.call_consent!==true)reasons.push('call consent not recorded')
+      if(c.do_not_call===true)reasons.push('Do Not Call enabled')
+      callReadiness.innerHTML='<div class="badges"><span class="badge '+(eligible?'eligible':'blocked')+'">'+(eligible?'AI Follow-up Call Eligible':'AI Follow-up Call Blocked')+'</span></div>'+
+        '<p><strong>Language:</strong> '+esc(c.preferred_language||'not set')+' • <strong>Channel:</strong> '+esc(c.preferred_contact_channel||'not set')+'</p>'+
+        '<p><strong>Call consent:</strong> '+(c.call_consent?'Yes':'No')+' • <strong>Do Not Call:</strong> '+(c.do_not_call?'Yes':'No')+'</p>'+
+        (eligible?'<p>Structurally ready for a future service follow-up/reminder call. This screen does not place calls.</p>':'<p><strong>Blocked because:</strong> '+esc(reasons.join(', ')||'not eligible')+'.</p>')
+    }
+
+    function updateEstimate(){
+      estimateTotal.textContent=money(Number(serviceEstimate.value||0)+Number(partsEstimate.value||0))
+    }
+
+    function resetForm(){
+      activeJob=null
+      formTitle.textContent='New Service Job'
+      saveBtn.textContent='Create Job'
+      customerSelect.value=''
+      serviceCategory.value=''
+      enquiryId.value=''
+      invoiceId.value=''
+      siteAddress.value=''
+      equipmentDetails.value=''
+      complaint.value=''
+      requestedWork.value=''
+      priority.value='normal'
+      status.value='open'
+      status.disabled=true
+      statusHelp.textContent='New jobs start Open, or Scheduled when a visit time is supplied.'
+      technicianSelect.value=''
+      scheduledAt.value=''
+      followUpAt.value=''
+      serviceEstimate.value='0'
+      partsEstimate.value='0'
+      internalNotes.value=''
+      customerNotes.value=''
+      jobInfo.style.display='none'
+      eventList.innerHTML='<div class="empty" style="padding:14px">Save or open a job to view lifecycle history.</div>'
+      formStatusMsg.textContent=''
+      formStatusMsg.className='status-msg'
+      updateEstimate()
+      renderCallReadiness()
+      renderList()
+      applyUrlPrefill()
+    }
+
+    function fillForm(j){
+      activeJob=j
+      formTitle.textContent=j.job_number||'Service Job'
+      saveBtn.textContent='Save Changes'
+      customerSelect.value=j.customer_id||''
+      serviceCategory.value=j.service_category||''
+      enquiryId.value=j.enquiry_id||''
+      invoiceId.value=j.invoice_id||''
+      siteAddress.value=j.site_address||''
+      equipmentDetails.value=j.equipment_details||''
+      complaint.value=j.complaint||''
+      requestedWork.value=j.requested_work||''
+      priority.value=j.priority||'normal'
+      status.value=j.status||'open'
+      status.disabled=false
+      statusHelp.textContent='Status changes are written to the lifecycle history.'
+      technicianSelect.value=j.assigned_technician_id||''
+      scheduledAt.value=toLocalInput(j.scheduled_at)
+      followUpAt.value=toLocalInput(j.follow_up_at)
+      serviceEstimate.value=Number(j.service_charge_estimate||0)
+      partsEstimate.value=Number(j.parts_estimate||0)
+      internalNotes.value=j.internal_notes||''
+      customerNotes.value=j.customer_notes||''
+      jobInfo.style.display='grid'
+      jobNumberInfo.textContent=j.job_number||'—'
+      jobCreatedInfo.textContent=j.created_at?new Date(j.created_at).toLocaleString():'—'
+      jobCompletedInfo.textContent=j.completed_at?new Date(j.completed_at).toLocaleString():'—'
+      formStatusMsg.textContent=''
+      formStatusMsg.className='status-msg'
+      updateEstimate()
+      renderCallReadiness()
+      renderList()
+    }
+
+    async function loadEvents(id){
+      eventList.innerHTML='<div class="loader" style="padding:14px">Loading history…</div>'
+      const {data,error}=await supabase.from('service_job_events').select('id,event_type,from_status,to_status,note,created_at').eq('service_job_id',id).order('created_at',{ascending:false}).limit(100)
+      if(error){eventList.innerHTML='<div class="empty" style="padding:14px">Could not load history.</div>';return}
+      const rows=data||[]
+      if(!rows.length){eventList.innerHTML='<div class="empty" style="padding:14px">No lifecycle events yet.</div>';return}
+      eventList.innerHTML=rows.map(e=>'<div class="event"><strong>'+esc(e.event_type.replaceAll('_',' '))+'</strong> • '+esc(new Date(e.created_at).toLocaleString())+
+        (e.from_status||e.to_status?'<div class="meta">'+esc(e.from_status||'')+(e.to_status?' → '+esc(e.to_status):'')+'</div>':'')+
+        (e.note?'<div class="meta">'+esc(e.note)+'</div>':'')+'</div>').join('')
+    }
+
+    async function openJob(id){
+      const j=jobs.find(x=>String(x.id)===String(id))
+      if(!j)return
+      fillForm(j)
+      await loadEvents(j.id)
+      window.scrollTo({top:0,behavior:'smooth'})
+    }
+
+    function normalizeUuidOrNull(value){
+      const v=String(value||'').trim()
+      if(!v)return null
+      return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(v)?v:false
+    }
+
+    async function saveJob(){
+      const customerId=customerSelect.value
+      const category=serviceCategory.value.trim()
+      const complaintText=complaint.value.trim()
+      const enquiryRaw=enquiryId.value.trim()
+      const invoiceRaw=invoiceId.value.trim()
+      const invoiceValue=normalizeUuidOrNull(invoiceRaw)
+      const serviceValue=Number(serviceEstimate.value||0)
+      const partsValue=Number(partsEstimate.value||0)
+
+      if(!customerId){formStatusMsg.textContent='Choose a customer.';formStatusMsg.className='status-msg err';return}
+      if(category.length<2){formStatusMsg.textContent='Enter a service category.';formStatusMsg.className='status-msg err';return}
+      if(complaintText.length<2){formStatusMsg.textContent='Enter the complaint or requested service.';formStatusMsg.className='status-msg err';return}
+      if(enquiryRaw&&(!/^\d+$/.test(enquiryRaw)||Number(enquiryRaw)<1)){formStatusMsg.textContent='Source enquiry ID is invalid.';formStatusMsg.className='status-msg err';return}
+      if(invoiceRaw&&invoiceValue===false){formStatusMsg.textContent='Source invoice ID is invalid.';formStatusMsg.className='status-msg err';return}
+      if(serviceValue<0||partsValue<0){formStatusMsg.textContent='Estimate values cannot be negative.';formStatusMsg.className='status-msg err';return}
+
+      saveBtn.disabled=true
+      saveBtn.textContent=activeJob?'Saving…':'Creating…'
+      formStatusMsg.textContent=''
+
+      if(!activeJob){
+        const {data,error}=await supabase.rpc('create_service_job',{
+          p_customer_id:customerId,
+          p_enquiry_id:enquiryRaw?Number(enquiryRaw):null,
+          p_invoice_id:invoiceValue||null,
+          p_service_category:category,
+          p_site_address:siteAddress.value.trim()||null,
+          p_equipment_details:equipmentDetails.value.trim()||null,
+          p_complaint:complaintText,
+          p_requested_work:requestedWork.value.trim()||null,
+          p_priority:priority.value,
+          p_assigned_technician_id:technicianSelect.value||null,
+          p_scheduled_at:toIso(scheduledAt.value),
+          p_follow_up_at:toIso(followUpAt.value),
+          p_internal_notes:internalNotes.value.trim()||null,
+          p_customer_notes:customerNotes.value.trim()||null,
+          p_service_charge_estimate:serviceValue,
+          p_parts_estimate:partsValue
+        })
+        saveBtn.disabled=false
+        saveBtn.textContent='Create Job'
+        if(error){formStatusMsg.textContent='Could not create job: '+error.message;formStatusMsg.className='status-msg err';return}
+        await loadJobs()
+        const created=jobs.find(j=>String(j.id)===String(data.id))
+        if(created){fillForm(created);await loadEvents(created.id)}
+        formStatusMsg.textContent='Created '+(data.job_number||'service job')+' successfully.'
+        formStatusMsg.className='status-msg ok'
+        return
+      }
+
+      const payload={
+        customer_id:customerId,
+        enquiry_id:enquiryRaw?Number(enquiryRaw):null,
+        invoice_id:invoiceValue||null,
+        service_category:category,
+        site_address:siteAddress.value.trim()||null,
+        equipment_details:equipmentDetails.value.trim()||null,
+        complaint:complaintText,
+        requested_work:requestedWork.value.trim()||null,
+        priority:priority.value,
+        status:status.value,
+        assigned_technician_id:technicianSelect.value||null,
+        scheduled_at:toIso(scheduledAt.value),
+        follow_up_at:toIso(followUpAt.value),
+        internal_notes:internalNotes.value.trim()||null,
+        customer_notes:customerNotes.value.trim()||null,
+        service_charge_estimate:serviceValue,
+        parts_estimate:partsValue
+      }
+
+      const {data,error}=await supabase.from('service_jobs').update(payload).eq('id',activeJob.id)
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,created_at,updated_at').single()
+
+      saveBtn.disabled=false
+      saveBtn.textContent='Save Changes'
+      if(error){formStatusMsg.textContent='Could not update job: '+error.message;formStatusMsg.className='status-msg err';return}
+      await loadJobs()
+      const latest=jobs.find(j=>String(j.id)===String(data.id))||data
+      fillForm(latest)
+      await loadEvents(data.id)
+      formStatusMsg.textContent='Service job updated successfully.'
+      formStatusMsg.className='status-msg ok'
+    }
+
+    function applyUrlPrefill(){
+      if(activeJob)return
+      const p=new URLSearchParams(location.search)
+      const customer=p.get('customer')
+      const enquiry=p.get('enquiry')
+      const invoice=p.get('invoice')
+      const service=p.get('service')
+      if(customer&&customers.some(c=>c.id===customer)){
+        customerSelect.value=customer
+        const c=customerById(customer)
+        siteAddress.value=defaultSiteAddress(c)
+      }
+      if(enquiry&&/^\d+$/.test(enquiry))enquiryId.value=enquiry
+      if(invoice)invoiceId.value=invoice
+      if(service)serviceCategory.value=service
+      renderCallReadiness()
+    }
+
+    function openTechnicianModal(){
+      techName.value='';techPhone.value='';techEmail.value='';techNotes.value=''
+      techStatusMsg.textContent='';techStatusMsg.className='status-msg'
+      technicianModal.classList.add('show');technicianModal.setAttribute('aria-hidden','false')
+      setTimeout(()=>techName.focus(),0)
+    }
+    function closeTechnicianModal(){technicianModal.classList.remove('show');technicianModal.setAttribute('aria-hidden','true')}
+    async function saveTechnician(){
+      const name=techName.value.trim()
+      if(name.length<2){techStatusMsg.textContent='Enter technician name.';techStatusMsg.className='status-msg err';return}
+      techSaveBtn.disabled=true
+      const {data:{session}}=await supabase.auth.getSession()
+      const {data,error}=await supabase.from('technicians').insert({
+        name,phone:techPhone.value.trim()||null,email:techEmail.value.trim()||null,notes:techNotes.value.trim()||null,
+        created_by:session?.user?.id||null
+      }).select('id,name,phone,email,active,notes').single()
+      techSaveBtn.disabled=false
+      if(error){techStatusMsg.textContent='Could not save technician: '+error.message;techStatusMsg.className='status-msg err';return}
+      await loadTechnicians()
+      technicianSelect.value=data.id
+      closeTechnicianModal()
+    }
+
+    async function verifyAdmin(){
+      const {data:{session}}=await supabase.auth.getSession()
+      if(!session?.user){location.href='/admin';return false}
+      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+      if(error||!data||data.active!==true){location.href='/admin';return false}
+      userLine.textContent=(data.email||session.user.email||'')+' • '+data.role
+      return true
+    }
+
+    async function init(){
+      try{
+        if(!await verifyAdmin())return
+        await Promise.all([loadCustomers(),loadTechnicians()])
+        resetForm()
+        await loadJobs()
+        const target=new URLSearchParams(location.search).get('job')
+        if(target)await openJob(target)
+      }catch(error){
+        jobList.innerHTML='<div class="empty">Could not initialize service jobs: '+esc(error?.message||error)+'</div>'
+      }
+    }
+
+    customerSelect.addEventListener('change',()=>{
+      if(!activeJob){
+        const c=customerById(customerSelect.value)
+        if(c&&!siteAddress.value.trim())siteAddress.value=defaultSiteAddress(c)
+      }
+      renderCallReadiness()
+    })
+    status.addEventListener('change',renderCallReadiness)
+    serviceEstimate.addEventListener('input',updateEstimate)
+    partsEstimate.addEventListener('input',updateEstimate)
+    searchInput.addEventListener('input',renderList)
+    statusFilter.addEventListener('change',renderList)
+    priorityFilter.addEventListener('change',renderList)
+    saveBtn.addEventListener('click',saveJob)
+    resetBtn.addEventListener('click',resetForm)
+    newJobBtn.addEventListener('click',()=>{resetForm();window.scrollTo({top:0,behavior:'smooth'})})
+    technicianBtn.addEventListener('click',openTechnicianModal)
+    technicianCloseBtn.addEventListener('click',closeTechnicianModal)
+    techSaveBtn.addEventListener('click',saveTechnician)
+    technicianModal.addEventListener('click',event=>{if(event.target===technicianModal)closeTechnicianModal()})
+    invoicesBtn.addEventListener('click',()=>{location.href='/invoices'})
+    adminBtn.addEventListener('click',()=>{location.href='/admin'})
+    document.addEventListener('keydown',event=>{if(event.key==='Escape'&&technicianModal.classList.contains('show'))closeTechnicianModal()})
+    supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+    init()
+  </script>
+</body>
+</html>
