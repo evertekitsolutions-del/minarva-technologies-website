@@ -210,6 +210,8 @@
           </div>
         </div>
         <form class="form" id="leadForm">
+          <input id="company_website" name="company_website" type="text" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
+          <input id="form_started_at" name="form_started_at" type="hidden">
           <div class="form-grid">
             <input id="name" name="name" autocomplete="name" maxlength="120" placeholder="Your name" required>
             <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Phone / WhatsApp" required>
@@ -264,6 +266,9 @@
     const leadForm = document.getElementById('leadForm')
     const leadSubmit = document.getElementById('leadSubmit')
     const formStatus = document.getElementById('formStatus')
+    const honeypot = document.getElementById('company_website')
+    const formStartedAt = document.getElementById('form_started_at')
+    formStartedAt.value = String(Date.now())
 
     function setFormStatus(message, type){
       formStatus.textContent = message
@@ -300,22 +305,24 @@
       formStatus.className = 'form-status'
 
       try {
-        const { error } = await supabase
-          .from('enquiries')
-          .insert({
+        const { data, error } = await supabase.functions.invoke('public-enquiry-submit', {
+          body: {
             name,
             phone,
             email: email || null,
             service,
             message: message || null,
-            source: 'website',
-            status: 'new'
-          })
+            company_website: honeypot.value || '',
+            form_started_at: Number(formStartedAt.value || 0)
+          }
+        })
 
         if (error) throw error
+        if (!data?.accepted) throw new Error(data?.error || 'Enquiry submission failed')
 
         setFormStatus('Enquiry saved successfully. Opening WhatsApp…', 'ok')
         leadForm.reset()
+        formStartedAt.value = String(Date.now())
 
         if (waWindow) {
           waWindow.location.href = whatsappUrl
