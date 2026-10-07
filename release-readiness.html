@@ -174,12 +174,12 @@ async function saveUatStep(id){
 async function saveCheck(){
   const key=$('manualCheck').value
   if(!key)return
-  const {data:{session}}=await supabase.auth.getSession()
-  const {error}=await supabase.from('platform_release_checklist').update({
-    status:$('manualStatus').value,
-    evidence:$('manualEvidence').value.trim()||null,
-    updated_by:session?.user?.id||null
-  }).eq('check_key',key).eq('automated',false)
+  const {error}=await supabase.rpc('platform_update_manual_release_check',{
+    p_check_key:key,
+    p_status:$('manualStatus').value,
+    p_evidence:$('manualEvidence').value.trim()||null,
+    p_notes:null
+  })
   if(error){setMsg('checkMsg',error.message,'err');return}
   $('manualEvidence').value='';setMsg('checkMsg','Checklist evidence saved.','ok');await load()
 }
