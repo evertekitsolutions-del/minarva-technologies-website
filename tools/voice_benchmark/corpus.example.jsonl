@@ -1,0 +1,3 @@
+# Example only. Replace paths/text with real consented benchmark corpus.
+{"id":"ml-001","language":"ml","audio_path":"audio/ml-001.wav","reference_text":"നമസ്കാരം ഇത് ഒരു ടെസ്റ്റ് വാചകമാണ്"}
+{"id":"en-001","language":"en","audio_path":"audio/en-001.wav","reference_text":"Hello this is a test sentence"}
