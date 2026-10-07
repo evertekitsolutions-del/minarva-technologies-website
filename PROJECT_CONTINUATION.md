@@ -1469,3 +1469,32 @@ Remaining work that cannot be honestly auto-passed:
 - review production security headers on the final live deployment
 - when every blocking release check is Pass, approve final Release Freeze
 - real automated phone dialing remains OFF and is **not** part of software release approval
+
+## Platform — Milestone 4A2B1 — COMPLETE
+
+Release/UAT evidence integrity hardening:
+- a UAT step cannot be marked Pass without a non-empty real evidence reference
+- UAT outcomes now synchronize to the corresponding manual release checklist gates
+- failed/blocked UAT outcomes fail the mapped release gate
+- reset-to-Pending clears mapped release evidence
+- blocking N/A UAT steps no longer allow the UAT run to be treated as passed
+- a fully passed UAT run records a run-level evidence reference derived from its per-step evidence
+- anonymous execution of the UAT update RPC remains denied
+- no UAT run or recovery drill was fabricated
+
+Migration:
+- `supabase/migrations/20261007_platform_uat_evidence_hardening.sql`
+
+Live Supabase verification:
+- migration applied successfully
+- `anon` execute on `platform_update_uat_step`: false
+- `authenticated` execute: true, with active-admin authorization enforced inside the RPC
+- Security Advisor still reports only the existing **Leaked Password Protection Disabled** warning
+- real UAT run count remains 0
+- real recovery drill count remains 0
+
+### Immediate next milestone
+
+**Platform — Milestone 4A2B2: Admin/session security + production monitoring hardening**
+
+Then continue with real UAT/recovery evidence and final release freeze. Real automated phone calling remains OFF.
