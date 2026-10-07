@@ -1394,16 +1394,69 @@ GitHub commits:
 Known external blocker:
 - Supabase Auth **Leaked Password Protection Disabled** warning still requires the project Auth setting to be enabled; it cannot be honestly marked fixed from database SQL alone.
 
+## Platform — Milestone 4A2A — COMPLETE
+
+Implemented:
+- non-destructive cross-module structural smoke RPC
+- required-table verification across CRM / billing / service / technician / customer-care / release-control modules
+- required-function verification for technician, customer-care, health and release RPCs
+- direct anonymous enquiry INSERT verification
+- legacy website anonymous INSERT policy verification
+- core RLS presence verification
+- referential-integrity smoke checks:
+  - quotation items → quotation
+  - invoice items → invoice
+  - payments → invoice
+  - service materials → service job
+  - service attachments → service job
+- automated-calling safety verification:
+  - emergency stop ON
+  - live telephony OFF
+  - live adapter count = 0
+- structural-smoke result is now a blocking automated release-check item
+- release-control FK performance indexes added
+- production Vercel deployment of structural-smoke commit verified READY
+
+Migration:
+- `supabase/migrations/20261007_platform_structural_smoke.sql`
+
+GitHub commit:
+- structural release smoke verification: `b922a3d27e09d7dc698195181c4f055218cdd404`
+
+Direct verification:
+- required tables present: 21 / 21
+- required functions present: 7 / 7
+- orphan quotation items: 0
+- orphan invoice items: 0
+- orphan payments: 0
+- orphan service materials: 0
+- orphan service attachments: 0
+- anonymous direct enquiry INSERT: disabled
+- legacy anonymous website insert policy: absent
+- live telephony: OFF
+- telephony emergency stop: ON
+- live telephony adapters: 0
+- anonymous execution of structural-smoke RPC: denied
+- no real UAT run has been fabricated
+- no recovery drill has been fabricated
+
+Security Advisor:
+- only current security warning remains **Leaked Password Protection Disabled**
+- remediation: Supabase Auth project setting, not a SQL migration
+
+Performance Advisor:
+- missing release-control FK indexes resolved
+- remaining unused-index notices are informational on new/low-traffic schema
+
 ## Immediate next milestone
 
-**Platform — Milestone 4A2: Evidence-Based End-to-End UAT + Release Freeze**
+**Platform — Milestone 4A2B: Real UAT Evidence + Recovery Drill + Release Freeze**
 
-Continue without enabling real automated calls:
-- run non-destructive structural/security verification across all modules
-- verify production Vercel deployments after latest commits
-- review navigation and responsive/mobile behavior
-- start a formal UAT run only when real user-flow tests can be evidenced
-- test:
+Remaining work that cannot be honestly auto-passed:
+- perform an actual recovery/restore drill and record evidence
+- enable Supabase leaked-password protection and re-run Security Advisor
+- start a real UAT run from `/release-readiness`
+- execute and record real evidence for:
   - Enquiry → Customer
   - Quotation → Invoice
   - Payment
@@ -1412,8 +1465,7 @@ Continue without enabling real automated calls:
   - Customer Care
   - AI Voice Sandbox
   - Calling Readiness
-- record only real pass/fail evidence
-- perform and record an actual backup/recovery drill before final release sign-off
-- clear the Supabase leaked-password-protection warning
-- create final release freeze only after all blocking checks are Pass
-- real automated phone dialing remains a separate later go-live decision
+  - mobile/responsive regression
+- review production security headers on the final live deployment
+- when every blocking release check is Pass, approve final Release Freeze
+- real automated phone dialing remains OFF and is **not** part of software release approval
