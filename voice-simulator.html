@@ -31,6 +31,7 @@
     <div class="brand">
       <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
       <div class="nav">
+        <button id="runtimeBtn" class="btn btn-ghost" type="button">Voice Runtime</button>
         <button id="customerCareBtn" class="btn btn-ghost" type="button">Customer Care</button>
         <button id="adminBtn" class="btn btn-ghost" type="button">Admin</button>
       </div>
@@ -397,6 +398,7 @@
     $('endBtn').addEventListener('click',endSession)
     $('speakLastBtn').addEventListener('click',()=>speak(lastAssistantText))
     $('refreshBtn').addEventListener('click',refreshAll)
+    $('runtimeBtn').addEventListener('click',()=>location.href='/voice-runtime')
     $('customerCareBtn').addEventListener('click',()=>location.href='/customer-care')
     $('adminBtn').addEventListener('click',()=>location.href='/admin')
     supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
