@@ -1337,21 +1337,73 @@ Verification:
 - existing **Leaked Password Protection Disabled** warning remains
 - current unused-index notices are informational on new/low-usage tables
 
+## Platform — Milestone 4A1A — COMPLETE / 4A1B ACTIVE
+
+Completed production-hardening work:
+- production security headers in Vercel config:
+  - CSP
+  - HSTS
+  - X-Content-Type-Options
+  - X-Frame-Options
+  - Referrer-Policy
+  - Permissions-Policy
+  - Cross-Origin-Opener-Policy
+- public website enquiry moved behind hardened Supabase Edge Function
+- direct anonymous enquiry INSERT revoked
+- anonymous website INSERT policy removed
+- server-side enquiry validation
+- origin allowlist
+- honeypot
+- minimum form-age bot check
+- request-size limit
+- privacy-preserving hashed client / phone fingerprints
+- rate limits:
+  - 5 attempts / 15 min per client fingerprint
+  - 3 attempts / 30 min per phone fingerprint
+- 24-hour anti-abuse hash retention + cleanup cron
+- cross-module database audit log
+- audit triggers on core CRM / billing / service / customer-care tables
+- Platform Health & Recovery dashboard
+- actual recovery-drill registry; backup is not considered verified until a real drill passes
+- production security/recovery runbook
+- Admin → Platform Health navigation
+- live automated calling remains OFF
+- telephony emergency stop remains ON
+
+Release-control work added in 4A1B:
+- `platform_release_checklist`
+- `platform_uat_runs`
+- `platform_uat_steps`
+- automated release-check refresh RPC
+- release-readiness RPC
+- explicit UAT run creation and evidence recording
+- dedicated authenticated `/release-readiness` dashboard
+- manual UAT items remain Pending until real evidence is recorded
+- Admin and Platform Health navigation to Release Readiness
+
+Migration:
+- `supabase/migrations/20261007_platform_release_uat_control.sql`
+
+GitHub commits:
+- release/UAT control plane: `cdf6f1a6bee2f643504bcfe3f7d9c296253fea32`
+- release dashboard: `428563da376f301ea1ef10fb5bde0a623c8a9d9b`
+- Admin → Release Readiness: `8a3ee1be6466d0ebffc556fd22725aef0fb3dbaf`
+- Platform Health → Release Readiness: `3e756d0e8739091b9976fe7eae991d582142b5aa`
+
+
+Known external blocker:
+- Supabase Auth **Leaked Password Protection Disabled** warning still requires the project Auth setting to be enabled; it cannot be honestly marked fixed from database SQL alone.
+
 ## Immediate next milestone
 
-**Platform — Milestone 4A1: Production Security & Release Hardening**
+**Platform — Milestone 4A2: Evidence-Based End-to-End UAT + Release Freeze**
 
 Continue without enabling real automated calls:
-- resolve remaining Supabase Auth leaked-password warning where project controls permit
-- admin/session security review
-- production CSP / security-header review
-- public enquiry anti-abuse / rate-limit / bot-protection design
-- backup / recovery verification
-- audit-log coverage review
-- error / health monitoring foundation
-- final cross-module navigation consistency
-- responsive/mobile regression
-- end-to-end business flow UAT:
+- run non-destructive structural/security verification across all modules
+- verify production Vercel deployments after latest commits
+- review navigation and responsive/mobile behavior
+- start a formal UAT run only when real user-flow tests can be evidenced
+- test:
   - Enquiry → Customer
   - Quotation → Invoice
   - Payment
@@ -1360,5 +1412,8 @@ Continue without enabling real automated calls:
   - Customer Care
   - AI Voice Sandbox
   - Calling Readiness
-- production release checklist / freeze foundation
-- real automated phone dialing stays OFF
+- record only real pass/fail evidence
+- perform and record an actual backup/recovery drill before final release sign-off
+- clear the Supabase leaked-password-protection warning
+- create final release freeze only after all blocking checks are Pass
+- real automated phone dialing remains a separate later go-live decision
