@@ -53,12 +53,16 @@ table{width:100%;border-collapse:collapse;font-size:9px}th,td{padding:8px;border
 <div><label>Assumed seconds / eligible call</label><input id="duration" type="number" min="5" max="7200" value="90"></div>
 <div><label>Cost / minute (optional)</label><input id="rate" type="number" min="0" step="0.0001" placeholder="No provider rate yet"></div>
 <div><label>Currency</label><input id="currency" value="INR"></div>
-<div class="full"><button id="runDryBtn" class="btn btn-primary" style="width:100%">Run Dry-Run</button></div>
+<div class="full"><button id="runDryBtn" class="btn btn-primary" style="width:100%">Run All-Customer Dry-Run</button></div>
+</div>
+<div class="form-grid" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+<div class="full"><label>Call campaign</label><select id="campaignSelect"><option value="">Loading call campaigns…</option></select></div>
+<div class="full"><button id="runCampaignDryBtn" class="btn btn-ghost" style="width:100%">Run Campaign Dry-Run</button></div>
 </div>
 <div id="dryMsg" class="statusmsg"></div><div id="dryResult"></div>
 </div></section>
 
-<section class="card"><div class="card-head"><h2>Go-Live Locks</h2></div><div class="card-body"><div id="lockBox" class="lock">Loading…</div></div></section>
+<section class="card"><div class="card-head"><h2>Go-Live Locks</h2></div><div class="card-body"><div id="lockBox" class="lock">Loading…</div><div id="gateList" style="margin-top:9px"></div></div></section>
 
 <section class="card"><div class="card-head"><h2>Webhook Idempotency</h2></div><div class="card-body"><div id="webhookBox" class="result">Checking…</div></div></section>
 </aside>
@@ -69,7 +73,7 @@ table{width:100%;border-collapse:collapse;font-size:9px}th,td{padding:8px;border
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
 const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 const $=id=>document.getElementById(id)
-let audit=null
+let audit=null,campaigns=[],goLive=null
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
 const msg=(text,type='')=>{$('dryMsg').textContent=text||'';$('dryMsg').className='statusmsg'+(type?' '+type:'')}
 
@@ -87,17 +91,27 @@ function render(){
   $('totalCount').textContent=s.total||0;$('eligibleCount').textContent=s.eligible||0;$('reviewCount').textContent=s.review||0;$('blockedCount').textContent=s.blocked||0;$('duplicateCount').textContent=s.duplicate_number_customers||0;$('liveCount').textContent=s.live_telephony_adapters||0
   $('quietBadge').textContent='Timezone '+(s.timezone||'')+' • Quiet '+(s.quiet_start||'')+'–'+(s.quiet_end||'')+' • '+(s.quiet_hours_now?'QUIET NOW':'OPEN WINDOW')
   $('rows').innerHTML=rows.length?rows.map(r=>'<tr><td><strong>'+esc(r.name)+'</strong><div class="meta">'+esc(r.customer_code||'')+'</div></td><td>'+esc(r.phone||'—')+'</td><td>'+esc(r.phone_e164||'—')+'</td><td>'+(r.call_consent?'Yes':'No')+'</td><td>'+(r.do_not_call||r.call_opted_out?'Yes':'No')+'</td><td>'+esc(r.duplicate_count||0)+'</td><td><span class="pill '+esc(r.readiness_status)+'">'+esc(r.readiness_status.toUpperCase())+'</span></td><td>'+esc((r.reasons||[]).join(', ')||r.phone_reason||'—')+'</td></tr>').join(''):'<tr><td colspan="8">No customers.</td></tr>'
-  $('lockBox').innerHTML='<strong>Live telephony engine flag: '+(s.live_telephony_enabled?'ON':'OFF')+'</strong><br>Live telephony adapters: '+esc(s.live_telephony_adapters||0)+'<br>Quiet hours now: '+(s.quiet_hours_now?'YES':'NO')+'<br><br><strong>Go-live remains blocked</strong> until a real provider is explicitly connected, speech benchmarks are approved, and final consent/UAT checks pass.'
+  $('lockBox').innerHTML='<strong>Live telephony engine flag: '+(s.live_telephony_enabled?'ON':'OFF')+'</strong><br>Live telephony adapters: '+esc(s.live_telephony_adapters||0)+'<br>Quiet hours now: '+(s.quiet_hours_now?'YES':'NO')+'<br>Emergency stop: '+(goLive?.gates?.find(g=>g.key==='emergency_stop')?.current?'ON':'OFF')+'<br><br><strong>Go-live remains blocked</strong> until a real provider is explicitly connected, speech benchmarks are approved, security blockers are cleared, and final UAT passes.'
+  const gates=goLive?.gates||[]
+  $('gateList').innerHTML=gates.map(g=>'<div class="result" style="margin-top:6px"><strong>'+esc(g.key.replaceAll('_',' '))+'</strong><span class="pill '+(g.passed?'eligible':'blocked')+'" style="float:right">'+(g.passed?'PASS':'BLOCK')+'</span><br><span class="meta">Required: '+esc(typeof g.required==='string'?g.required:JSON.stringify(g.required))+'</span></div>').join('')
 }
 
 async function load(){
-  const [a,w]=await Promise.all([
+  const [a,w,g,c]=await Promise.all([
     supabase.rpc('customer_care_call_readiness_audit',{p_limit:10000}),
-    supabase.rpc('customer_care_webhook_idempotency_readiness')
+    supabase.rpc('customer_care_webhook_idempotency_readiness'),
+    supabase.rpc('customer_care_telephony_go_live_readiness'),
+    supabase.from('customer_care_campaigns').select('id,name,status,channel,scheduled_for').eq('channel','call').order('created_at',{ascending:false}).limit(500)
   ])
-  if(a.error)throw a.error;if(w.error)throw w.error
-  audit=a.data||{};render()
+  if(a.error)throw a.error;if(w.error)throw w.error;if(g.error)throw g.error;if(c.error)throw c.error
+  audit=a.data||{};goLive=g.data||{};campaigns=c.data||[]
+  $('campaignSelect').innerHTML='<option value="">Choose call campaign…</option>'+campaigns.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+' • '+esc(x.status)+'</option>').join('')
+  render()
   $('webhookBox').innerHTML='<strong>Unique replay key: '+(w.data?.idempotency_constraint_present?'READY':'MISSING')+'</strong><br>Key: '+esc(w.data?.duplicate_key||'')+'<br>Live webhooks enabled: '+(w.data?.live_webhooks_enabled?'YES':'NO')
+}
+
+function renderDryResult(data){
+  $('dryResult').innerHTML='<div class="result"><strong>'+esc(data.name||data.campaign_name||'Dry Run')+'</strong><br>Total: '+esc(data.total_customers)+'<br>Eligible: '+esc(data.eligible_customers)+'<br>Blocked: '+esc(data.blocked_customers)+'<br>Review: '+esc(data.review_customers)+'<br>Estimated minutes: '+esc(data.estimated_total_minutes)+'<br>Estimated cost: '+(data.estimated_cost==null?'Not calculated':esc(data.currency)+' '+esc(data.estimated_cost))+(data.campaign_member_count!=null?'<br>Campaign members: '+esc(data.campaign_member_count):'')+'<br>Live dialing performed: NO</div>'
 }
 
 async function dryRun(){
@@ -113,12 +127,29 @@ async function dryRun(){
   })
   $('runDryBtn').disabled=false
   if(error){msg(error.message,'err');return}
-  msg('Dry-run complete. No call was placed.','ok')
-  $('dryResult').innerHTML='<div class="result"><strong>'+esc(data.name)+'</strong><br>Total: '+esc(data.total_customers)+'<br>Eligible: '+esc(data.eligible_customers)+'<br>Blocked: '+esc(data.blocked_customers)+'<br>Review: '+esc(data.review_customers)+'<br>Estimated minutes: '+esc(data.estimated_total_minutes)+'<br>Estimated cost: '+(data.estimated_cost==null?'Not calculated':esc(data.currency)+' '+esc(data.estimated_cost))+'<br>Live dialing performed: NO</div>'
+  msg('All-customer dry-run complete. No call was placed.','ok')
+  renderDryResult(data)
+}
+
+async function campaignDryRun(){
+  const campaignId=$('campaignSelect').value
+  if(!campaignId){msg('Choose a call campaign first.','err');return}
+  $('runCampaignDryBtn').disabled=true
+  const rate=$('rate').value===''?null:Number($('rate').value)
+  const {data,error}=await supabase.rpc('customer_care_campaign_call_dry_run',{
+    p_campaign_id:campaignId,
+    p_assumed_duration_seconds:Number($('duration').value||90),
+    p_cost_per_minute:rate,
+    p_currency:$('currency').value.trim()||'INR'
+  })
+  $('runCampaignDryBtn').disabled=false
+  if(error){msg(error.message,'err');return}
+  msg('Campaign dry-run complete. No call was placed.','ok')
+  renderDryResult(data)
 }
 
 async function init(){try{if(!await verifyAdmin())return;await load()}catch(error){msg(error.message||String(error),'err')}}
-$('refreshBtn').addEventListener('click',load);$('runDryBtn').addEventListener('click',dryRun)
+$('refreshBtn').addEventListener('click',load);$('runDryBtn').addEventListener('click',dryRun);$('runCampaignDryBtn').addEventListener('click',campaignDryRun)
 $('careBtn').addEventListener('click',()=>location.href='/customer-care');$('runtimeBtn').addEventListener('click',()=>location.href='/voice-runtime');$('adminBtn').addEventListener('click',()=>location.href='/admin')
 supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
 init()
