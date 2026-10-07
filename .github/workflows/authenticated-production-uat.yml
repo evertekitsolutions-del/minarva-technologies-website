@@ -1,0 +1,22 @@
+name: Authenticated Production UAT
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  uat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Run authenticated production UAT smoke
+        env:
+          BASE_URL: https://minarva-technologies-website.vercel.app
+          UAT_ADMIN_EMAIL: ${{ secrets.UAT_ADMIN_EMAIL }}
+          UAT_ADMIN_PASSWORD: ${{ secrets.UAT_ADMIN_PASSWORD }}
+        run: node tools/authenticated-uat.mjs
