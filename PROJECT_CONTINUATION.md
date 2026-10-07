@@ -1538,3 +1538,50 @@ Verified on production:
 - therefore no real-call or speech-quality UAT is claimed as passed
 
 Software release must not silently enable real calling. Provider credentials, provider cost profile, bilingual STT/TTS benchmark selection and explicit telephony UAT remain future telephony go-live gates even after the non-calling software is released.
+
+## Platform — 4A2B3 — RELEASE READINESS AUTOMATION READY
+
+Verified final-pre-UAT state:
+- current main baseline before this documentation update: `df0d8595f08afd05c5883a30e43abc6323405146`
+- production Vercel deployment for that exact SHA: READY
+- Production Route Smoke for that exact SHA: PASS
+- open pull requests observed: 0
+- recent production runtime error clusters observed: 0
+- recent production error/fatal/warning logs observed: 0
+- scheduled Supabase health snapshots continue every 15 minutes and latest observed snapshots are healthy
+- failed outbox: 0
+- open dead letters: 0
+- unlinked mobile technicians: 0
+- real telephony remains OFF
+- telephony emergency stop remains ON
+- live adapter count remains 0
+
+Authenticated UAT automation:
+- `tools/authenticated-uat.mjs`
+- `.github/workflows/authenticated-production-uat.yml`
+- `docs/AUTHENTICATED_PRODUCTION_UAT.md`
+- real Chromium production login and protected-route smoke is ready
+- credentials are accepted only from GitHub Actions secrets `UAT_ADMIN_EMAIL` and `UAT_ADMIN_PASSWORD`
+- credentials are not committed
+- this smoke must not be treated as business-flow UAT evidence by itself
+
+Admin login/session regression:
+- login surface intentionally uses `allowAnonymous: true`
+- unauthenticated users can reach the login form without a redirect loop
+- authenticated/inactive/idle session enforcement remains active after login
+- fix baseline: `fce4b0c7b775953092831b0e24cc17135c4fe85f`
+
+Release checklist remains evidence-driven:
+- automated/verified checks currently Pass: 7
+- manual/external checks currently Pending: 11
+- Fail: 0
+- do not mark a pending UAT gate Pass without real evidence
+- final `release_freeze` remains Pending until every applicable blocking software-release gate is resolved
+
+Remaining external/manual blockers:
+1. real authenticated business-flow UAT evidence
+2. mobile/responsive rendered regression evidence
+3. Supabase Auth leaked-password protection warning (plan/config dependent)
+4. final release freeze after blockers resolve
+
+No fake customer/business data was inserted to manufacture UAT evidence. Real automated calling remains OFF and is a separate future go-live track.
