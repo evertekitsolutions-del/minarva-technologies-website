@@ -1110,25 +1110,102 @@ Verification:
 - Security Advisor reports no new DB/RLS problem; only the existing **Leaked Password Protection Disabled** Auth warning remains
 - remaining Performance Advisor notices are unused-index informational findings on the new/low-usage schema
 
-## Immediate next milestone
+## Customer Care — Milestone 3B4A — COMPLETE
 
-**Customer Care — Milestone 3B4: Self-hosted Speech Runtime + Telephony Adapter Contract**
-
-Continue without activating paid/live calling:
-- define stable STT / TTS request-response contracts
-- self-hosted STT gateway foundation
-- benchmark Malayalam + English for:
+Implemented:
+- stable provider-neutral STT request / response contract
+- stable provider-neutral TTS request / response contract
+- telephony webhook event contract
+- JWT-protected Edge Function `voice-runtime-gateway`
+- gateway actions:
+  - health
+  - contracts
+  - safe probe
+- probe intentionally reports **not connected** instead of faking speech inference
+- voice runtime profile:
+  - PCM S16LE
+  - WAV container
+  - 16 kHz default
+  - mono default
+  - configurable max audio duration
+  - VAD enable / min speech / silence settings
+  - timeout + retry settings
+  - live streaming disabled by default
+- benchmark registry with Malayalam/English metrics:
+  - median / p95 latency
+  - realtime factor
+  - WER / CER for STT
+  - TTS quality proxy field
+  - peak memory
+  - hardware/runtime evidence
+- no fake benchmark numbers inserted
+- telephony adapter contract with Live disabled
+- DTMF / recording / streaming / voicemail capability flags
+- idempotent telephony webhook event storage
+- per-call duration / billable duration / currency / cost accounting foundation
+- real provider-call IDs and call-leg IDs can be stored later
+- candidate STT adapters remain disabled:
   - whisper.cpp
   - faster-whisper
-  - Vosk where appropriate
-- choose one primary and one fallback STT only after benchmark
-- evaluate local TTS engines + individual voice/model licenses before commercial bundling
-- audio normalization / VAD / timeout / retry contract
-- streaming-turn architecture preparation
-- telephony adapter contract for future provider integration
-- DTMF / hang-up / voicemail / no-answer / busy outcome model
-- per-call cost and duration accounting foundation
-- provider webhook idempotency foundation
-- keep all real outbound calling disabled until an explicitly approved provider/cost milestone
+  - Vosk
+- candidate TTS adapters remain disabled:
+  - Piper
+  - Kokoro
+  - Mimic 3
+- no primary/fallback speech engine selected before benchmark evidence
+- no real audio processing
+- no real phone dialing
+- no paid provider activated
 
-Real phone dialing must remain a separate explicit go-live step.
+Database:
+- `voice_runtime_profiles`
+- `voice_benchmark_runs`
+- `voice_runtime_requests`
+- `telephony_adapter_contracts`
+- `telephony_webhook_events`
+- `telephony_call_usage`
+- `customer_care_voice_register_benchmark(...)`
+- `customer_care_telephony_runtime_state(...)`
+
+Edge Function:
+- `supabase/functions/voice-runtime-gateway/index.ts`
+- `supabase/functions/voice-runtime-gateway/deno.json`
+- slug: `voice-runtime-gateway`
+- ACTIVE
+- JWT verification enabled
+
+Migrations:
+- `supabase/migrations/20261007_voice_runtime_contracts.sql`
+- `supabase/migrations/20261007_voice_runtime_fk_indexes.sql`
+
+GitHub commits:
+- runtime / benchmark / telephony contract schema: `f373ee73224f12560a95893c5d5634eb1ab76b15`
+- voice runtime gateway: `bd8743ff4eb9c9a3973e349eabe322baf4bab62c`
+- gateway Deno config: `8978edaa92204024d485dca8ce9777fb5a7cde3a`
+- FK performance cleanup: `2936bfae0b77a822ad466de5030bf5913b31b525`
+- expanded voice/TTS research: `6c2ab650015f754db5dbf453ce7f2c9fc171ebf6`
+
+Verification:
+- gateway is ACTIVE and JWT-protected
+- live audio streaming = false
+- benchmark registry contains no fabricated benchmark run
+- live telephony adapters = 0
+- anonymous role cannot use benchmark/runtime-control RPCs
+- Security Advisor still reports no new DB/RLS problem; only the existing **Leaked Password Protection Disabled** Auth warning remains
+
+## Immediate next milestone
+
+**Customer Care — Milestone 3B4B: Local Speech Benchmark Harness**
+
+Continue without paid/live calling:
+- add reproducible benchmark harness for whisper.cpp / faster-whisper / Vosk
+- define Malayalam + English benchmark corpus manifest format
+- audio normalizer to 16 kHz mono PCM WAV
+- WER / CER measurement pipeline
+- latency / realtime-factor / memory capture
+- result import into `voice_benchmark_runs`
+- create TTS benchmark harness for Piper / Kokoro where Malayalam voices are actually available and license-compatible
+- do **not** select a primary/fallback engine until measured evidence exists
+- keep real phone dialing disabled
+
+A machine/server capable of running the candidate speech models will be needed to produce real benchmark numbers; no benchmark result should be invented.
