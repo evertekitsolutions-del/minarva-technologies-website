@@ -58,3 +58,35 @@ A production local TTS engine is intentionally not locked in during 3B3. TTS pro
 ## Portability
 
 The conversation state machine lives in the JWT-protected Supabase Edge Function and database tables rather than a telephony provider. STT/TTS/telephony can therefore be replaced later without redesigning CRM, invoice, service-job, consent, callback or outcome logic.
+
+
+## TTS candidates reviewed
+
+### Piper
+Official repository reviewed: https://github.com/rhasspy/piper
+
+- Code license in the reviewed repository: MIT.
+- Lightweight local TTS architecture and a useful portability candidate.
+- The engine license does **not** automatically license every voice/model file; each chosen voice/model must be checked separately before redistribution or commercial bundling.
+- Candidate only; not enabled or production-approved yet.
+
+### Kokoro
+Maintained runtime/fork reviewed: https://github.com/hangry-labs/kokoroTTS
+
+- The fork documents Apache-2.0 licensing for its own/upstream Kokoro code.
+- Its published server/runtime distribution includes dependencies under additional licenses, including copyleft components, so packaging/compliance must be reviewed at the exact image/runtime level.
+- Candidate only; not enabled or production-approved yet.
+- Malayalam voice quality/support must be benchmarked before selection.
+
+### Mimic 3
+Official repository reviewed: https://github.com/MycroftAI/mimic3
+
+- License: AGPL-3.0.
+- Local/self-hosted TTS is technically possible.
+- Because AGPL obligations are materially stronger for commercial packaging, this is a lower-priority candidate unless there is a compelling quality/coverage advantage.
+
+## 3B4A runtime-contract decision
+
+No primary STT or TTS adapter is selected yet.
+
+The project now defines stable STT/TTS contracts, benchmark storage, audio/VAD/timeout/retry settings, telephony webhook idempotency, and call-cost/duration accounting. Candidate selection must happen only after Malayalam + English benchmark evidence is recorded. Real audio processing and real phone dialing remain disabled.
