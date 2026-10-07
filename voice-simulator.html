@@ -1,0 +1,406 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0754c7">
+  <title>Minarva Technologies — AI Voice Sandbox</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--blue2:#1381ff;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--red:#b42318;--amber:#9a5b00;--bg:#eef5ff}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select,textarea{font:inherit}.shell{width:min(1240px,calc(100% - 28px));margin:auto}.top{padding:18px 0}.brand{display:flex;justify-content:space-between;gap:14px;align-items:center}.brand img{width:240px;height:52px;object-fit:contain;object-position:left center}
+    .nav,.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn-danger{background:#fff1f0;color:var(--red)}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin:8px 0 14px}.eyebrow{font-size:11px;letter-spacing:.12em;color:var(--blue);font-weight:800}.head h1{font-size:31px;margin:4px 0 0;letter-spacing:-.03em}.userline,.meta{font-size:10px;color:var(--muted);line-height:1.5}.notice{border:1px solid #b2ccff;background:#f3f8ff;border-radius:14px;padding:11px 13px;font-size:10px;line-height:1.55;margin-bottom:14px}
+    .layout{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(330px,.75fr);gap:15px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px rgba(7,51,111,.07);overflow:hidden}.card-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.card-head h2{margin:0;font-size:17px}.card-body{padding:16px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}label{font-size:9px;font-weight:800;color:#344054;display:block;margin-bottom:4px}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px;background:#fff;color:var(--ink);outline:none}textarea{min-height:80px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}
+    .health{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}.healthbox{border:1px solid var(--line);border-radius:11px;padding:9px;background:#fbfdff}.healthbox span{font-size:8px;color:var(--muted);font-weight:800}.healthbox strong{display:block;font-size:10px;margin-top:3px}.good{color:var(--green)}.bad{color:var(--red)}.warn{color:var(--amber)}
+    .chat{height:520px;overflow:auto;background:#f8fbff;border:1px solid var(--line);border-radius:13px;padding:12px;display:flex;flex-direction:column;gap:9px}.bubble{max-width:88%;border-radius:13px;padding:10px 11px;font-size:11px;line-height:1.5;box-shadow:0 2px 8px rgba(0,0,0,.03)}.assistant{align-self:flex-start;background:#fff;border:1px solid #d7e6fb}.customer{align-self:flex-end;background:var(--blue);color:#fff}.system{align-self:center;background:#fff7e8;color:#7a4900;font-size:9px;max-width:95%}.bubble .turnmeta{font-size:8px;opacity:.72;margin-top:4px}.composer{display:grid;grid-template-columns:1fr auto auto;gap:7px;margin-top:9px}.composer textarea{min-height:54px;max-height:150px}.mic-active{background:#fff1f0!important;color:var(--red)!important}
+    .sessionbox{border:1px solid var(--line);border-radius:12px;padding:10px;background:#fbfdff;margin-bottom:9px}.sessionbox strong{font-size:10px}.status{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:800}.active{background:#eef4ff;color:#3538cd}.completed{background:#ecfdf3;color:#087443}.blocked,.opted_out{background:#fff1f0;color:#b42318}.callback_required{background:#fff7e8;color:#9a5b00}.escalated{background:#fef3f2;color:#b42318}.abandoned{background:#f2f4f7;color:#475467}
+    .recent{max-height:400px;overflow:auto}.recent-item{padding:10px;border-bottom:1px solid #edf2f8;cursor:pointer}.recent-item:hover{background:#f5f9ff}.recent-item:last-child{border-bottom:0}.statusmsg{min-height:17px;font-size:10px;font-weight:700;margin-top:8px}.statusmsg.ok{color:var(--green)}.statusmsg.err{color:var(--red)}
+    .adapter{border:1px solid var(--line);border-radius:10px;padding:8px;margin-bottom:6px;background:#fbfdff}.adapter:last-child{margin-bottom:0}.adapter strong{font-size:9px}.pill{float:right;border-radius:999px;padding:3px 6px;font-size:7px;font-weight:800}.pill.on{background:#ecfdf3;color:var(--green)}.pill.off{background:#f2f4f7;color:#475467}
+    @media(max-width:980px){.layout{grid-template-columns:1fr}.chat{height:460px}.recent{max-height:260px}}
+    @media(max-width:650px){.brand{display:block}.brand .nav{margin-top:9px}.head{display:block}.head .actions{margin-top:10px}.head h1{font-size:27px}.form-grid,.health{grid-template-columns:1fr}.full{grid-column:auto}.composer{grid-template-columns:1fr 1fr}.composer textarea{grid-column:1/-1}.chat{height:430px}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <div class="brand">
+      <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+      <div class="nav">
+        <button id="customerCareBtn" class="btn btn-ghost" type="button">Customer Care</button>
+        <button id="adminBtn" class="btn btn-ghost" type="button">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell" style="padding-bottom:60px">
+    <div class="head">
+      <div>
+        <div class="eyebrow">AI CUSTOMER CARE</div>
+        <h1>Voice Conversation Sandbox</h1>
+        <div id="userLine" class="userline">Checking admin access…</div>
+      </div>
+      <div class="actions">
+        <button id="refreshBtn" class="btn btn-ghost" type="button">Refresh</button>
+        <button id="endBtn" class="btn btn-danger" type="button" disabled>End Session</button>
+      </div>
+    </div>
+
+    <div class="notice"><strong>Sandbox only:</strong> this simulator never places a real phone call. It tests Malayalam/English conversation logic, consent/Do Not Call enforcement, intent detection, callback scheduling, escalation, PII-redacted transcript storage and CRM timeline updates before any telephony provider is connected.</div>
+
+    <div class="layout">
+      <section class="card">
+        <div class="card-head"><h2>Conversation Simulator</h2><span id="sessionBadge" class="status abandoned">Not started</span></div>
+        <div class="card-body">
+          <div class="health">
+            <div class="healthbox"><span>SANDBOX</span><strong id="sandboxHealth">Checking…</strong></div>
+            <div class="healthbox"><span>LIVE TELEPHONY</span><strong id="liveHealth">Checking…</strong></div>
+            <div class="healthbox"><span>ENGINE</span><strong id="engineHealth">Checking…</strong></div>
+          </div>
+
+          <div id="startForm" class="form-grid">
+            <div>
+              <label for="customerSelect">Customer</label>
+              <select id="customerSelect"><option value="">Loading customers…</option></select>
+            </div>
+            <div>
+              <label for="directionSelect">Direction</label>
+              <select id="directionSelect"><option value="outbound">Outbound sandbox</option><option value="inbound">Inbound sandbox</option></select>
+            </div>
+            <div>
+              <label for="goalSelect">Conversation goal</label>
+              <select id="goalSelect">
+                <option value="invoice_payment_reminder">Invoice payment reminder</option>
+                <option value="service_follow_up">Service follow-up</option>
+                <option value="technician_eta_update">Technician ETA / service update</option>
+                <option value="callback_handling">Callback handling</option>
+                <option value="general_customer_care">General customer care</option>
+              </select>
+            </div>
+            <div>
+              <label for="languageSelect">Language</label>
+              <select id="languageSelect"><option value="ml">Malayalam</option><option value="en">English</option></select>
+            </div>
+            <div>
+              <label for="sourceType">Source</label>
+              <select id="sourceType"><option value="manual">Manual</option><option value="invoice">Invoice</option><option value="service_job">Service Job</option><option value="callback">Callback</option></select>
+            </div>
+            <div>
+              <label for="sourceSelect">Source record</label>
+              <select id="sourceSelect"><option value="">None</option></select>
+            </div>
+            <div class="full">
+              <button id="startBtn" class="btn btn-primary" type="button" style="width:100%">Start Sandbox Conversation</button>
+            </div>
+          </div>
+
+          <div id="chat" class="chat" style="margin-top:12px"><div class="system bubble">Choose a customer and start a sandbox conversation. No real call will be placed.</div></div>
+
+          <div id="composer" class="composer">
+            <textarea id="messageInput" placeholder="Type the customer's reply here…" disabled></textarea>
+            <button id="micBtn" class="btn btn-ghost" type="button" disabled>🎤 Speak</button>
+            <button id="sendBtn" class="btn btn-primary" type="button" disabled>Send</button>
+          </div>
+
+          <div class="form-grid" style="margin-top:8px">
+            <div>
+              <label for="callbackAt">Preferred callback time (optional)</label>
+              <input id="callbackAt" type="datetime-local" disabled>
+            </div>
+            <div>
+              <label>Voice playback</label>
+              <button id="speakLastBtn" class="btn btn-ghost" type="button" style="width:100%" disabled>🔊 Speak Last AI Reply</button>
+            </div>
+          </div>
+          <div id="actionMsg" class="statusmsg"></div>
+        </div>
+      </section>
+
+      <aside>
+        <section class="card" style="margin-bottom:14px">
+          <div class="card-head"><h2>Session State</h2></div>
+          <div class="card-body">
+            <div id="sessionInfo" class="sessionbox"><div class="meta">No active session.</div></div>
+          </div>
+        </section>
+
+        <section class="card" style="margin-bottom:14px">
+          <div class="card-head"><h2>Speech / AI Adapters</h2></div>
+          <div id="adapterList" class="card-body"><div class="meta">Loading…</div></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>Recent Sandbox Sessions</h2></div>
+          <div id="recentList" class="recent"><div class="meta" style="padding:12px">Loading…</div></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+    const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    const $=id=>document.getElementById(id)
+
+    let customers=[],activeSession=null,lastAssistantText='',health=null,recent=[]
+    let recognition=null
+
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    const fmt=v=>v?new Date(v).toLocaleString():'—'
+    const toIso=v=>v?new Date(v).toISOString():null
+    const msg=(text,type='')=>{$('actionMsg').textContent=text||'';$('actionMsg').className='statusmsg'+(type?' '+type:'')}
+
+    async function verifyAdmin(){
+      const {data:{session}}=await supabase.auth.getSession()
+      if(!session?.user){location.href='/admin';return false}
+      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+      if(error||!data||data.active!==true){location.href='/admin';return false}
+      $('userLine').textContent=(data.email||session.user.email||'')+' • '+data.role
+      return true
+    }
+
+    async function invoke(body){
+      const {data,error}=await supabase.functions.invoke('customer-care-voice-simulator',{body})
+      if(error)throw error
+      if(data?.error)throw new Error(data.error)
+      return data
+    }
+
+    async function loadHealth(){
+      try{
+        health=await invoke({action:'health'})
+        $('sandboxHealth').textContent=health.sandbox_enabled?'Enabled':'Disabled'
+        $('sandboxHealth').className=health.sandbox_enabled?'good':'bad'
+        $('liveHealth').textContent=health.live_telephony_enabled?'ENABLED':'Locked / Off'
+        $('liveHealth').className=health.live_telephony_enabled?'bad':'good'
+        $('engineHealth').textContent=health.engine||'—'
+        $('engineHealth').className='good'
+        const rows=health.adapters||[]
+        $('adapterList').innerHTML=rows.length?rows.map(a=>'<div class="adapter"><strong>'+esc(a.display_name)+'</strong><span class="pill '+(a.enabled?'on':'off')+'">'+(a.enabled?'ENABLED':'OFF')+'</span><div class="meta">'+esc(a.capability.toUpperCase())+' • '+esc(a.runtime)+(a.license?' • '+esc(a.license):'')+'</div><div class="meta">'+esc(a.notes||'')+'</div></div>').join(''):'<div class="meta">No adapters configured.</div>'
+      }catch(error){
+        $('sandboxHealth').textContent='Error';$('sandboxHealth').className='bad'
+        $('engineHealth').textContent=error.message||String(error);$('engineHealth').className='bad'
+      }
+    }
+
+    async function loadCustomers(){
+      const {data,error}=await supabase.from('customers').select('id,name,phone,email,preferred_language,call_consent,do_not_call').order('name',{ascending:true}).limit(3000)
+      if(error)throw error
+      customers=data||[]
+      $('customerSelect').innerHTML='<option value="">Choose customer…</option>'+customers.map(c=>{
+        const flags=[]
+        if(c.call_consent!==true)flags.push('no consent')
+        if(c.do_not_call===true)flags.push('DNC')
+        if(!c.phone)flags.push('no phone')
+        return '<option value="'+esc(c.id)+'">'+esc(c.name)+(c.phone?' • '+esc(c.phone):'')+(flags.length?' • ['+esc(flags.join(', '))+']':'')+'</option>'
+      }).join('')
+    }
+
+    async function loadSources(){
+      const customerId=$('customerSelect').value
+      const type=$('sourceType').value
+      $('sourceSelect').innerHTML='<option value="">None</option>'
+      if(!customerId||!['invoice','service_job'].includes(type))return
+
+      if(type==='invoice'){
+        const {data,error}=await supabase.from('invoices').select('id,invoice_number,due_date,balance_due,payment_status,status').eq('customer_id',customerId).order('invoice_date',{ascending:false}).limit(100)
+        if(error)throw error
+        $('sourceSelect').innerHTML='<option value="">None</option>'+(data||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.invoice_number)+' • balance '+esc(x.balance_due)+' • '+esc(x.payment_status)+'</option>').join('')
+      }else{
+        const {data,error}=await supabase.from('service_jobs').select('id,job_number,service_category,status,scheduled_at').eq('customer_id',customerId).order('created_at',{ascending:false}).limit(100)
+        if(error)throw error
+        $('sourceSelect').innerHTML='<option value="">None</option>'+(data||[]).map(x=>'<option value="'+esc(x.id)+'">'+esc(x.job_number)+' • '+esc(x.service_category)+' • '+esc(x.status)+'</option>').join('')
+      }
+    }
+
+    function syncGoalFromSource(){
+      const type=$('sourceType').value
+      if(type==='invoice')$('goalSelect').value='invoice_payment_reminder'
+      if(type==='service_job'&&$('goalSelect').value==='invoice_payment_reminder')$('goalSelect').value='service_follow_up'
+      loadSources().catch(error=>msg(error.message,'err'))
+    }
+
+    function addBubble(speaker,text,intent=null,confidence=null){
+      const div=document.createElement('div')
+      div.className='bubble '+(speaker==='customer'?'customer':speaker==='assistant'?'assistant':'system')
+      div.innerHTML='<div>'+esc(text)+'</div>'+(intent?'<div class="turnmeta">Intent: '+esc(intent)+(confidence!=null?' • '+Number(confidence).toFixed(2):'')+'</div>':'')
+      $('chat').appendChild(div)
+      $('chat').scrollTop=$('chat').scrollHeight
+    }
+
+    function renderTranscript(payload){
+      const turns=payload?.turns||[]
+      $('chat').innerHTML=''
+      if(!turns.length){
+        $('chat').innerHTML='<div class="system bubble">No transcript yet.</div>'
+        return
+      }
+      turns.forEach(t=>addBubble(t.speaker,t.text_redacted,t.detected_intent,t.confidence))
+      const assistants=turns.filter(t=>t.speaker==='assistant')
+      lastAssistantText=assistants.length?assistants[assistants.length-1].text_redacted:''
+      $('speakLastBtn').disabled=!lastAssistantText
+    }
+
+    function setSession(payload){
+      activeSession=payload?.session||null
+      if(!activeSession){
+        $('sessionBadge').textContent='Not started';$('sessionBadge').className='status abandoned'
+        $('sessionInfo').innerHTML='<div class="meta">No active session.</div>'
+        $('messageInput').disabled=true;$('sendBtn').disabled=true;$('micBtn').disabled=true;$('callbackAt').disabled=true;$('endBtn').disabled=true
+        return
+      }
+      $('sessionBadge').textContent=activeSession.status.replaceAll('_',' ')
+      $('sessionBadge').className='status '+activeSession.status
+      $('sessionInfo').innerHTML=
+        '<strong>'+esc(activeSession.goal.replaceAll('_',' '))+'</strong>'+
+        '<div class="meta">Language: '+esc(activeSession.language.toUpperCase())+' • Direction: '+esc(activeSession.direction)+'</div>'+
+        '<div class="meta">Status: '+esc(activeSession.status)+' • Turns: '+esc(activeSession.turn_count)+'</div>'+
+        (activeSession.detected_intent?'<div class="meta">Last intent: '+esc(activeSession.detected_intent)+'</div>':'')+
+        (activeSession.outcome?'<div class="meta">Outcome: '+esc(activeSession.outcome)+'</div>':'')+
+        (activeSession.callback_at?'<div class="meta">Callback: '+esc(fmt(activeSession.callback_at))+'</div>':'')+
+        (activeSession.escalation_reason?'<div class="meta">Escalation: '+esc(activeSession.escalation_reason)+'</div>':'')+
+        (activeSession.summary?'<div class="meta">Summary: '+esc(activeSession.summary)+'</div>':'')
+      const enabled=activeSession.status==='active'
+      $('messageInput').disabled=!enabled;$('sendBtn').disabled=!enabled;$('micBtn').disabled=!enabled;$('callbackAt').disabled=!enabled;$('endBtn').disabled=!enabled
+    }
+
+    async function startSession(){
+      const customerId=$('customerSelect').value
+      if(!customerId){msg('Choose a customer.','err');return}
+      $('startBtn').disabled=true;$('startBtn').textContent='Starting…';msg('')
+      try{
+        const data=await invoke({
+          action:'start',
+          customer_id:customerId,
+          direction:$('directionSelect').value,
+          goal:$('goalSelect').value,
+          language:$('languageSelect').value,
+          source_type:$('sourceType').value,
+          source_id:$('sourceSelect').value||null
+        })
+        activeSession=data.session
+        renderTranscript(data)
+        setSession(data)
+        msg('Sandbox conversation started. No real phone call was placed.','ok')
+        await loadRecent()
+        if(data.assistant_text)speak(data.assistant_text)
+      }catch(error){msg(error.message||String(error),'err')}
+      $('startBtn').disabled=false;$('startBtn').textContent='Start Sandbox Conversation'
+    }
+
+    async function sendTurn(){
+      if(!activeSession||activeSession.status!=='active')return
+      const text=$('messageInput').value.trim()
+      if(!text){msg('Enter or speak the customer reply.','err');return}
+      $('sendBtn').disabled=true;msg('')
+      try{
+        const data=await invoke({
+          action:'turn',
+          session_id:activeSession.id,
+          text,
+          preferred_callback_at:toIso($('callbackAt').value)
+        })
+        $('messageInput').value=''
+        renderTranscript(data);setSession(data)
+        msg(data.status==='active'?'Intent detected: '+data.detected_intent:'Conversation closed: '+(data.outcome||data.status),'ok')
+        if(data.assistant_text)speak(data.assistant_text)
+        await loadRecent()
+      }catch(error){
+        msg(error.message||String(error),'err')
+        if(activeSession?.id){
+          try{const data=await invoke({action:'session',session_id:activeSession.id});renderTranscript(data);setSession(data)}catch{}
+        }
+      }
+      $('sendBtn').disabled=!(activeSession?.status==='active')
+    }
+
+    async function endSession(){
+      if(!activeSession?.id)return
+      if(!confirm('End this sandbox conversation?'))return
+      try{
+        const data=await invoke({action:'end',session_id:activeSession.id})
+        renderTranscript(data);setSession(data);msg('Sandbox session ended.','ok');await loadRecent()
+      }catch(error){msg(error.message||String(error),'err')}
+    }
+
+    function speak(text){
+      if(!('speechSynthesis'in window)||!text)return
+      speechSynthesis.cancel()
+      const u=new SpeechSynthesisUtterance(text)
+      u.lang=(activeSession?.language||$('languageSelect').value)==='ml'?'ml-IN':'en-IN'
+      u.rate=0.95
+      speechSynthesis.speak(u)
+    }
+
+    function setupRecognition(){
+      const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition
+      if(!SpeechRecognition){
+        $('micBtn').textContent='🎤 STT unavailable'
+        return
+      }
+      recognition=new SpeechRecognition()
+      recognition.interimResults=false
+      recognition.continuous=false
+      recognition.onresult=e=>{$('messageInput').value=e.results?.[0]?.[0]?.transcript||''}
+      recognition.onerror=e=>msg('Speech input error: '+e.error,'err')
+      recognition.onend=()=>{$('micBtn').classList.remove('mic-active');$('micBtn').textContent='🎤 Speak'}
+      $('micBtn').addEventListener('click',()=>{
+        if($('micBtn').disabled)return
+        recognition.lang=(activeSession?.language||$('languageSelect').value)==='ml'?'ml-IN':'en-IN'
+        $('micBtn').classList.add('mic-active');$('micBtn').textContent='Listening…'
+        try{recognition.start()}catch{}
+      })
+    }
+
+    async function loadRecent(){
+      const {data,error}=await supabase.from('ai_call_sessions')
+        .select('id,customer_id,goal,language,direction,status,outcome,summary,callback_at,escalation_reason,turn_count,created_at,customers(name)')
+        .order('created_at',{ascending:false}).limit(50)
+      if(error)throw error
+      recent=data||[]
+      $('recentList').innerHTML=recent.length?recent.map(s=>{
+        const c=Array.isArray(s.customers)?s.customers[0]:s.customers
+        return '<div class="recent-item" data-session="'+esc(s.id)+'"><strong>'+esc(c?.name||'Customer')+'</strong><span class="status '+esc(s.status)+'" style="float:right">'+esc(s.status.replaceAll('_',' '))+'</span><div class="meta">'+esc(s.goal.replaceAll('_',' '))+' • '+esc(s.language.toUpperCase())+' • '+esc(fmt(s.created_at))+'</div>'+(s.outcome?'<div class="meta">Outcome: '+esc(s.outcome)+'</div>':'')+'</div>'
+      }).join(''):'<div class="meta" style="padding:12px">No sandbox sessions yet.</div>'
+      $('recentList').querySelectorAll('[data-session]').forEach(x=>x.addEventListener('click',()=>openSession(x.dataset.session)))
+    }
+
+    async function openSession(id){
+      try{
+        const data=await invoke({action:'session',session_id:id})
+        renderTranscript(data);setSession(data);msg('Loaded saved sandbox session.','ok')
+      }catch(error){msg(error.message||String(error),'err')}
+    }
+
+    async function refreshAll(){
+      await Promise.all([loadHealth(),loadCustomers(),loadRecent()])
+      await loadSources()
+    }
+
+    async function init(){
+      try{
+        if(!await verifyAdmin())return
+        setupRecognition()
+        await refreshAll()
+      }catch(error){msg('Could not initialize voice sandbox: '+(error.message||error),'err')}
+    }
+
+    $('customerSelect').addEventListener('change',()=>loadSources().catch(error=>msg(error.message,'err')))
+    $('sourceType').addEventListener('change',syncGoalFromSource)
+    $('startBtn').addEventListener('click',startSession)
+    $('sendBtn').addEventListener('click',sendTurn)
+    $('messageInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTurn()}})
+    $('endBtn').addEventListener('click',endSession)
+    $('speakLastBtn').addEventListener('click',()=>speak(lastAssistantText))
+    $('refreshBtn').addEventListener('click',refreshAll)
+    $('customerCareBtn').addEventListener('click',()=>location.href='/customer-care')
+    $('adminBtn').addEventListener('click',()=>location.href='/admin')
+    supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+    init()
+  </script>
+</body>
+</html>
