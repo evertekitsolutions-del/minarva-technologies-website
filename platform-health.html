@@ -22,7 +22,7 @@
 <body>
 <div class="shell top"><div class="brand">
   <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
-  <div class="nav"><button id="careBtn" class="btn btn-ghost">Customer Care</button><button id="callingBtn" class="btn btn-ghost">Calling Readiness</button><button id="adminBtn" class="btn btn-ghost">Admin</button></div>
+  <div class="nav"><button id="releaseBtn" class="btn btn-ghost">Release Readiness</button><button id="careBtn" class="btn btn-ghost">Customer Care</button><button id="callingBtn" class="btn btn-ghost">Calling Readiness</button><button id="adminBtn" class="btn btn-ghost">Admin</button></div>
 </div></div>
 <main class="shell" style="padding-bottom:60px">
   <div class="head"><div><div class="eyebrow">PRODUCTION HARDENING</div><h1>Platform Health & Recovery</h1><div id="userLine" class="userline">Checking admin access…</div></div><div class="actions"><button id="refreshBtn" class="btn btn-ghost">Refresh</button></div></div>
@@ -161,7 +161,7 @@ async function init(){
   }catch(error){msg('Could not load platform health: '+(error.message||error),'bad')}
 }
 $('refreshBtn').addEventListener('click',loadAll);$('saveDrillBtn').addEventListener('click',saveDrill)
-$('careBtn').addEventListener('click',()=>location.href='/customer-care');$('callingBtn').addEventListener('click',()=>location.href='/calling-readiness');$('adminBtn').addEventListener('click',()=>location.href='/admin')
+$('releaseBtn').addEventListener('click',()=>location.href='/release-readiness');$('careBtn').addEventListener('click',()=>location.href='/customer-care');$('callingBtn').addEventListener('click',()=>location.href='/calling-readiness');$('adminBtn').addEventListener('click',()=>location.href='/admin')
 supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
 init()
 </script>
