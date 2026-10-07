@@ -1,0 +1,3 @@
+# Example text-only corpus. No score is implied by these examples.
+{"id":"ml-tts-001","language":"ml","text":"നമസ്കാരം. Minarva Technologies-ൽ നിന്നാണ് വിളിക്കുന്നത്."}
+{"id":"en-tts-001","language":"en","text":"Hello. This is Minarva Technologies calling."}
