@@ -763,7 +763,7 @@
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
 
-    installAdminSessionGuard(supabase)
+    installAdminSessionGuard(supabase,{allowAnonymous:true})
     const standardServices = [
       'CCTV Camera Sales / Installation / Service',
       'Computer & Laptop Sales / Service / Upgrades',
