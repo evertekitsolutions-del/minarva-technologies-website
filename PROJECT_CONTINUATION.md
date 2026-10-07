@@ -1526,3 +1526,15 @@ Remaining blocking release work:
 - final release freeze must remain Pending until all blocking checks pass
 
 No UAT step has been auto-passed or fabricated.
+
+## Release-gate clarification — software release vs real telephony go-live
+
+Verified on production:
+- software deployment and telephony provider go-live are separate approval tracks
+- real telephony remains disabled
+- emergency stop remains enabled
+- live telephony adapter count remains zero
+- real bilingual speech benchmark count remains zero
+- therefore no real-call or speech-quality UAT is claimed as passed
+
+Software release must not silently enable real calling. Provider credentials, provider cost profile, bilingual STT/TTS benchmark selection and explicit telephony UAT remain future telephony go-live gates even after the non-calling software is released.
