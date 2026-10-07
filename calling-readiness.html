@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0754c7"><title>Minarva Technologies — Calling Readiness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#0b59d8;--blue2:#1381ff;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--red:#b42318;--amber:#9a5b00}
+*{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+button,input,select{font:inherit}.shell{width:min(1280px,calc(100% - 28px));margin:auto}.top{padding:18px 0}.brand{display:flex;justify-content:space-between;gap:14px;align-items:center}.brand img{width:240px;height:52px;object-fit:contain;object-position:left center}
+.nav,.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn:disabled{opacity:.55;cursor:not-allowed}
+.head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin:8px 0 14px}.eyebrow{font-size:11px;letter-spacing:.12em;color:var(--blue);font-weight:800}.head h1{font-size:31px;margin:4px 0 0;letter-spacing:-.03em}.meta,.userline{font-size:10px;color:var(--muted);line-height:1.5}
+.notice{border:1px solid #b2ccff;background:#f3f8ff;border-radius:14px;padding:11px 13px;font-size:10px;line-height:1.55;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-bottom:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px}.stat span{font-size:8px;color:var(--muted);font-weight:800}.stat strong{display:block;font-size:17px;margin-top:3px}
+.layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(340px,.6fr);gap:14px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px rgba(7,51,111,.07);overflow:hidden;margin-bottom:14px}.card-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.card-head h2{margin:0;font-size:17px}.card-body{padding:15px}
+table{width:100%;border-collapse:collapse;font-size:9px}th,td{padding:8px;border-bottom:1px solid #edf2f8;text-align:left;vertical-align:top}th{font-size:8px;color:var(--muted);letter-spacing:.04em;position:sticky;top:0;background:#fff}.table-wrap{max-height:560px;overflow:auto}
+.pill{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:800}.eligible{background:#ecfdf3;color:var(--green)}.blocked{background:#fff1f0;color:var(--red)}.review{background:#fff7e8;color:var(--amber)}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}label{font-size:9px;font-weight:800;color:#344054;display:block;margin-bottom:4px}input,select{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px;background:#fff}.statusmsg{min-height:18px;font-size:10px;font-weight:700;margin-top:8px}.statusmsg.ok{color:var(--green)}.statusmsg.err{color:var(--red)}
+.result{border:1px solid var(--line);border-radius:11px;background:#fbfdff;padding:10px;font-size:10px;line-height:1.6;margin-top:10px}.lock{border:1px solid #fecdca;background:#fff8f7;border-radius:11px;padding:10px;font-size:9px;line-height:1.55}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}@media(max-width:650px){.brand{display:block}.brand .nav{margin-top:9px}.head{display:block}.head .actions{margin-top:10px}.head h1{font-size:27px}.stats,.form-grid{grid-template-columns:1fr 1fr}.full{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="shell top"><div class="brand">
+<a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+<div class="nav"><button id="careBtn" class="btn btn-ghost">Customer Care</button><button id="runtimeBtn" class="btn btn-ghost">Voice Runtime</button><button id="adminBtn" class="btn btn-ghost">Admin</button></div>
+</div></div>
+
+<main class="shell" style="padding-bottom:60px">
+<div class="head"><div><div class="eyebrow">PRODUCTION CALLING READINESS</div><h1>Consent, Phone & Dry-Run Audit</h1><div id="userLine" class="userline">Checking admin access…</div></div><div class="actions"><button id="refreshBtn" class="btn btn-ghost">Refresh</button></div></div>
+<div class="notice"><strong>No dialing:</strong> this screen audits whether customer records are safe/eligible for future automated calls and estimates volume/cost. It never places a call. Duplicate numbers, missing consent, Do Not Call, channel opt-out and invalid/review phone formats are surfaced before go-live.</div>
+
+<section class="stats">
+<div class="stat"><span>TOTAL</span><strong id="totalCount">0</strong></div>
+<div class="stat"><span>ELIGIBLE</span><strong id="eligibleCount">0</strong></div>
+<div class="stat"><span>REVIEW</span><strong id="reviewCount">0</strong></div>
+<div class="stat"><span>BLOCKED</span><strong id="blockedCount">0</strong></div>
+<div class="stat"><span>DUPLICATE PHONE</span><strong id="duplicateCount">0</strong></div>
+<div class="stat"><span>LIVE ADAPTERS</span><strong id="liveCount">0</strong></div>
+</section>
+
+<div class="layout">
+<div>
+<section class="card"><div class="card-head"><h2>Customer Call Readiness</h2><span id="quietBadge" class="meta"></span></div>
+<div class="table-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>E.164</th><th>Consent</th><th>DNC</th><th>Duplicate</th><th>Status</th><th>Reason</th></tr></thead><tbody id="rows"><tr><td colspan="8">Loading…</td></tr></tbody></table></div></section>
+</div>
+
+<aside>
+<section class="card"><div class="card-head"><h2>Dry-Run Cost Estimate</h2></div><div class="card-body">
+<div class="form-grid">
+<div class="full"><label>Dry-run name</label><input id="dryName" value="Production Calling Readiness"></div>
+<div><label>Assumed seconds / eligible call</label><input id="duration" type="number" min="5" max="7200" value="90"></div>
+<div><label>Cost / minute (optional)</label><input id="rate" type="number" min="0" step="0.0001" placeholder="No provider rate yet"></div>
+<div><label>Currency</label><input id="currency" value="INR"></div>
+<div class="full"><button id="runDryBtn" class="btn btn-primary" style="width:100%">Run Dry-Run</button></div>
+</div>
+<div id="dryMsg" class="statusmsg"></div><div id="dryResult"></div>
+</div></section>
+
+<section class="card"><div class="card-head"><h2>Go-Live Locks</h2></div><div class="card-body"><div id="lockBox" class="lock">Loading…</div></div></section>
+
+<section class="card"><div class="card-head"><h2>Webhook Idempotency</h2></div><div class="card-body"><div id="webhookBox" class="result">Checking…</div></div></section>
+</aside>
+</div>
+</main>
+
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+const $=id=>document.getElementById(id)
+let audit=null
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const msg=(text,type='')=>{$('dryMsg').textContent=text||'';$('dryMsg').className='statusmsg'+(type?' '+type:'')}
+
+async function verifyAdmin(){
+  const {data:{session}}=await supabase.auth.getSession()
+  if(!session?.user){location.href='/admin';return false}
+  const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+  if(error||!data||data.active!==true){location.href='/admin';return false}
+  $('userLine').textContent=(data.email||session.user.email||'')+' • '+data.role
+  return true
+}
+
+function render(){
+  const s=audit?.summary||{},rows=audit?.customers||[]
+  $('totalCount').textContent=s.total||0;$('eligibleCount').textContent=s.eligible||0;$('reviewCount').textContent=s.review||0;$('blockedCount').textContent=s.blocked||0;$('duplicateCount').textContent=s.duplicate_number_customers||0;$('liveCount').textContent=s.live_telephony_adapters||0
+  $('quietBadge').textContent='Timezone '+(s.timezone||'')+' • Quiet '+(s.quiet_start||'')+'–'+(s.quiet_end||'')+' • '+(s.quiet_hours_now?'QUIET NOW':'OPEN WINDOW')
+  $('rows').innerHTML=rows.length?rows.map(r=>'<tr><td><strong>'+esc(r.name)+'</strong><div class="meta">'+esc(r.customer_code||'')+'</div></td><td>'+esc(r.phone||'—')+'</td><td>'+esc(r.phone_e164||'—')+'</td><td>'+(r.call_consent?'Yes':'No')+'</td><td>'+(r.do_not_call||r.call_opted_out?'Yes':'No')+'</td><td>'+esc(r.duplicate_count||0)+'</td><td><span class="pill '+esc(r.readiness_status)+'">'+esc(r.readiness_status.toUpperCase())+'</span></td><td>'+esc((r.reasons||[]).join(', ')||r.phone_reason||'—')+'</td></tr>').join(''):'<tr><td colspan="8">No customers.</td></tr>'
+  $('lockBox').innerHTML='<strong>Live telephony engine flag: '+(s.live_telephony_enabled?'ON':'OFF')+'</strong><br>Live telephony adapters: '+esc(s.live_telephony_adapters||0)+'<br>Quiet hours now: '+(s.quiet_hours_now?'YES':'NO')+'<br><br><strong>Go-live remains blocked</strong> until a real provider is explicitly connected, speech benchmarks are approved, and final consent/UAT checks pass.'
+}
+
+async function load(){
+  const [a,w]=await Promise.all([
+    supabase.rpc('customer_care_call_readiness_audit',{p_limit:10000}),
+    supabase.rpc('customer_care_webhook_idempotency_readiness')
+  ])
+  if(a.error)throw a.error;if(w.error)throw w.error
+  audit=a.data||{};render()
+  $('webhookBox').innerHTML='<strong>Unique replay key: '+(w.data?.idempotency_constraint_present?'READY':'MISSING')+'</strong><br>Key: '+esc(w.data?.duplicate_key||'')+'<br>Live webhooks enabled: '+(w.data?.live_webhooks_enabled?'YES':'NO')
+}
+
+async function dryRun(){
+  msg('')
+  $('runDryBtn').disabled=true
+  const rate=$('rate').value===''?null:Number($('rate').value)
+  const {data,error}=await supabase.rpc('customer_care_call_dry_run',{
+    p_name:$('dryName').value.trim()||'Production Calling Readiness',
+    p_assumed_duration_seconds:Number($('duration').value||90),
+    p_cost_per_minute:rate,
+    p_currency:$('currency').value.trim()||'INR',
+    p_customer_ids:null
+  })
+  $('runDryBtn').disabled=false
+  if(error){msg(error.message,'err');return}
+  msg('Dry-run complete. No call was placed.','ok')
+  $('dryResult').innerHTML='<div class="result"><strong>'+esc(data.name)+'</strong><br>Total: '+esc(data.total_customers)+'<br>Eligible: '+esc(data.eligible_customers)+'<br>Blocked: '+esc(data.blocked_customers)+'<br>Review: '+esc(data.review_customers)+'<br>Estimated minutes: '+esc(data.estimated_total_minutes)+'<br>Estimated cost: '+(data.estimated_cost==null?'Not calculated':esc(data.currency)+' '+esc(data.estimated_cost))+'<br>Live dialing performed: NO</div>'
+}
+
+async function init(){try{if(!await verifyAdmin())return;await load()}catch(error){msg(error.message||String(error),'err')}}
+$('refreshBtn').addEventListener('click',load);$('runDryBtn').addEventListener('click',dryRun)
+$('careBtn').addEventListener('click',()=>location.href='/customer-care');$('runtimeBtn').addEventListener('click',()=>location.href='/voice-runtime');$('adminBtn').addEventListener('click',()=>location.href='/admin')
+supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+init()
+</script>
+</body></html>
