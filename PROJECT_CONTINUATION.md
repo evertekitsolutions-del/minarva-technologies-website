@@ -1264,21 +1264,101 @@ Current blocker for measured engine selection:
 - therefore benchmark count can legitimately remain zero until a real run is executed
 - no benchmark number may be invented
 
+## Customer Care — Milestone 3B5A — COMPLETE
+
+Implemented:
+- authenticated `/calling-readiness` dashboard
+- customer call-consent audit
+- Do Not Call audit
+- call-channel opt-out audit
+- phone normalization / callable-format screening
+- India +91 normalization for safe 10-digit mobile cases
+- international explicit-prefix handling
+- ambiguous country-code cases marked Review instead of guessed
+- missing / invalid numbers blocked
+- duplicate callable-number detection
+- quiet-hours audit with configured timezone
+- all-customer dry-run preview
+- call-campaign-specific dry-run preview
+- eligible / review / blocked counts
+- assumed call-duration calculator
+- optional provider-rate / estimated-cost calculator
+- no fake provider price is inserted
+- dry-run history table
+- telephony cost-profile foundation
+- provider capability/configuration contract remains credential-free
+- busy / no-answer / voicemail / callback / opt-out / wrong-number / human-escalation outcome policy matrix
+- webhook replay/idempotency readiness check
+- unique `adapter_key + provider_event_id` contract remains the duplicate-event guard
+- database go-live gate matrix
+- production go-live checklist
+- emergency-stop flag added and defaults **ON**
+- live telephony flag remains **OFF**
+- live telephony adapters verified = **0**
+- anonymous access to call-readiness / dry-run RPCs blocked
+- no customer was called
+
+Database:
+- `telephony_cost_profiles`
+- `telephony_outcome_policies`
+- `call_readiness_dry_runs`
+- `telephony_go_live_checklist`
+- `customer_care_call_readiness_audit(...)`
+- `customer_care_call_dry_run(...)`
+- `customer_care_campaign_call_dry_run(...)`
+- `customer_care_webhook_idempotency_readiness()`
+- `customer_care_telephony_policy_matrix()`
+- `customer_care_telephony_go_live_readiness()`
+
+Migrations:
+- `supabase/migrations/20261007_calling_readiness_audit.sql`
+- `supabase/migrations/20261007_calling_readiness_campaign_gates.sql`
+
+Files:
+- `calling-readiness.html`
+- `docs/AUTOMATED_CALLING_GO_LIVE_CHECKLIST.md`
+
+GitHub commits:
+- calling readiness DB / dry-run foundation: `c1895f8d0601d686ef48415e1f73c929c9a06ebd`
+- Calling Readiness dashboard: `f4b986f75b051227f040566942aa3d1694c453c4`
+- Customer Care → Calling Readiness navigation: `43b9b1e40284eda2f0c5e0274bb456e6a3994bb4`
+- campaign dry-run + go-live gates: `589cb914dfbb885f607b87bbf4ca8d4a64815145`
+- production go-live checklist: `4863b33d5084262e7d795423cda7da7257c9b816`
+- Calling Readiness campaign/gate UI: `9f1c3363f40550115bd8c56dbcc30dfff7df54d2`
+
+
+Verification:
+- readiness / dry-run / webhook RPCs present
+- authenticated execution allowed
+- anonymous execution denied
+- live telephony adapter count = 0
+- live telephony enabled = false
+- Security Advisor: no new DB/RLS finding
+- existing **Leaked Password Protection Disabled** warning remains
+- current unused-index notices are informational on new/low-usage tables
+
 ## Immediate next milestone
 
-**Customer Care — Milestone 3B5A: Production Calling Readiness Without Dialing**
+**Platform — Milestone 4A1: Production Security & Release Hardening**
 
-Continue while real speech benchmark hardware is pending:
-- customer call-consent audit dashboard
-- phone-number normalization / invalid-number screening
-- duplicate-number detection
-- quiet-hours enforcement audit
-- automated-call campaign dry-run preview
-- estimated call volume / duration / cost calculator foundation
-- provider comparison/configuration contract without credentials
-- webhook replay/idempotency test harness
-- no-answer / busy / voicemail / callback / opt-out / human-escalation state tests
-- production go-live checklist
-- keep every real outbound call disabled
-
-This lets the rest of the project progress without fabricating speech benchmarks or activating paid telephony.
+Continue without enabling real automated calls:
+- resolve remaining Supabase Auth leaked-password warning where project controls permit
+- admin/session security review
+- production CSP / security-header review
+- public enquiry anti-abuse / rate-limit / bot-protection design
+- backup / recovery verification
+- audit-log coverage review
+- error / health monitoring foundation
+- final cross-module navigation consistency
+- responsive/mobile regression
+- end-to-end business flow UAT:
+  - Enquiry → Customer
+  - Quotation → Invoice
+  - Payment
+  - Service Job → Job Sheet
+  - Technician PWA
+  - Customer Care
+  - AI Voice Sandbox
+  - Calling Readiness
+- production release checklist / freeze foundation
+- real automated phone dialing stays OFF
