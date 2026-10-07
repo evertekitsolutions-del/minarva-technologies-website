@@ -178,8 +178,11 @@
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+    import { installAdminSessionGuard } from '/admin-session-guard.js'
 
     const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    installAdminSessionGuard(supabase)
+
     const BUCKET='service-job-media'
 
     const jobsBtn=document.getElementById('jobsBtn')

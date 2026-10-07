@@ -92,7 +92,9 @@
 
 <script type="module">
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+    import { installAdminSessionGuard } from '/admin-session-guard.js'
 const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    installAdminSessionGuard(supabase)
 const $=id=>document.getElementById(id)
 let readiness=null,checks=[],uatRuns=[],uatSteps=[]
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))

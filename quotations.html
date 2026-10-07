@@ -154,11 +154,13 @@
 
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+    import { installAdminSessionGuard } from '/admin-session-guard.js'
 
     const SUPABASE_URL = 'https://kwullzwhlzziosjsejud.supabase.co'
     const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
     const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
 
+    installAdminSessionGuard(supabase)
     const userLine = document.getElementById('userLine')
     const backBtn = document.getElementById('backBtn')
     const newQuoteBtn = document.getElementById('newQuoteBtn')
