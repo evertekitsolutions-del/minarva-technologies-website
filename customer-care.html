@@ -21,7 +21,7 @@
     .toolbar{display:grid;grid-template-columns:1fr 160px 145px;gap:8px}.tools2{display:grid;grid-template-columns:1fr 1fr;gap:8px}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px 11px;background:#fff;color:var(--ink);outline:none}textarea{min-height:76px;resize:vertical}input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(11,89,216,.07)}label{display:block;font-size:9px;font-weight:800;color:#344054;margin-bottom:5px}
     .list{max-height:560px;overflow:auto}.item{padding:12px 14px;border-bottom:1px solid #edf2f8}.item:last-child{border-bottom:0}.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.primary{font-size:12px;font-weight:800}.meta{font-size:9px;color:var(--muted);line-height:1.55;margin-top:4px}.badges{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}.badge{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:800}.pending{background:#eef4ff;color:#3538cd}.ready{background:#fff7e8;color:#9a5b00}.sent,.completed{background:#ecfdf3;color:#087443}.failed,.suppressed,.opted_out{background:#fff1f0;color:#b42318}.cancelled{background:#f2f4f7;color:#475467}.callback_required,.escalated{background:#fff7e8;color:#9a5b00}.whatsapp{background:#ecfdf3;color:#087443}.sms{background:#eef4ff;color:#3538cd}.email{background:#f0f9ff;color:#026aa2}.call{background:#fdf2fa;color:#c11574}
     .empty{padding:24px;text-align:center;color:var(--muted);font-size:10px}.statusmsg{min-height:17px;font-size:10px;font-weight:700;margin-top:7px}.ok{color:var(--green)}.err{color:var(--red)}
-    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.section-label{font-size:10px;font-weight:800;color:var(--blue);letter-spacing:.05em;margin:13px 0 8px}.provider{border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:7px;background:#fbfdff}.provider:last-child{margin-bottom:0}.provider strong{font-size:11px}.provider .state{float:right;font-size:8px;border-radius:999px;padding:3px 6px}.provider .enabled{background:#ecfdf3;color:#087443}.provider .disabled{background:#fff1f0;color:#b42318}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.section-label{font-size:10px;font-weight:800;color:var(--blue);letter-spacing:.05em;margin:13px 0 8px}.provider{border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:7px;background:#fbfdff}.provider:last-child{margin-bottom:0}.provider strong{font-size:11px}.provider .state{float:right;font-size:8px;border-radius:999px;padding:3px 6px}.provider .enabled{background:#ecfdf3;color:#087443}.provider .disabled{background:#fff1f0;color:#b42318}.provider .test{background:#eef4ff;color:#3538cd}.provider .live{background:#fff7e8;color:#9a5b00}.mini-action{border:0;border-radius:8px;padding:6px 8px;font-size:8px;font-weight:800;cursor:pointer;margin-top:6px}.allow-row{display:grid;grid-template-columns:105px 1fr auto;gap:6px;align-items:center;margin-top:7px}.dead-letter{border:1px solid #fecdca;background:#fff8f7;border-radius:10px;padding:9px;margin-bottom:7px}
     .multi{min-height:150px}.split-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}.call-script{font-size:9px;background:#fbfdff;border:1px solid var(--line);border-radius:10px;padding:8px;margin-top:7px;line-height:1.5}.timeline-status{min-width:82px;text-align:right}
     @media(max-width:1050px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}}
     @media(max-width:650px){.head{display:block}.head .actions{margin-top:10px}.head h1{font-size:27px}.brand{display:block}.brand .nav{margin-top:9px}.stats{grid-template-columns:1fr 1fr}.toolbar,.form-grid,.settings-grid,.tools2,.split-actions{grid-template-columns:1fr}.full{grid-column:auto}}
@@ -48,11 +48,12 @@
       </div>
       <div class="actions">
         <button id="generateReminderBtn" class="btn btn-ghost" type="button">Generate Invoice Reminders</button>
-        <button id="prepareDispatchBtn" class="btn btn-primary" type="button">Prepare Dispatch</button>
+        <button id="prepareDispatchBtn" class="btn btn-ghost" type="button">Prepare Dispatch</button>
+        <button id="runSandboxBtn" class="btn btn-primary" type="button">Run Sandbox Dispatcher</button>
       </div>
     </div>
 
-    <div class="notice"><strong>Provider-neutral mode:</strong> the system automatically builds scheduled WhatsApp/SMS/Email/Call attempts every 15 minutes, but no external provider is connected yet. Therefore no message or call is actually sent. Ready items are safely held until a provider adapter is connected later.</div>
+    <div class="notice"><strong>Sandbox/Test mode:</strong> the real outbound providers are still disabled. The dispatcher can now simulate WhatsApp/SMS/Email/Automated Call delivery end-to-end without contacting any customer. Live mode is locked until a real provider is configured and explicitly approved.</div>
 
     <section class="stats">
       <div class="stat"><span>PENDING</span><strong id="pendingCount">0</strong></div>
@@ -106,8 +107,26 @@
         </section>
 
         <section class="card">
-          <div class="card-head"><h2>Provider Adapters</h2></div>
+          <div class="card-head"><h2>Provider Adapters</h2><span class="meta">Live locked</span></div>
           <div id="providerList" class="card-body"></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>Test Recipient Allowlist</h2></div>
+          <div class="card-body">
+            <div class="allow-row">
+              <select id="allowChannel"><option value="whatsapp">WhatsApp</option><option value="sms">SMS</option><option value="email">Email</option><option value="call">Call</option></select>
+              <input id="allowRecipient" type="text" placeholder="Test phone or email">
+              <button id="addAllowBtn" class="btn btn-ghost" type="button">Add</button>
+            </div>
+            <div id="allowlistMsg" class="statusmsg"></div>
+            <div id="allowlistList" style="margin-top:8px"></div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>Dead Letters / Manual Retry</h2></div>
+          <div id="deadLetterList" class="card-body"><div class="empty">No dead letters.</div></div>
         </section>
 
         <section class="card">
@@ -141,10 +160,10 @@
 
     const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
     const $=id=>document.getElementById(id)
-    const userLine=$('userLine'),outboxList=$('outboxList'),callList=$('callList'),timelineList=$('timelineList'),providerList=$('providerList'),campaignList=$('campaignList')
+    const userLine=$('userLine'),outboxList=$('outboxList'),callList=$('callList'),timelineList=$('timelineList'),providerList=$('providerList'),campaignList=$('campaignList'),allowlistList=$('allowlistList'),deadLetterList=$('deadLetterList')
     const searchInput=$('searchInput'),statusFilter=$('statusFilter'),channelFilter=$('channelFilter')
     const pendingCount=$('pendingCount'),readyCount=$('readyCount'),sentCount=$('sentCount'),failedCount=$('failedCount'),suppressedCount=$('suppressedCount'),callCount=$('callCount'),outboxCount=$('outboxCount')
-    let outbox=[],calls=[],timeline=[],providers=[],campaigns=[],customers=[],settings=null
+    let outbox=[],calls=[],timeline=[],providers=[],campaigns=[],customers=[],settings=null,allowlist=[],deadLetters=[]
 
     const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
     const fmt=v=>v?new Date(v).toLocaleString():'—'
@@ -162,21 +181,23 @@
     }
 
     async function loadAll(){
-      const [o,c,t,p,g,s,cu]=await Promise.all([
+      const [o,c,t,p,g,s,cu,al,dl]=await Promise.all([
         supabase.from('customer_contact_outbox').select('id,customer_id,source_type,source_id,event_type,requested_channel,resolved_channel,language,recipient,payload,scheduled_for,next_attempt_at,status,attempt_count,max_attempts,suppression_reason,last_error,provider_adapter_key,created_at,customers(name,phone,email)').order('created_at',{ascending:false}).limit(1500),
         supabase.from('automated_call_jobs').select('id,outbox_id,customer_id,call_reason,language,phone,status,attempt_count,outcome,callback_at,escalated_at,escalation_reason,last_error,script,created_at,customers(name,phone)').order('created_at',{ascending:false}).limit(500),
         supabase.from('customer_contact_timeline').select('id,customer_id,event_type,channel,direction,status,summary,source_type,source_id,created_at,customers(name,phone)').order('created_at',{ascending:false}).limit(500),
         supabase.from('customer_care_provider_adapters').select('*').order('channel',{ascending:true}),
         supabase.from('customer_care_campaigns').select('id,name,campaign_type,event_type,channel,language,scheduled_for,status,created_at').order('created_at',{ascending:false}).limit(200),
         supabase.from('customer_care_settings').select('*').eq('singleton',true).maybeSingle(),
-        supabase.from('customers').select('id,name,phone,email,preferred_language,preferred_contact_channel,call_consent,do_not_call').order('name',{ascending:true}).limit(3000)
+        supabase.from('customers').select('id,name,phone,email,preferred_language,preferred_contact_channel,call_consent,do_not_call').order('name',{ascending:true}).limit(3000),
+        supabase.from('customer_care_test_allowlist').select('id,channel,recipient,label,active,created_at').order('created_at',{ascending:false}).limit(500),
+        supabase.from('customer_care_dead_letters').select('id,outbox_id,attempt_id,customer_id,channel,provider_adapter_key,reason,status,created_at,customers(name,phone,email)').order('created_at',{ascending:false}).limit(500)
       ])
-      for(const r of [o,c,t,p,g,s,cu])if(r.error)throw r.error
-      outbox=o.data||[];calls=c.data||[];timeline=t.data||[];providers=p.data||[];campaigns=g.data||[];settings=s.data||{};customers=cu.data||[]
+      for(const r of [o,c,t,p,g,s,cu,al,dl])if(r.error)throw r.error
+      outbox=o.data||[];calls=c.data||[];timeline=t.data||[];providers=p.data||[];campaigns=g.data||[];settings=s.data||{};customers=cu.data||[];allowlist=al.data||[];deadLetters=dl.data||[]
       renderAll()
     }
 
-    function renderAll(){renderStats();renderOutbox();renderCalls();renderTimeline();renderProviders();renderCampaigns();renderSettings();renderCustomers()}
+    function renderAll(){renderStats();renderOutbox();renderCalls();renderTimeline();renderProviders();renderAllowlist();renderDeadLetters();renderCampaigns();renderSettings();renderCustomers()}
     function renderStats(){
       const count=s=>outbox.filter(x=>x.status===s).length
       pendingCount.textContent=count('pending');readyCount.textContent=count('ready');sentCount.textContent=count('sent');failedCount.textContent=count('failed');suppressedCount.textContent=count('suppressed')
@@ -205,8 +226,11 @@
           '<div class="meta">'+esc(x.source_type)+' '+esc(x.source_id||'')+' • Scheduled '+esc(fmt(x.scheduled_for))+(x.next_attempt_at?' • Retry '+esc(fmt(x.next_attempt_at)):'')+'</div>'+
           '<div class="badges"><span class="badge '+esc(x.status)+'">'+esc(x.status)+'</span>'+(ch!=='preference'?'<span class="badge '+esc(ch)+'">'+esc(ch)+'</span>':'')+'<span class="badge pending">'+esc(x.language||'auto')+'</span></div>'+
           (x.suppression_reason?'<div class="meta">Suppressed: '+esc(x.suppression_reason)+'</div>':'')+(x.last_error?'<div class="meta">Error: '+esc(x.last_error)+'</div>':'')+
-          '</div><div class="meta">Attempt '+esc(x.attempt_count)+' / '+esc(x.max_attempts)+'<br>'+esc(x.provider_adapter_key||'provider not connected')+'</div></div></div>'
+          '</div><div class="meta">Attempt '+esc(x.attempt_count)+' / '+esc(x.max_attempts)+'<br>'+esc(x.provider_adapter_key||'provider not connected')+
+          (['failed','suppressed'].includes(x.status)?'<br><button class="mini-action" type="button" data-retry-outbox="'+esc(x.id)+'">Retry</button>':'')+
+          '</div></div></div>'
       }).join('')
+      outboxList.querySelectorAll('[data-retry-outbox]').forEach(button=>button.addEventListener('click',()=>retryOutbox(button.dataset.retryOutbox)))
     }
 
     function renderCalls(){
@@ -235,7 +259,32 @@
 
     function renderProviders(){
       if(!providers.length){providerList.innerHTML='<div class="empty">No provider adapters defined.</div>';return}
-      providerList.innerHTML=providers.map(p=>'<div class="provider"><strong>'+esc(p.display_name)+'</strong><span class="state '+(p.enabled?'enabled':'disabled')+'">'+(p.enabled?'Enabled':'Not connected')+'</span><div class="meta">'+esc(p.channel)+' • '+esc(p.adapter_type)+(p.endpoint_ref?' • '+esc(p.endpoint_ref):'')+'</div></div>').join('')
+      providerList.innerHTML=providers.map(p=>{
+        const mode=p.runtime_mode||'disabled'
+        const isMock=Boolean(p.config?.mock)
+        return '<div class="provider"><strong>'+esc(p.display_name)+'</strong><span class="state '+esc(mode)+'">'+esc(mode.toUpperCase())+'</span>'+
+          '<div class="meta">'+esc(p.channel)+' • '+esc(p.adapter_type)+' • health '+esc(p.health_status||'unknown')+(isMock?' • no external contact':'')+'</div>'+
+          (p.last_health_error?'<div class="meta">Health: '+esc(p.last_health_error)+'</div>':'')+
+          (isMock?'<button class="mini-action" type="button" data-toggle-adapter="'+esc(p.adapter_key)+'" data-enabled="'+(p.enabled?'1':'0')+'">'+(p.enabled?'Disable Test Adapter':'Enable Test Adapter')+'</button>':'')+
+          '</div>'
+      }).join('')
+      providerList.querySelectorAll('[data-toggle-adapter]').forEach(button=>button.addEventListener('click',()=>toggleAdapter(button.dataset.toggleAdapter,button.dataset.enabled!=='1')))
+    }
+
+    function renderAllowlist(){
+      if(!allowlist.length){allowlistList.innerHTML='<div class="meta">No external test recipients allowlisted yet. Mock adapters do not require this because they never contact anyone.</div>';return}
+      allowlistList.innerHTML=allowlist.map(x=>'<div class="provider"><strong>'+esc(x.recipient)+'</strong><span class="state '+(x.active?'enabled':'disabled')+'">'+(x.active?'Active':'Disabled')+'</span><div class="meta">'+esc(x.channel)+(x.label?' • '+esc(x.label):'')+'</div><button class="mini-action" type="button" data-remove-allow="'+esc(x.id)+'">Remove</button></div>').join('')
+      allowlistList.querySelectorAll('[data-remove-allow]').forEach(button=>button.addEventListener('click',()=>removeAllowlist(button.dataset.removeAllow)))
+    }
+
+    function renderDeadLetters(){
+      const rows=deadLetters.filter(x=>x.status==='open')
+      if(!rows.length){deadLetterList.innerHTML='<div class="empty">No open dead letters.</div>';return}
+      deadLetterList.innerHTML=rows.map(x=>{
+        const c=Array.isArray(x.customers)?x.customers[0]:x.customers
+        return '<div class="dead-letter"><strong>'+esc(c?.name||'Customer')+'</strong><div class="meta">'+esc(x.channel||'')+' • '+esc(x.provider_adapter_key||'')+' • '+esc(fmt(x.created_at))+'</div><div class="meta">'+esc(x.reason)+'</div><button class="mini-action" type="button" data-dead-retry="'+esc(x.outbox_id)+'">Retry Outbox</button></div>'
+      }).join('')
+      deadLetterList.querySelectorAll('[data-dead-retry]').forEach(button=>button.addEventListener('click',()=>retryOutbox(button.dataset.deadRetry)))
     }
 
     function renderCampaigns(){
@@ -273,6 +322,44 @@
       if(error){alert('Could not prepare dispatch: '+error.message);return}
       alert('Prepared: '+(data?.ready||0)+' • Suppressed: '+(data?.suppressed||0)+' • Deferred by quiet hours: '+(data?.deferred||0))
       await loadAll()
+    }
+
+    async function runSandbox(){
+      const button=$('runSandboxBtn')
+      button.disabled=true;button.textContent='Running Sandbox…'
+      const {data,error}=await supabase.functions.invoke('customer-care-dispatcher',{body:{action:'dispatch',limit:50}})
+      button.disabled=false;button.textContent='Run Sandbox Dispatcher'
+      if(error){alert('Sandbox dispatcher failed: '+error.message);return}
+      alert('Sandbox processed '+(data?.processed||0)+' item(s). No external customer contact was made.')
+      await loadAll()
+    }
+
+    async function toggleAdapter(adapterKey,enable){
+      const {error}=await supabase.rpc('customer_care_provider_runtime_state',{p_adapter_key:adapterKey,p_runtime_mode:enable?'test':'disabled',p_enabled:enable})
+      if(error){alert('Could not change adapter state: '+error.message);return}
+      await loadAll()
+    }
+
+    async function addAllowlist(){
+      const channel=$('allowChannel').value
+      const recipient=$('allowRecipient').value.trim()
+      if(!recipient){msg($('allowlistMsg'),'Enter a test phone or email.','err');return}
+      const {data:{session}}=await supabase.auth.getSession()
+      const {error}=await supabase.from('customer_care_test_allowlist').upsert({channel,recipient,active:true,created_by:session?.user?.id||null},{onConflict:'channel,recipient'})
+      if(error){msg($('allowlistMsg'),error.message,'err');return}
+      $('allowRecipient').value='';msg($('allowlistMsg'),'Test recipient allowlisted.','ok');await loadAll()
+    }
+
+    async function removeAllowlist(id){
+      const {error}=await supabase.from('customer_care_test_allowlist').delete().eq('id',id)
+      if(error){alert('Could not remove test recipient: '+error.message);return}
+      await loadAll()
+    }
+
+    async function retryOutbox(id){
+      const {error}=await supabase.rpc('customer_care_retry_outbox',{p_outbox_id:id})
+      if(error){alert('Could not retry item: '+error.message);return}
+      await prepareDispatch()
     }
 
     async function saveSettings(){
@@ -330,7 +417,7 @@
     }
 
     searchInput.addEventListener('input',renderOutbox);statusFilter.addEventListener('change',renderOutbox);channelFilter.addEventListener('change',renderOutbox)
-    $('generateReminderBtn').addEventListener('click',generateInvoiceReminders);$('prepareDispatchBtn').addEventListener('click',prepareDispatch);$('saveSettingsBtn').addEventListener('click',saveSettings);$('createCampaignBtn').addEventListener('click',createCampaign);$('refreshBtn').addEventListener('click',loadAll)
+    $('generateReminderBtn').addEventListener('click',generateInvoiceReminders);$('prepareDispatchBtn').addEventListener('click',prepareDispatch);$('runSandboxBtn').addEventListener('click',runSandbox);$('saveSettingsBtn').addEventListener('click',saveSettings);$('addAllowBtn').addEventListener('click',addAllowlist);$('createCampaignBtn').addEventListener('click',createCampaign);$('refreshBtn').addEventListener('click',loadAll)
     $('jobsBtn').addEventListener('click',()=>location.href='/service-jobs');$('invoicesBtn').addEventListener('click',()=>location.href='/invoices');$('adminBtn').addEventListener('click',()=>location.href='/admin')
     supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
     init()
