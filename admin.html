@@ -59,6 +59,7 @@
             <div id="userLine" class="userline"></div>
           </div>
           <div class="dash-actions">
+            <button id="releaseReadinessBtn" class="btn btn-ghost" type="button">Release Readiness</button>
             <button id="platformHealthBtn" class="btn btn-ghost" type="button">Platform Health</button>
             <button id="customerCareBtn" class="btn btn-ghost" type="button">Customer Care</button>
             <button id="serviceJobsBtn" class="btn btn-ghost" type="button">Service Jobs</button>
@@ -830,6 +831,7 @@
     const loginForm = document.getElementById('loginForm')
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
+    const releaseReadinessBtn = document.getElementById('releaseReadinessBtn')
     const platformHealthBtn = document.getElementById('platformHealthBtn')
     const customerCareBtn = document.getElementById('customerCareBtn')
     const serviceJobsBtn = document.getElementById('serviceJobsBtn')
@@ -2888,6 +2890,7 @@
       showLogin()
     })
 
+    releaseReadinessBtn.addEventListener('click', () => { location.href = '/release-readiness' })
     platformHealthBtn.addEventListener('click', () => { location.href = '/platform-health' })
     customerCareBtn.addEventListener('click', () => { location.href = '/customer-care' })
     serviceJobsBtn.addEventListener('click', () => { location.href = '/service-jobs' })
