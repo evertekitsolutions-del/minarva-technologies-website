@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0754c7">
+  <title>Minarva Technologies — Platform Health</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--blue2:#1381ff;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--red:#b42318;--amber:#9a5b00;--bg:#eef5ff}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select,textarea{font:inherit}.shell{width:min(1260px,calc(100% - 28px));margin:auto}.top{padding:18px 0}.brand{display:flex;justify-content:space-between;gap:14px;align-items:center}.brand img{width:240px;height:52px;object-fit:contain;object-position:left center}
+    .nav,.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn:disabled{opacity:.55}
+    .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin:8px 0 14px}.eyebrow{font-size:11px;letter-spacing:.12em;color:var(--blue);font-weight:800}.head h1{font-size:31px;margin:4px 0 0;letter-spacing:-.03em}.meta,.userline{font-size:10px;color:var(--muted);line-height:1.55}
+    .notice{border:1px solid #b2ccff;background:#f3f8ff;border-radius:14px;padding:11px 13px;font-size:10px;line-height:1.55;margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:0 10px 28px rgba(7,51,111,.06);overflow:hidden}.card-head{padding:13px 15px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.card-head h2{margin:0;font-size:15px}.card-body{padding:14px}
+    .metric{font-size:10px;line-height:1.7}.metric strong{font-size:11px}.pill{display:inline-flex;border-radius:999px;padding:4px 7px;font-size:8px;font-weight:800}.ok{background:#ecfdf3;color:var(--green)}.warn{background:#fff7e8;color:var(--amber)}.bad{background:#fff1f0;color:var(--red)}.neutral{background:#f2f4f7;color:#475467}
+    .layout{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;align-items:start}.table-wrap{max-height:460px;overflow:auto}table{width:100%;border-collapse:collapse;font-size:9px}th,td{padding:8px;border-bottom:1px solid #edf2f8;text-align:left;vertical-align:top}th{font-size:8px;color:var(--muted);position:sticky;top:0;background:#fff}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.full{grid-column:1/-1}label{display:block;font-size:9px;font-weight:800;color:#344054;margin-bottom:4px}input,select,textarea{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px;background:#fff}textarea{min-height:78px}.statusmsg{min-height:18px;font-size:10px;font-weight:700;margin-top:8px}.statusmsg.ok{background:none;color:var(--green)}.statusmsg.bad{background:none;color:var(--red)}
+    @media(max-width:980px){.grid{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}}@media(max-width:650px){.brand{display:block}.brand .nav{margin-top:9px}.head{display:block}.head .actions{margin-top:9px}.grid,.form-grid{grid-template-columns:1fr}.full{grid-column:auto}}
+  </style>
+</head>
+<body>
+<div class="shell top"><div class="brand">
+  <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+  <div class="nav"><button id="careBtn" class="btn btn-ghost">Customer Care</button><button id="callingBtn" class="btn btn-ghost">Calling Readiness</button><button id="adminBtn" class="btn btn-ghost">Admin</button></div>
+</div></div>
+<main class="shell" style="padding-bottom:60px">
+  <div class="head"><div><div class="eyebrow">PRODUCTION HARDENING</div><h1>Platform Health & Recovery</h1><div id="userLine" class="userline">Checking admin access…</div></div><div class="actions"><button id="refreshBtn" class="btn btn-ghost">Refresh</button></div></div>
+  <div class="notice"><strong>Evidence based:</strong> this screen only reports checks the system can actually verify. Backup/restore is not marked verified until a real recovery drill is recorded. Supabase leaked-password protection remains an external Auth setting and must be confirmed separately.</div>
+
+  <section class="grid">
+    <div class="card"><div class="card-head"><h2>Database</h2><span id="dbPill" class="pill neutral">—</span></div><div id="dbBody" class="card-body metric">Loading…</div></div>
+    <div class="card"><div class="card-head"><h2>Public Enquiry Security</h2><span id="securityPill" class="pill neutral">—</span></div><div id="securityBody" class="card-body metric">Loading…</div></div>
+    <div class="card"><div class="card-head"><h2>Audit Coverage</h2><span id="auditPill" class="pill neutral">—</span></div><div id="auditBody" class="card-body metric">Loading…</div></div>
+    <div class="card"><div class="card-head"><h2>Recovery</h2><span id="recoveryPill" class="pill neutral">—</span></div><div id="recoveryBody" class="card-body metric">Loading…</div></div>
+    <div class="card"><div class="card-head"><h2>Operations</h2><span id="opsPill" class="pill neutral">—</span></div><div id="opsBody" class="card-body metric">Loading…</div></div>
+    <div class="card"><div class="card-head"><h2>Automated Calling</h2><span id="callPill" class="pill neutral">—</span></div><div id="callBody" class="card-body metric">Loading…</div></div>
+  </section>
+
+  <div class="layout">
+    <section class="card">
+      <div class="card-head"><h2>Latest Audit Events</h2><span id="auditCount" class="meta"></span></div>
+      <div class="table-wrap"><table><thead><tr><th>Time</th><th>Entity</th><th>Action</th><th>Reference</th><th>Status</th><th>Changed</th></tr></thead><tbody id="auditRows"><tr><td colspan="6">Loading…</td></tr></tbody></table></div>
+    </section>
+
+    <aside>
+      <section class="card" style="margin-bottom:14px">
+        <div class="card-head"><h2>Recovery Drill History</h2></div>
+        <div id="recoveryList" class="card-body metric">Loading…</div>
+      </section>
+      <section class="card">
+        <div class="card-head"><h2>Record Actual Recovery Drill</h2></div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div><label>Drill type</label><select id="drillType"><option value="database_restore">Database Restore</option><option value="storage_restore">Storage Restore</option><option value="configuration_restore">Configuration Restore</option><option value="full_recovery">Full Recovery</option></select></div>
+            <div><label>Status</label><select id="drillStatus"><option value="planned">Planned</option><option value="running">Running</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="cancelled">Cancelled</option></select></div>
+            <div><label>Started at</label><input id="drillStarted" type="datetime-local"></div>
+            <div><label>Completed at</label><input id="drillCompleted" type="datetime-local"></div>
+            <div class="full"><label>Recovery point / backup reference</label><input id="drillRecoveryPoint" maxlength="500" placeholder="Actual backup/restore point used"></div>
+            <div><label>Recovery time (minutes)</label><input id="drillMinutes" type="number" min="0" step="0.1"></div>
+            <div><label>Evidence reference</label><input id="drillEvidence" maxlength="1000" placeholder="Ticket, screenshot reference, report…"></div>
+            <div class="full"><label>Notes</label><textarea id="drillNotes" maxlength="4000"></textarea></div>
+            <div class="full"><button id="saveDrillBtn" class="btn btn-primary" style="width:100%">Save Real Drill Record</button></div>
+          </div>
+          <div id="drillMsg" class="statusmsg"></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+</main>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+const $=id=>document.getElementById(id)
+let health=null,audits=[],drills=[]
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+const fmt=v=>v?new Date(v).toLocaleString():'—'
+const toIso=v=>v?new Date(v).toISOString():null
+function pill(id,state,text){const e=$(id);e.textContent=text;e.className='pill '+state}
+function msg(text,state=''){$('drillMsg').textContent=text||'';$('drillMsg').className='statusmsg'+(state?' '+state:'')}
+
+async function verifyAdmin(){
+  const {data:{session}}=await supabase.auth.getSession()
+  if(!session?.user){location.href='/admin';return false}
+  const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+  if(error||!data||data.active!==true){location.href='/admin';return false}
+  $('userLine').textContent=(data.email||session.user.email||'')+' • '+data.role
+  return true
+}
+
+function renderHealth(){
+  const s=health?.security||{},a=health?.audit||{},r=health?.recovery||{},o=health?.operations||{},c=health?.automated_calling||{}
+  pill('dbPill',health?.database==='ok'?'ok':'bad',health?.database==='ok'?'OK':'CHECK')
+  $('dbBody').innerHTML='<strong>Database connection:</strong> '+esc(health?.database||'unknown')+'<br><strong>Checked:</strong> '+esc(fmt(health?.checked_at))
+  const secure=!s.direct_anon_enquiry_insert&&!s.website_anon_insert_policy_exists&&s.public_enquiry_rate_limit_service_only&&s.public_enquiry_submit_service_only&&s.anti_abuse_hash_cleanup_scheduled
+  pill('securityPill',secure?'ok':'bad',secure?'HARDENED':'CHECK')
+  $('securityBody').innerHTML='Direct anon INSERT: <strong>'+(s.direct_anon_enquiry_insert?'ENABLED':'BLOCKED')+'</strong><br>Old anon policy: '+(s.website_anon_insert_policy_exists?'PRESENT':'REMOVED')+'<br>Rate limiter service-only: '+(s.public_enquiry_rate_limit_service_only?'YES':'NO')+'<br>Submit RPC service-only: '+(s.public_enquiry_submit_service_only?'YES':'NO')+'<br>24h hash cleanup scheduled: '+(s.anti_abuse_hash_cleanup_scheduled?'YES':'NO')+'<br>Leaked-password protection: <strong>EXTERNAL CHECK REQUIRED</strong>'
+  pill('auditPill',a.covered_trigger_count>0?'ok':'bad',a.covered_trigger_count>0?'ACTIVE':'MISSING')
+  $('auditBody').innerHTML='Audit events: <strong>'+esc(a.event_count||0)+'</strong><br>Covered table triggers: <strong>'+esc(a.covered_trigger_count||0)+'</strong><br>No duplicate PII snapshots are stored; audit records focus on action/status/changed-field metadata.'
+  pill('recoveryPill',r.verified?'ok':'warn',r.verified?'VERIFIED':'NOT DRILLED')
+  $('recoveryBody').innerHTML='Last successful drill: <strong>'+esc(fmt(r.last_successful_drill_at))+'</strong><br>Recovery is not considered verified until a real restore drill passes.'
+  const opBad=Number(o.failed_customer_contact_outbox||0)>0||Number(o.open_customer_care_dead_letters||0)>0
+  pill('opsPill',opBad?'warn':'ok',opBad?'ATTENTION':'OK')
+  $('opsBody').innerHTML='Failed contact outbox: <strong>'+esc(o.failed_customer_contact_outbox||0)+'</strong><br>Open dead letters: <strong>'+esc(o.open_customer_care_dead_letters||0)+'</strong><br>Active mobile technicians not linked: <strong>'+esc(o.active_mobile_technicians_unlinked||0)+'</strong>'
+  const callSafe=c.emergency_stop===true&&c.live_telephony_enabled!==true&&Number(c.live_adapter_count||0)===0
+  pill('callPill',callSafe?'ok':'bad',callSafe?'LOCKED SAFE':'CHECK')
+  $('callBody').innerHTML='Emergency stop: <strong>'+(c.emergency_stop?'ON':'OFF')+'</strong><br>Live telephony: <strong>'+(c.live_telephony_enabled?'ON':'OFF')+'</strong><br>Live adapters: <strong>'+esc(c.live_adapter_count||0)+'</strong>'
+}
+
+function renderAudit(){
+  $('auditCount').textContent=audits.length+' event(s)'
+  $('auditRows').innerHTML=audits.length?audits.map(x=>'<tr><td>'+esc(fmt(x.occurred_at))+'</td><td>'+esc(x.entity_type)+'<div class="meta">'+esc(x.entity_id||'')+'</div></td><td>'+esc(x.action)+'</td><td>'+esc(x.reference||'—')+'</td><td>'+esc(x.old_status||'—')+' → '+esc(x.new_status||'—')+'</td><td>'+esc((x.changed_fields||[]).join(', ')||'—')+'</td></tr>').join(''):'<tr><td colspan="6">No audit events yet.</td></tr>'
+}
+function renderDrills(){
+  $('recoveryList').innerHTML=drills.length?drills.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #edf2f8"><strong>'+esc(x.drill_type.replaceAll('_',' '))+'</strong> <span class="pill '+(x.status==='passed'?'ok':x.status==='failed'?'bad':'warn')+'">'+esc(x.status)+'</span><div class="meta">'+esc(fmt(x.started_at))+(x.completed_at?' → '+esc(fmt(x.completed_at)):'')+(x.evidence_reference?'<br>Evidence: '+esc(x.evidence_reference):'')+'</div></div>').join(''):'No recovery drill has been recorded yet.'
+}
+
+async function loadAll(){
+  const [h,a,r]=await Promise.all([
+    supabase.rpc('platform_health_readiness'),
+    supabase.from('platform_audit_log').select('id,occurred_at,actor_role,source,action,entity_type,entity_id,changed_fields,old_status,new_status,reference').order('occurred_at',{ascending:false}).limit(100),
+    supabase.from('platform_recovery_drills').select('*').order('started_at',{ascending:false}).limit(25)
+  ])
+  if(h.error)throw h.error;if(a.error)throw a.error;if(r.error)throw r.error
+  health=h.data||{};audits=a.data||[];drills=r.data||[]
+  renderHealth();renderAudit();renderDrills()
+}
+
+async function saveDrill(){
+  msg('')
+  const started=toIso($('drillStarted').value)
+  if(!started){msg('Actual or planned start time is required.','bad');return}
+  if($('drillStatus').value==='passed'&&!$('drillEvidence').value.trim()){
+    msg('A Passed drill requires an evidence reference.','bad');return
+  }
+  $('saveDrillBtn').disabled=true
+  const {data:{session}}=await supabase.auth.getSession()
+  const {error}=await supabase.from('platform_recovery_drills').insert({
+    drill_type:$('drillType').value,
+    environment:'non-production',
+    started_at:started,
+    completed_at:toIso($('drillCompleted').value),
+    status:$('drillStatus').value,
+    recovery_point:$('drillRecoveryPoint').value.trim()||null,
+    recovery_time_minutes:$('drillMinutes').value===''?null:Number($('drillMinutes').value),
+    evidence_reference:$('drillEvidence').value.trim()||null,
+    notes:$('drillNotes').value.trim()||null,
+    performed_by:session?.user?.id||null
+  })
+  $('saveDrillBtn').disabled=false
+  if(error){msg(error.message,'bad');return}
+  msg('Recovery drill record saved.','ok');await loadAll()
+}
+
+async function init(){
+  try{
+    if(!await verifyAdmin())return
+    const now=new Date();const local=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,16)
+    $('drillStarted').value=local
+    await loadAll()
+  }catch(error){msg('Could not load platform health: '+(error.message||error),'bad')}
+}
+$('refreshBtn').addEventListener('click',loadAll);$('saveDrillBtn').addEventListener('click',saveDrill)
+$('careBtn').addEventListener('click',()=>location.href='/customer-care');$('callingBtn').addEventListener('click',()=>location.href='/calling-readiness');$('adminBtn').addEventListener('click',()=>location.href='/admin')
+supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+init()
+</script>
+</body></html>
