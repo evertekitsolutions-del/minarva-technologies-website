@@ -50,6 +50,7 @@
         <button id="generateReminderBtn" class="btn btn-ghost" type="button">Generate Invoice Reminders</button>
         <button id="prepareDispatchBtn" class="btn btn-ghost" type="button">Prepare Dispatch</button>
         <button id="runSandboxBtn" class="btn btn-ghost" type="button">Run Sandbox Dispatcher</button>
+        <button id="voiceRuntimeBtn" class="btn btn-ghost" type="button">Voice Runtime</button>
         <button id="voiceSandboxBtn" class="btn btn-primary" type="button">AI Voice Sandbox</button>
       </div>
     </div>
@@ -418,7 +419,7 @@
     }
 
     searchInput.addEventListener('input',renderOutbox);statusFilter.addEventListener('change',renderOutbox);channelFilter.addEventListener('change',renderOutbox)
-    $('generateReminderBtn').addEventListener('click',generateInvoiceReminders);$('prepareDispatchBtn').addEventListener('click',prepareDispatch);$('runSandboxBtn').addEventListener('click',runSandbox);$('voiceSandboxBtn').addEventListener('click',()=>location.href='/voice-simulator');$('saveSettingsBtn').addEventListener('click',saveSettings);$('addAllowBtn').addEventListener('click',addAllowlist);$('createCampaignBtn').addEventListener('click',createCampaign);$('refreshBtn').addEventListener('click',loadAll)
+    $('generateReminderBtn').addEventListener('click',generateInvoiceReminders);$('prepareDispatchBtn').addEventListener('click',prepareDispatch);$('runSandboxBtn').addEventListener('click',runSandbox);$('voiceRuntimeBtn').addEventListener('click',()=>location.href='/voice-runtime');$('voiceSandboxBtn').addEventListener('click',()=>location.href='/voice-simulator');$('saveSettingsBtn').addEventListener('click',saveSettings);$('addAllowBtn').addEventListener('click',addAllowlist);$('createCampaignBtn').addEventListener('click',createCampaign);$('refreshBtn').addEventListener('click',loadAll)
     $('jobsBtn').addEventListener('click',()=>location.href='/service-jobs');$('invoicesBtn').addEventListener('click',()=>location.href='/invoices');$('adminBtn').addEventListener('click',()=>location.href='/admin')
     supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
     init()
