@@ -1193,19 +1193,92 @@ Verification:
 - anonymous role cannot use benchmark/runtime-control RPCs
 - Security Advisor still reports no new DB/RLS problem; only the existing **Leaked Password Protection Disabled** Auth warning remains
 
+## Customer Care — Milestone 3B4B — HARNESS COMPLETE / REAL RUNS PENDING
+
+Implemented:
+- reproducible local STT benchmark harness
+- direct adapters for:
+  - whisper.cpp
+  - faster-whisper
+  - Vosk
+- Malayalam + English JSONL corpus manifest format
+- mandatory audio normalization to 16 kHz mono PCM16 WAV
+- WER measurement
+- CER measurement
+- per-sample latency
+- median latency
+- p95 latency
+- realtime factor
+- observed max-RSS memory metric
+- transcript hypothesis capture
+- model/runtime/hardware evidence fields
+- provider-neutral TTS benchmark harness for Piper/Kokoro-style local runtimes
+- TTS latency / realtime-factor measurement
+- TTS MOS/quality intentionally remains null until a real listening evaluation is performed
+- authenticated admin benchmark importer to `voice_benchmark_runs`
+- no Service Role credential required by benchmark importer
+- bilingual benchmark selection gate in the database
+- Primary/Fallback STT/TTS cannot be selected unless:
+  - the adapter is production-approved
+  - real Malayalam evidence exists
+  - real English evidence exists
+  - STT has WER/CER measurements
+  - TTS has a real quality score
+- Primary and Fallback adapter cannot be identical
+- dedicated authenticated `/voice-runtime` Benchmark & Selection Center
+- adapter readiness UI
+- benchmark registry UI
+- runtime safety UI
+- selection controls backed by server-side validation
+- Voice Sandbox + Customer Care navigation to Voice Runtime
+- live audio streaming remains OFF
+- live telephony remains OFF
+- no fabricated benchmark result inserted
+
+Files:
+- `tools/voice_benchmark/benchmark.py`
+- `tools/voice_benchmark/tts_benchmark.py`
+- `tools/voice_benchmark/import_result.py`
+- `tools/voice_benchmark/README.md`
+- `tools/voice_benchmark/corpus.example.jsonl`
+- `tools/voice_benchmark/tts_corpus.example.jsonl`
+- `voice-runtime.html`
+
+Migration:
+- `supabase/migrations/20261007_voice_benchmark_selection_gate.sql`
+
+GitHub commits:
+- STT benchmark harness: `5bd71fd22d6f46868268d8dd73ebb9f34bb17141`
+- TTS benchmark harness: `d63001d1c602e1f4af0104b7c78022a3fb0ad205`
+- benchmark importer: `228f6ab291a654f3247d2934a6bd8238d129df02`
+- benchmark workflow docs: `459b13303fe8b91af3d2aa1dd3628179ecfcdcd0`
+- STT corpus example: `f409ee79e2b1c9e4a70c0396ec7eb217b2c9d70a`
+- TTS corpus example: `c065575c72f5ba411bb379515540e7a620adfda1`
+- benchmark selection gate: `fed3f5e013fef8071db95dde21546fe08bc58728`
+- Voice Runtime Center: `1df3328815b390ff4d57e3fcc6382a0855d30764`
+- Voice Sandbox runtime navigation: `d0d94570ff63d8862ab636d158371d1bb7f098ab`
+- Customer Care runtime navigation: `41ccbba2edd9943f8603a1119f702cac8aeca71f`
+
+Current blocker for measured engine selection:
+- an actual machine/server with candidate model files + real consented Malayalam/English benchmark audio is required
+- therefore benchmark count can legitimately remain zero until a real run is executed
+- no benchmark number may be invented
+
 ## Immediate next milestone
 
-**Customer Care — Milestone 3B4B: Local Speech Benchmark Harness**
+**Customer Care — Milestone 3B5A: Production Calling Readiness Without Dialing**
 
-Continue without paid/live calling:
-- add reproducible benchmark harness for whisper.cpp / faster-whisper / Vosk
-- define Malayalam + English benchmark corpus manifest format
-- audio normalizer to 16 kHz mono PCM WAV
-- WER / CER measurement pipeline
-- latency / realtime-factor / memory capture
-- result import into `voice_benchmark_runs`
-- create TTS benchmark harness for Piper / Kokoro where Malayalam voices are actually available and license-compatible
-- do **not** select a primary/fallback engine until measured evidence exists
-- keep real phone dialing disabled
+Continue while real speech benchmark hardware is pending:
+- customer call-consent audit dashboard
+- phone-number normalization / invalid-number screening
+- duplicate-number detection
+- quiet-hours enforcement audit
+- automated-call campaign dry-run preview
+- estimated call volume / duration / cost calculator foundation
+- provider comparison/configuration contract without credentials
+- webhook replay/idempotency test harness
+- no-answer / busy / voicemail / callback / opt-out / human-escalation state tests
+- production go-live checklist
+- keep every real outbound call disabled
 
-A machine/server capable of running the candidate speech models will be needed to produce real benchmark numbers; no benchmark result should be invented.
+This lets the rest of the project progress without fabricating speech benchmarks or activating paid telephony.
