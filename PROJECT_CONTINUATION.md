@@ -925,26 +925,115 @@ Verification:
 - unindexed-foreign-key findings introduced by this milestone were fixed
 - current Performance Advisor findings are unused-index informational notices on the new/low-usage schema
 
+## Customer Care — Milestone 3B2 — COMPLETE
+
+Implemented:
+- Supabase Edge Function runtime: `customer-care-dispatcher`
+- Edge Function is ACTIVE and JWT-protected
+- authenticated active-admin verification inside the worker
+- service-role-only internal claim / finish worker RPCs
+- provider runtime modes:
+  - Disabled
+  - Test
+  - Live
+- **Live mode is intentionally locked** until a real provider is configured and explicitly approved
+- four Mock/Test adapters:
+  - Mock WhatsApp
+  - Mock SMS
+  - Mock Email
+  - Mock Automated Call
+- all current event/channel routes point to the safe Mock adapters
+- Mock adapters simulate successful delivery but make **zero external contact**
+- provider health/readiness fields
+- stale worker-lock recovery
+- idempotent attempt processing through the existing attempt/outbox model
+- exponential retry scheduling for provider failures
+- dead-letter table for exhausted failures
+- manual retry RPC
+- test-recipient allowlist foundation
+- future external Test adapters are blocked unless the recipient is allowlisted
+- provider secrets/config remain server-side; no provider credentials are exposed in the browser
+- Customer Care dashboard updated with:
+  - **Run Sandbox Dispatcher**
+  - Test adapter enable/disable controls
+  - Test Recipient Allowlist
+  - Dead Letters / Manual Retry
+  - failed/suppressed outbox Retry action
+  - clear Sandbox/Test warning
+  - explicit **Live locked** status
+- sandbox call results are labelled `sandbox_simulated`
+- no real WhatsApp, SMS, email or phone call is sent
+- no paid telephony provider activated
+- no fake customer/contact records created
+
+Database / runtime:
+- `customer_care_test_allowlist`
+- `customer_care_dead_letters`
+- provider adapter runtime/health columns
+- `customer_care_worker_prepare_dispatch(...)`
+- `customer_care_worker_claim(...)`
+- `customer_care_worker_finish(...)`
+- `customer_care_worker_update_health(...)`
+- `customer_care_retry_outbox(...)`
+- `customer_care_provider_runtime_state(...)`
+
+Edge Function:
+- `supabase/functions/customer-care-dispatcher/index.ts`
+- `supabase/functions/customer-care-dispatcher/deno.json`
+- Supabase function slug: `customer-care-dispatcher`
+- JWT verification enabled
+- sandbox response masks recipients
+- server-side Service Role is used only inside the Edge Function
+
+Migrations:
+- `supabase/migrations/20261007_customer_care_adapter_runtime.sql`
+- `supabase/migrations/20261007_customer_care_runtime_fk_indexes.sql`
+
+GitHub commits:
+- adapter runtime / sandbox DB foundation: `4867faf1c31d429a8a4dbada631d0e504aad7b06`
+- Edge Function dispatcher: `9d97c9bfcfdac09741babc298cc1b4e1d4ce9b7e`
+- Edge Function Deno config: `70f71f6b4ae66c59abe0504f296076d66f3fca96`
+- Customer Care sandbox dashboard controls: `350aa4161fd3f1ce8c68dee2dc53dd0619f97987`
+- runtime FK/index hardening: `ec70013a7060936c4e0c10990905d6b32c447a60`
+
+Verification:
+- Edge Function `customer-care-dispatcher` is ACTIVE
+- JWT verification is enabled
+- authenticated browser role cannot execute internal worker-claim RPC
+- Service Role can execute worker-claim RPC
+- anonymous users cannot change provider runtime state
+- 4 Mock adapters are enabled in Test mode
+- 0 Live adapters are enabled
+- all 48 event/channel routes are mapped to safe Mock adapters
+- Security Advisor reports no new DB/RLS finding; only the existing **Leaked Password Protection Disabled** Auth warning remains
+- new unindexed-FK findings introduced by 3B2 were fixed
+- remaining Performance Advisor notices are unused-index informational findings on new/low-usage tables
+
 ## Immediate next milestone
 
-**Customer Care — Milestone 3B2: Provider Adapter Runtime + Free/Test Delivery Mode**
+**Customer Care — Milestone 3B3: AI Voice Conversation Engine — Sandbox First**
 
-Build the runtime that will eventually send through real providers without changing the orchestration core:
-- Supabase Edge Function dispatcher worker
-- signed/authorized worker access
-- adapter contract for WhatsApp / SMS / Email / Automated Call
-- provider configuration references without exposing secrets to the browser
-- Mock/Test adapter that never contacts real customers
-- deterministic delivery-result callbacks into `customer_care_record_attempt_result(...)`
-- provider health / readiness checks
-- delivery idempotency
-- dead-letter / manual retry controls
-- test-recipient allowlist
-- sandbox-only send mode
-- dashboard controls for Test / Disabled / Live state
-- provider connection checklist
-- free-first adapter research and selection
-- keep **Live outbound disabled by default**
-- do not activate paid telephony until explicitly approved
+Build the AI conversation layer without enabling real telephony:
+- Malayalam + English AI voice-conversation state machine
+- inbound/outbound conversation context model
+- call goals:
+  - invoice payment reminder
+  - service follow-up
+  - technician ETA / service update
+  - callback handling
+  - general customer-care follow-up
+- structured call script → dynamic conversation turns
+- customer intent detection
+- payment promised / already paid / dispute / need callback / wrong number / opt-out outcomes
+- automatic callback scheduling
+- human-escalation rules
+- Do Not Call / consent enforcement before every simulated call
+- conversation transcript + structured summary
+- PII-safe logging
+- call outcome → CRM/customer timeline
+- sandbox voice/text simulator first
+- provider-neutral speech/TTS/STT interfaces
+- free/local/open-source options researched first
+- keep real phone dialing **disabled**
 
-After the adapter runtime is verified in sandbox/test mode, proceed to the AI voice-conversation engine and real telephony provider integration as a separate milestone.
+After the sandbox conversation engine is verified, connect a real telephony/voice provider as a separate explicitly approved milestone.
