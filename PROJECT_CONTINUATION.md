@@ -1009,31 +1009,126 @@ Verification:
 - new unindexed-FK findings introduced by 3B2 were fixed
 - remaining Performance Advisor notices are unused-index informational findings on new/low-usage tables
 
+## Customer Care — Milestone 3B3 — COMPLETE
+
+Implemented:
+- JWT-protected Supabase Edge Function `customer-care-voice-simulator`
+- dedicated authenticated `/voice-simulator` admin workspace
+- Malayalam + English conversation state machine
+- inbound + outbound sandbox direction support
+- conversation goals:
+  - Invoice Payment Reminder
+  - Service Follow-up
+  - Technician ETA / Service Update
+  - Callback Handling
+  - General Customer Care
+- invoice context loading from the actual customer invoice
+- service context loading from the actual customer service job
+- deterministic intent engine with Malayalam / English / common mixed-language phrases
+- structured intents:
+  - payment already paid
+  - promise to pay
+  - invoice/payment dispute
+  - callback request
+  - wrong number
+  - Do Not Call / opt-out
+  - human-agent request
+  - unresolved service issue
+  - resolved service issue
+  - acknowledgement / unclear response
+- automatic callback timestamp scheduling with configurable delay
+- human escalation rules
+- maximum-turn escalation
+- outbound consent validation **before session start**
+- consent / Do Not Call / channel opt-out re-check **before every customer turn**
+- saying “do not call” updates Call opt-out + Customer Do Not Call
+- “already paid” becomes a verification outcome and **does not silently alter invoice accounting**
+- wrong-number / dispute / unresolved-service / human-request outcomes escalate instead of auto-resolving
+- transcript persistence
+- transcript text PII redaction for email / phone / long sensitive-number patterns
+- raw audio is not stored
+- structured session summary + structured outcome JSON
+- outcome event history
+- call outcome → Customer Contact Timeline
+- linkage to existing Automated Call Job where available
+- browser sandbox TTS using Speech Synthesis when supported
+- optional browser speech-recognition input when supported
+- text simulator remains authoritative when browser STT is unavailable
+- recent sandbox sessions browser
+- Customer Care dashboard → **AI Voice Sandbox** shortcut
+- real telephony remains **disabled**
+- no paid voice/AI API activated
+- no fake customer or call-session data created during verification
+
+Database:
+- `ai_voice_engine_settings`
+- `ai_speech_adapters`
+- `ai_call_sessions`
+- `ai_call_turns`
+- `ai_call_outcome_events`
+- `automated_call_jobs.latest_ai_session_id`
+- service-role-only worker RPCs:
+  - `customer_care_ai_worker_start_session(...)`
+  - `customer_care_ai_worker_add_turn(...)`
+  - `customer_care_ai_worker_finish_session(...)`
+
+Provider-neutral research:
+- documented in `docs/VOICE_ENGINE_RESEARCH.md`
+- whisper.cpp — local/offline STT candidate, MIT
+- faster-whisper — self-hosted STT candidate, MIT
+- Vosk — lightweight offline STT candidate, Apache-2.0
+- production local TTS deliberately not locked until both engine and individual voice/model licenses are verified
+
+Migration:
+- `supabase/migrations/20261007_ai_voice_conversation_engine.sql`
+
+Edge Function:
+- `supabase/functions/customer-care-voice-simulator/index.ts`
+- `supabase/functions/customer-care-voice-simulator/deno.json`
+- slug: `customer-care-voice-simulator`
+- status verified ACTIVE
+- JWT verification enabled
+
+GitHub commits:
+- AI voice DB/state foundation: `f63f05b00d0043e29b956a0ba20694a4c98a8762`
+- AI Voice Edge Function: `bfc6fe6ccdacd91b88fa66eb47956cca0c1f7a47`
+- Edge Function Deno config: `eefc8056ad73a3cf26b0aeaa1641b5a7049a38a7`
+- Voice Sandbox UI: `ac5e5001dd8cfaee6d80bd1659552a428498c1c9`
+- voice-engine research: `97ff61e41cfc6a204cc0ab65e40ebe837e0bdc96`
+- Customer Care → Voice Sandbox navigation: `239d53633e2a9c04aac222f4b7188db95e3427c8`
+
+Verification:
+- AI voice tables and RLS policies are present
+- Edge Function is ACTIVE and JWT-protected
+- internal start / turn / finish RPCs are executable by Service Role
+- authenticated browser role cannot execute the internal AI worker RPCs directly
+- anonymous role cannot execute the internal start RPC
+- sandbox enabled = true
+- live telephony enabled = false
+- currently enabled adapters are the built-in Rules NLU and browser sandbox TTS
+- no sandbox session was fabricated for verification
+- Security Advisor reports no new DB/RLS problem; only the existing **Leaked Password Protection Disabled** Auth warning remains
+- remaining Performance Advisor notices are unused-index informational findings on the new/low-usage schema
+
 ## Immediate next milestone
 
-**Customer Care — Milestone 3B3: AI Voice Conversation Engine — Sandbox First**
+**Customer Care — Milestone 3B4: Self-hosted Speech Runtime + Telephony Adapter Contract**
 
-Build the AI conversation layer without enabling real telephony:
-- Malayalam + English AI voice-conversation state machine
-- inbound/outbound conversation context model
-- call goals:
-  - invoice payment reminder
-  - service follow-up
-  - technician ETA / service update
-  - callback handling
-  - general customer-care follow-up
-- structured call script → dynamic conversation turns
-- customer intent detection
-- payment promised / already paid / dispute / need callback / wrong number / opt-out outcomes
-- automatic callback scheduling
-- human-escalation rules
-- Do Not Call / consent enforcement before every simulated call
-- conversation transcript + structured summary
-- PII-safe logging
-- call outcome → CRM/customer timeline
-- sandbox voice/text simulator first
-- provider-neutral speech/TTS/STT interfaces
-- free/local/open-source options researched first
-- keep real phone dialing **disabled**
+Continue without activating paid/live calling:
+- define stable STT / TTS request-response contracts
+- self-hosted STT gateway foundation
+- benchmark Malayalam + English for:
+  - whisper.cpp
+  - faster-whisper
+  - Vosk where appropriate
+- choose one primary and one fallback STT only after benchmark
+- evaluate local TTS engines + individual voice/model licenses before commercial bundling
+- audio normalization / VAD / timeout / retry contract
+- streaming-turn architecture preparation
+- telephony adapter contract for future provider integration
+- DTMF / hang-up / voicemail / no-answer / busy outcome model
+- per-call cost and duration accounting foundation
+- provider webhook idempotency foundation
+- keep all real outbound calling disabled until an explicitly approved provider/cost milestone
 
-After the sandbox conversation engine is verified, connect a real telephony/voice provider as a separate explicitly approved milestone.
+Real phone dialing must remain a separate explicit go-live step.
