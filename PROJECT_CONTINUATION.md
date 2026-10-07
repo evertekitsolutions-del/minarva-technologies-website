@@ -1498,3 +1498,31 @@ Live Supabase verification:
 **Platform — Milestone 4A2B2: Admin/session security + production monitoring hardening**
 
 Then continue with real UAT/recovery evidence and final release freeze. Real automated phone calling remains OFF.
+
+## Platform — Milestone 4A2B2 — COMPLETE / VERIFIED
+
+Admin/session and production-monitoring hardening:
+- reusable admin session guard added across authenticated admin surfaces
+- 30-minute inactivity expiry and 5-minute server-side session/admin revalidation
+- inactive/deactivated admin access is revoked from long-lived tabs
+- scheduled platform-health snapshots every 15 minutes with 90-day retention
+- latest observed health snapshots are healthy
+- production deployment for main commit `cf2440a733a1e3c24b7e79031c3d70a7a5599c8b` verified READY
+- live production endpoint returned HTTP 200
+- live response headers verified: CSP, HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy and Cross-Origin-Opener-Policy
+- no production error/fatal runtime logs were observed in the verified 30-minute window
+- configuration recovery rehearsal recorded with real repository/live-state evidence
+- live automated calling remains OFF; emergency stop remains ON; live adapter count remains 0
+
+Repository parity:
+- `supabase/migrations/20261007_platform_health_snapshot_monitoring.sql`
+- PR #2 merged as `1be4477c2c3fa722a678e6bdf053ec6e1a7d260b`
+- admin session hardening PR #3 merged as `cf2440a733a1e3c24b7e79031c3d70a7a5599c8b`
+
+Remaining blocking release work:
+- Supabase Auth leaked-password protection is still disabled. Supabase documents this as a Pro-plan-or-higher Auth setting; it cannot be changed by SQL and the connected Supabase tooling currently exposes no Auth-config mutation.
+- real authenticated end-to-end UAT evidence is still required for all manual UAT gates
+- responsive/mobile regression evidence is still required
+- final release freeze must remain Pending until all blocking checks pass
+
+No UAT step has been auto-passed or fabricated.
