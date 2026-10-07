@@ -22,7 +22,8 @@ const ALLOWED_ORIGINS=new Set([
 ]);
 
 const ALLOWED_SERVICES=new Set([
-  "CCTV Camera Sales / Installation / Service",\n  "CCTV & Security Systems",
+  "CCTV Camera Sales / Installation / Service",
+  "CCTV & Security Systems",
   "Computer & Laptop Sales / Service",
   "Networking & Wi-Fi",
   "Solar & Inverters",
