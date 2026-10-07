@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="theme-color" content="#0754c7">
+  <title>Minarva Technologies — Voice Runtime</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--blue:#0b59d8;--blue2:#1381ff;--ink:#0d1f42;--muted:#667085;--line:#d9e8fb;--green:#087443;--red:#b42318;--amber:#9a5b00;--bg:#eef5ff}
+    *{box-sizing:border-box}body{margin:0;font-family:Manrope,system-ui,sans-serif;background:linear-gradient(135deg,#f8fbff,#edf5ff);color:var(--ink);min-height:100vh}
+    button,input,select{font:inherit}.shell{width:min(1240px,calc(100% - 28px));margin:auto}.top{padding:18px 0}.brand{display:flex;justify-content:space-between;gap:14px;align-items:center}.brand img{width:240px;height:52px;object-fit:contain;object-position:left center}
+    .nav,.actions{display:flex;gap:8px;flex-wrap:wrap}.btn{border:0;border-radius:11px;padding:10px 14px;font-weight:800;cursor:pointer}.btn-primary{background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff}.btn-ghost{background:#eef5ff;color:var(--blue)}.btn:disabled{opacity:.55;cursor:not-allowed}
+    .head{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;margin:8px 0 14px}.eyebrow{font-size:11px;letter-spacing:.12em;color:var(--blue);font-weight:800}.head h1{font-size:31px;margin:4px 0 0;letter-spacing:-.03em}.userline,.meta{font-size:10px;color:var(--muted);line-height:1.5}
+    .notice{border:1px solid #b2ccff;background:#f3f8ff;border-radius:14px;padding:11px 13px;font-size:10px;line-height:1.55;margin-bottom:14px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-bottom:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:11px}.stat span{font-size:8px;color:var(--muted);font-weight:800}.stat strong{display:block;font-size:17px;margin-top:3px}
+    .layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);gap:15px;align-items:start}.card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 34px rgba(7,51,111,.07);overflow:hidden;margin-bottom:14px}.card-head{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center}.card-head h2{margin:0;font-size:17px}.card-body{padding:16px}
+    .adapter{border:1px solid var(--line);border-radius:12px;padding:11px;margin-bottom:8px;background:#fbfdff}.adapter:last-child{margin-bottom:0}.adapter-top{display:flex;justify-content:space-between;gap:10px}.adapter strong{font-size:11px}.pill{border-radius:999px;padding:4px 7px;font-size:8px;font-weight:800}.ok{background:#ecfdf3;color:var(--green)}.warn{background:#fff7e8;color:var(--amber)}.bad{background:#fff1f0;color:var(--red)}.off{background:#f2f4f7;color:#475467}
+    .gates{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.gate{border-radius:9px;padding:7px 8px;font-size:8px;font-weight:800}.gate.ok{border:1px solid #abefc6}.gate.bad{border:1px solid #fecdca}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.full{grid-column:1/-1}label{font-size:9px;font-weight:800;color:#344054;display:block;margin-bottom:4px}select{width:100%;border:1px solid #cddcf0;border-radius:10px;padding:10px;background:#fff;color:var(--ink)}
+    table{width:100%;border-collapse:collapse;font-size:9px}th,td{padding:8px;border-bottom:1px solid #edf2f8;text-align:left;vertical-align:top}th{font-size:8px;color:var(--muted);letter-spacing:.04em}.table-wrap{overflow:auto}.empty{padding:20px;text-align:center;color:var(--muted);font-size:10px}.statusmsg{min-height:18px;font-size:10px;font-weight:700;margin-top:8px}.statusmsg.ok{background:none;color:var(--green);padding:0}.statusmsg.bad{background:none;color:var(--red);padding:0}
+    .lock{border:1px solid #fecdca;background:#fff8f7;border-radius:11px;padding:10px;font-size:9px;line-height:1.55}.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:8px;background:#0d1f42;color:#fff;border-radius:8px;padding:8px;overflow:auto}
+    @media(max-width:980px){.layout{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}}@media(max-width:650px){.brand{display:block}.brand .nav{margin-top:9px}.head{display:block}.head .actions{margin-top:10px}.head h1{font-size:27px}.form-grid,.stats{grid-template-columns:1fr}.full{grid-column:auto}}
+  </style>
+</head>
+<body>
+  <div class="shell top">
+    <div class="brand">
+      <a href="/admin"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
+      <div class="nav">
+        <button id="voiceBtn" class="btn btn-ghost">AI Voice Sandbox</button>
+        <button id="careBtn" class="btn btn-ghost">Customer Care</button>
+        <button id="adminBtn" class="btn btn-ghost">Admin</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="shell" style="padding-bottom:60px">
+    <div class="head">
+      <div>
+        <div class="eyebrow">SELF-HOSTED SPEECH RUNTIME</div>
+        <h1>Benchmark & Selection Center</h1>
+        <div id="userLine" class="userline">Checking admin access…</div>
+      </div>
+      <div class="actions"><button id="refreshBtn" class="btn btn-ghost">Refresh</button></div>
+    </div>
+
+    <div class="notice"><strong>Evidence gate:</strong> no STT/TTS engine can become Primary or Fallback until it is production-approved and contains real Malayalam + English benchmark evidence. Real audio streaming and live phone calling remain disabled.</div>
+
+    <div class="stats">
+      <div class="stat"><span>BENCHMARK RUNS</span><strong id="runCount">0</strong></div>
+      <div class="stat"><span>STT CANDIDATES</span><strong id="sttCount">0</strong></div>
+      <div class="stat"><span>TTS CANDIDATES</span><strong id="ttsCount">0</strong></div>
+      <div class="stat"><span>LIVE TELEPHONY</span><strong id="liveCount">0</strong></div>
+    </div>
+
+    <div class="layout">
+      <div>
+        <section class="card">
+          <div class="card-head"><h2>Speech Adapter Readiness</h2><span class="meta">Measured evidence only</span></div>
+          <div id="adapterList" class="card-body"><div class="empty">Loading…</div></div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>Benchmark Registry</h2><span id="benchmarkCount" class="meta"></span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Adapter</th><th>Lang</th><th>Corpus</th><th>Samples</th><th>Median</th><th>P95</th><th>RTF</th><th>WER</th><th>CER</th><th>TTS Score</th><th>Memory</th><th>Created</th></tr></thead>
+              <tbody id="benchmarkRows"><tr><td colspan="12" class="empty">Loading…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+
+      <aside>
+        <section class="card">
+          <div class="card-head"><h2>Runtime Selection</h2></div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div><label>Primary STT</label><select id="primaryStt"></select></div>
+              <div><label>Fallback STT</label><select id="fallbackStt"></select></div>
+              <div><label>Primary TTS</label><select id="primaryTts"></select></div>
+              <div><label>Fallback TTS</label><select id="fallbackTts"></select></div>
+              <div class="full"><button id="saveSelectionBtn" class="btn btn-primary" style="width:100%">Save Selection</button></div>
+            </div>
+            <div id="selectionMsg" class="statusmsg"></div>
+            <div class="meta">If an adapter lacks required evidence, the database rejects selection even if the browser is bypassed.</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>Runtime Safety</h2></div>
+          <div class="card-body">
+            <div id="runtimeSafety" class="lock">Loading…</div>
+          </div>
+        </section>
+
+        <section class="card">
+          <div class="card-head"><h2>Run Real Benchmarks</h2></div>
+          <div class="card-body">
+            <div class="meta">Use the repository harness on a machine/server that actually has the speech engines and models. No fake metrics should be entered manually.</div>
+            <div class="code" style="margin-top:9px">tools/voice_benchmark/benchmark.py<br>tools/voice_benchmark/tts_benchmark.py<br>tools/voice_benchmark/import_result.py</div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
+    const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    const $=id=>document.getElementById(id)
+    let readiness=null,benchmarks=[]
+
+    const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))
+    const fmt=v=>v?new Date(v).toLocaleString():'—'
+    const n=v=>v==null?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:4})
+    const msg=(text,type='')=>{$('selectionMsg').textContent=text||'';$('selectionMsg').className='statusmsg'+(type?' '+type:'')}
+
+    async function verifyAdmin(){
+      const {data:{session}}=await supabase.auth.getSession()
+      if(!session?.user){location.href='/admin';return false}
+      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
+      if(error||!data||data.active!==true){location.href='/admin';return false}
+      $('userLine').textContent=(data.email||session.user.email||'')+' • '+data.role
+      return true
+    }
+
+    function options(capability,current){
+      const rows=(readiness?.adapters||[]).filter(x=>x.capability===capability)
+      return '<option value="">Not selected</option>'+rows.map(x=>{
+        const ready=x.production_approved&&x.ml_measured_ready&&x.en_measured_ready
+        return '<option value="'+esc(x.adapter_key)+'" '+(current===x.adapter_key?'selected':'')+' '+(!ready?'disabled':'')+'>'+esc(x.display_name)+' — '+(ready?'READY':'NOT READY')+'</option>'
+      }).join('')
+    }
+
+    function render(){
+      const adapters=readiness?.adapters||[]
+      const profile=readiness?.profile||{}
+      $('runCount').textContent=benchmarks.length
+      $('sttCount').textContent=adapters.filter(x=>x.capability==='stt').length
+      $('ttsCount').textContent=adapters.filter(x=>x.capability==='tts').length
+      $('liveCount').textContent=readiness?.live_telephony_adapter_count||0
+
+      $('adapterList').innerHTML=adapters.length?adapters.map(a=>{
+        const measured=a.ml_measured_ready&&a.en_measured_ready
+        const ready=measured&&a.production_approved
+        return '<div class="adapter"><div class="adapter-top"><div><strong>'+esc(a.display_name)+'</strong><div class="meta">'+esc(a.adapter_key)+' • '+esc(a.capability.toUpperCase())+' • '+esc(a.runtime)+(a.license?' • '+esc(a.license):'')+'</div></div><span class="pill '+(ready?'ok':measured?'warn':'off')+'">'+(ready?'READY':measured?'MEASURED / NOT APPROVED':'NOT READY')+'</span></div>'+
+          '<div class="gates"><div class="gate '+(a.ml_measured_ready?'ok':'bad')+'">Malayalam evidence: '+(a.ml_measured_ready?'YES':'NO')+' ('+a.ml_benchmark_count+')</div><div class="gate '+(a.en_measured_ready?'ok':'bad')+'">English evidence: '+(a.en_measured_ready?'YES':'NO')+' ('+a.en_benchmark_count+')</div></div></div>'
+      }).join(''):'<div class="empty">No speech adapters.</div>'
+
+      $('primaryStt').innerHTML=options('stt',profile.primary_stt_adapter_key)
+      $('fallbackStt').innerHTML=options('stt',profile.fallback_stt_adapter_key)
+      $('primaryTts').innerHTML=options('tts',profile.primary_tts_adapter_key)
+      $('fallbackTts').innerHTML=options('tts',profile.fallback_tts_adapter_key)
+
+      $('runtimeSafety').innerHTML=
+        '<strong>Live audio streaming: '+(readiness?.live_audio_streaming_enabled?'ENABLED':'OFF')+'</strong><br>'+
+        'Live telephony adapters: '+esc(readiness?.live_telephony_adapter_count||0)+'<br>'+
+        'Primary STT: '+esc(profile.primary_stt_adapter_key||'Not selected')+'<br>'+
+        'Primary TTS: '+esc(profile.primary_tts_adapter_key||'Not selected')+'<br><br>'+
+        '<strong>Current production posture:</strong> No real phone dialing and no self-hosted speech engine is selected without benchmark evidence.'
+
+      $('benchmarkCount').textContent=benchmarks.length+' run(s)'
+      $('benchmarkRows').innerHTML=benchmarks.length?benchmarks.map(b=>'<tr>'+
+        '<td>'+esc(b.adapter_key)+'</td><td>'+esc(b.language.toUpperCase())+'</td><td>'+esc(b.corpus_label)+'</td><td>'+esc(b.sample_count)+'</td>'+
+        '<td>'+n(b.median_latency_ms)+' ms</td><td>'+n(b.p95_latency_ms)+' ms</td><td>'+n(b.realtime_factor)+'</td>'+
+        '<td>'+n(b.word_error_rate)+'</td><td>'+n(b.character_error_rate)+'</td><td>'+n(b.tts_mos_proxy)+'</td><td>'+n(b.memory_peak_mb)+' MB</td><td>'+esc(fmt(b.created_at))+'</td></tr>').join('')
+        :'<tr><td colspan="12" class="empty">No real benchmark run has been imported yet. This is intentional until a capable machine/server runs the harness.</td></tr>'
+    }
+
+    async function load(){
+      msg('')
+      const [r,b]=await Promise.all([
+        supabase.rpc('customer_care_voice_runtime_readiness'),
+        supabase.from('voice_benchmark_runs').select('id,adapter_key,capability,language,corpus_label,sample_count,hardware_label,runtime_version,median_latency_ms,p95_latency_ms,realtime_factor,word_error_rate,character_error_rate,tts_mos_proxy,memory_peak_mb,notes,created_at').order('created_at',{ascending:false}).limit(500)
+      ])
+      if(r.error)throw r.error
+      if(b.error)throw b.error
+      readiness=r.data||{}
+      benchmarks=b.data||[]
+      render()
+    }
+
+    async function saveSelection(){
+      $('saveSelectionBtn').disabled=true
+      msg('')
+      const {data,error}=await supabase.rpc('customer_care_voice_select_adapters',{
+        p_primary_stt:$('primaryStt').value||null,
+        p_fallback_stt:$('fallbackStt').value||null,
+        p_primary_tts:$('primaryTts').value||null,
+        p_fallback_tts:$('fallbackTts').value||null
+      })
+      $('saveSelectionBtn').disabled=false
+      if(error){msg(error.message,'bad');return}
+      msg('Speech runtime selection saved.','ok')
+      await load()
+    }
+
+    async function init(){
+      try{
+        if(!await verifyAdmin())return
+        await load()
+      }catch(error){msg('Could not load runtime readiness: '+(error.message||error),'bad')}
+    }
+
+    $('saveSelectionBtn').addEventListener('click',saveSelection)
+    $('refreshBtn').addEventListener('click',load)
+    $('voiceBtn').addEventListener('click',()=>location.href='/voice-simulator')
+    $('careBtn').addEventListener('click',()=>location.href='/customer-care')
+    $('adminBtn').addEventListener('click',()=>location.href='/admin')
+    supabase.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT')location.href='/admin'})
+    init()
+  </script>
+</body>
+</html>
