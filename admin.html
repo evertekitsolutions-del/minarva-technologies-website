@@ -59,6 +59,7 @@
             <div id="userLine" class="userline"></div>
           </div>
           <div class="dash-actions">
+            <button id="platformHealthBtn" class="btn btn-ghost" type="button">Platform Health</button>
             <button id="customerCareBtn" class="btn btn-ghost" type="button">Customer Care</button>
             <button id="serviceJobsBtn" class="btn btn-ghost" type="button">Service Jobs</button>
             <button id="invoicesBtn" class="btn btn-ghost" type="button">Invoices</button>
@@ -829,6 +830,7 @@
     const loginForm = document.getElementById('loginForm')
     const loginMsg = document.getElementById('loginMsg')
     const logoutBtn = document.getElementById('logoutBtn')
+    const platformHealthBtn = document.getElementById('platformHealthBtn')
     const customerCareBtn = document.getElementById('customerCareBtn')
     const serviceJobsBtn = document.getElementById('serviceJobsBtn')
     const invoicesBtn = document.getElementById('invoicesBtn')
@@ -2886,6 +2888,7 @@
       showLogin()
     })
 
+    platformHealthBtn.addEventListener('click', () => { location.href = '/platform-health' })
     customerCareBtn.addEventListener('click', () => { location.href = '/customer-care' })
     serviceJobsBtn.addEventListener('click', () => { location.href = '/service-jobs' })
     invoicesBtn.addEventListener('click', () => { location.href = '/invoices' })
