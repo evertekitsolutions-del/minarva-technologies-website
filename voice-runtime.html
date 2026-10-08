@@ -111,7 +111,9 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
     import { installAdminSessionGuard } from '/admin-session-guard.js'
-    const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
+    
+    import { requireActiveAdmin } from '/admin-access.js'
+const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
     installAdminSessionGuard(supabase)
     const $=id=>document.getElementById(id)
     let readiness=null,benchmarks=[]
@@ -121,85 +123,7 @@
     const n=v=>v==null?'—':Number(v).toLocaleString(undefined,{maximumFractionDigits:4})
     const msg=(text,type='')=>{$('selectionMsg').textContent=text||'';$('selectionMsg').className='statusmsg'+(type?' '+type:'')}
 
-    async function verifyAdmin(){
-      const {data:{session}}=await supabase.auth.getSession()
-      if(!session?.user){location.href='/admin';return false}
-      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
-      if(error||!data||data.active!==true){location.href='/admin';return false}
-      $('userLine').textContent=(data.email||session.user.email||'')+' • '+data.role
-      return true
-    }
-
-    function options(capability,current){
-      const rows=(readiness?.adapters||[]).filter(x=>x.capability===capability)
-      return '<option value="">Not selected</option>'+rows.map(x=>{
-        const ready=x.production_approved&&x.ml_measured_ready&&x.en_measured_ready
-        return '<option value="'+esc(x.adapter_key)+'" '+(current===x.adapter_key?'selected':'')+' '+(!ready?'disabled':'')+'>'+esc(x.display_name)+' — '+(ready?'READY':'NOT READY')+'</option>'
-      }).join('')
-    }
-
-    function render(){
-      const adapters=readiness?.adapters||[]
-      const profile=readiness?.profile||{}
-      $('runCount').textContent=benchmarks.length
-      $('sttCount').textContent=adapters.filter(x=>x.capability==='stt').length
-      $('ttsCount').textContent=adapters.filter(x=>x.capability==='tts').length
-      $('liveCount').textContent=readiness?.live_telephony_adapter_count||0
-
-      $('adapterList').innerHTML=adapters.length?adapters.map(a=>{
-        const measured=a.ml_measured_ready&&a.en_measured_ready
-        const ready=measured&&a.production_approved
-        return '<div class="adapter"><div class="adapter-top"><div><strong>'+esc(a.display_name)+'</strong><div class="meta">'+esc(a.adapter_key)+' • '+esc(a.capability.toUpperCase())+' • '+esc(a.runtime)+(a.license?' • '+esc(a.license):'')+'</div></div><span class="pill '+(ready?'ok':measured?'warn':'off')+'">'+(ready?'READY':measured?'MEASURED / NOT APPROVED':'NOT READY')+'</span></div>'+
-          '<div class="gates"><div class="gate '+(a.ml_measured_ready?'ok':'bad')+'">Malayalam evidence: '+(a.ml_measured_ready?'YES':'NO')+' ('+a.ml_benchmark_count+')</div><div class="gate '+(a.en_measured_ready?'ok':'bad')+'">English evidence: '+(a.en_measured_ready?'YES':'NO')+' ('+a.en_benchmark_count+')</div></div></div>'
-      }).join(''):'<div class="empty">No speech adapters.</div>'
-
-      $('primaryStt').innerHTML=options('stt',profile.primary_stt_adapter_key)
-      $('fallbackStt').innerHTML=options('stt',profile.fallback_stt_adapter_key)
-      $('primaryTts').innerHTML=options('tts',profile.primary_tts_adapter_key)
-      $('fallbackTts').innerHTML=options('tts',profile.fallback_tts_adapter_key)
-
-      $('runtimeSafety').innerHTML=
-        '<strong>Live audio streaming: '+(readiness?.live_audio_streaming_enabled?'ENABLED':'OFF')+'</strong><br>'+
-        'Live telephony adapters: '+esc(readiness?.live_telephony_adapter_count||0)+'<br>'+
-        'Primary STT: '+esc(profile.primary_stt_adapter_key||'Not selected')+'<br>'+
-        'Primary TTS: '+esc(profile.primary_tts_adapter_key||'Not selected')+'<br><br>'+
-        '<strong>Current production posture:</strong> No real phone dialing and no self-hosted speech engine is selected without benchmark evidence.'
-
-      $('benchmarkCount').textContent=benchmarks.length+' run(s)'
-      $('benchmarkRows').innerHTML=benchmarks.length?benchmarks.map(b=>'<tr>'+
-        '<td>'+esc(b.adapter_key)+'</td><td>'+esc(b.language.toUpperCase())+'</td><td>'+esc(b.corpus_label)+'</td><td>'+esc(b.sample_count)+'</td>'+
-        '<td>'+n(b.median_latency_ms)+' ms</td><td>'+n(b.p95_latency_ms)+' ms</td><td>'+n(b.realtime_factor)+'</td>'+
-        '<td>'+n(b.word_error_rate)+'</td><td>'+n(b.character_error_rate)+'</td><td>'+n(b.tts_mos_proxy)+'</td><td>'+n(b.memory_peak_mb)+' MB</td><td>'+esc(fmt(b.created_at))+'</td></tr>').join('')
-        :'<tr><td colspan="12" class="empty">No real benchmark run has been imported yet. This is intentional until a capable machine/server runs the harness.</td></tr>'
-    }
-
-    async function load(){
-      msg('')
-      const [r,b]=await Promise.all([
-        supabase.rpc('customer_care_voice_runtime_readiness'),
-        supabase.from('voice_benchmark_runs').select('id,adapter_key,capability,language,corpus_label,sample_count,hardware_label,runtime_version,median_latency_ms,p95_latency_ms,realtime_factor,word_error_rate,character_error_rate,tts_mos_proxy,memory_peak_mb,notes,created_at').order('created_at',{ascending:false}).limit(500)
-      ])
-      if(r.error)throw r.error
-      if(b.error)throw b.error
-      readiness=r.data||{}
-      benchmarks=b.data||[]
-      render()
-    }
-
-    async function saveSelection(){
-      $('saveSelectionBtn').disabled=true
-      msg('')
-      const {data,error}=await supabase.rpc('customer_care_voice_select_adapters',{
-        p_primary_stt:$('primaryStt').value||null,
-        p_fallback_stt:$('fallbackStt').value||null,
-        p_primary_tts:$('primaryTts').value||null,
-        p_fallback_tts:$('fallbackTts').value||null
-      })
-      $('saveSelectionBtn').disabled=false
-      if(error){msg(error.message,'bad');return}
-      msg('Speech runtime selection saved.','ok')
-      await load()
-    }
+    async function verifyAdmin(){ return Boolean(await requireActiveAdmin(supabase,{userLine})) }
 
     async function init(){
       try{
