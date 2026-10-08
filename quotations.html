@@ -155,6 +155,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
     import { installAdminSessionGuard } from '/admin-session-guard.js'
+    import { requireActiveAdmin } from '/admin-access.js'
 
     
     import { requireActiveAdmin } from '/admin-access.js'
