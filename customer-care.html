@@ -161,6 +161,7 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
     import { installAdminSessionGuard } from '/admin-session-guard.js'
+    import { requireActiveAdmin } from '/admin-access.js'
 
     const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
     installAdminSessionGuard(supabase)
@@ -176,14 +177,7 @@
     const toIso=v=>v?new Date(v).toISOString():new Date().toISOString()
     function msg(node,text,type=''){node.textContent=text||'';node.className='statusmsg'+(type?' '+type:'')}
 
-    async function verifyAdmin(){
-      const {data:{session}}=await supabase.auth.getSession()
-      if(!session?.user){location.href='/admin';return false}
-      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
-      if(error||!data||data.active!==true){location.href='/admin';return false}
-      userLine.textContent=(data.email||session.user.email||'')+' • '+data.role
-      return true
-    }
+    async function verifyAdmin(){ return Boolean(await requireActiveAdmin(supabase,{userLine:document.getElementById('userLine')})) }
 
     async function loadAll(){
       const [o,c,t,p,g,s,cu,al,dl]=await Promise.all([
