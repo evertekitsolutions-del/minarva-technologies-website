@@ -164,7 +164,9 @@
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
     import { installAdminSessionGuard } from '/admin-session-guard.js'
 
-    const supabase=createClient(
+    
+    import { requireActiveAdmin } from '/admin-access.js'
+const supabase=createClient(
       'https://kwullzwhlzziosjsejud.supabase.co',
       'sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj'
     )
@@ -606,14 +608,7 @@
       document.body.style.overflow=''
     }
 
-    async function verifyAdmin(){
-      const {data:{session}}=await supabase.auth.getSession()
-      if(!session?.user){location.href='/admin';return false}
-      const {data,error}=await supabase.from('admin_users').select('email,role,active').eq('user_id',session.user.id).maybeSingle()
-      if(error||!data||data.active!==true){location.href='/admin';return false}
-      userLine.textContent=(data.email||session.user.email||'')+' • '+data.role
-      return true
-    }
+    async function verifyAdmin(){ return Boolean(await requireActiveAdmin(supabase,{userLine})) }
 
     async function init(){
       try{
