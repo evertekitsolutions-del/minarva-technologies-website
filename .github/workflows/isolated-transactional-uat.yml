@@ -1,0 +1,34 @@
+name: Isolated Transactional UAT
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Non-production UAT deployment URL
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  transactional-uat:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: uat
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.55.0
+      - run: npx playwright install --with-deps chromium
+      - name: Refuse production target
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+        run: |
+          test "$BASE_URL" != "https://minarva-technologies-website.vercel.app"
+      - name: Run isolated transactional UAT preflight
+        env:
+          BASE_URL: ${{ inputs.base_url }}
+          UAT_ALLOW_SYNTHETIC_DATA: 'true'
+          UAT_ADMIN_EMAIL: ${{ secrets.UAT_ADMIN_EMAIL }}
+          UAT_ADMIN_PASSWORD: ${{ secrets.UAT_ADMIN_PASSWORD }}
+        run: node tools/transactional-uat.mjs
