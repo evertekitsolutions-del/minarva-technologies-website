@@ -1,34 +1,39 @@
-name: Isolated Transactional UAT
+name: Isolated UAT Preflight
 on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: Non-production UAT deployment URL
+        description: Dedicated non-production UAT deployment URL
         required: true
         type: string
 permissions:
   contents: read
 jobs:
-  transactional-uat:
+  isolated-uat-preflight:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment: uat
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npm install --no-save playwright@1.55.0
-      - run: npx playwright install --with-deps chromium
-      - name: Refuse production target
+      - name: Verify isolation before handling credentials
         env:
           BASE_URL: ${{ inputs.base_url }}
+          UAT_SUPABASE_URL: ${{ vars.UAT_SUPABASE_URL }}
+        run: node tools/uat-isolation-cli.mjs
+      - name: Install browser test dependencies
         run: |
-          test "$BASE_URL" != "https://minarva-technologies-website.vercel.app"
-      - name: Run isolated transactional UAT preflight
+          npm install --no-save playwright@1.55.0
+          npx playwright install --with-deps chromium
+      - name: Staging authentication and protected-route preflight ONLY
         env:
           BASE_URL: ${{ inputs.base_url }}
-          UAT_ALLOW_SYNTHETIC_DATA: 'true'
+          UAT_SUPABASE_URL: ${{ vars.UAT_SUPABASE_URL }}
+          UAT_MODE: preflight
           UAT_ADMIN_EMAIL: ${{ secrets.UAT_ADMIN_EMAIL }}
           UAT_ADMIN_PASSWORD: ${{ secrets.UAT_ADMIN_PASSWORD }}
         run: node tools/transactional-uat.mjs
