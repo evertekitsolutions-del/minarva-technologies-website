@@ -1585,3 +1585,46 @@ Remaining external/manual blockers:
 4. final release freeze after blockers resolve
 
 No fake customer/business data was inserted to manufacture UAT evidence. Real automated calling remains OFF and is a separate future go-live track.
+
+## Platform — 4A2B4 — LIVE SECURITY AND DEPLOYMENT CONTINUATION (2026-10-10)
+
+**Repository:** `evertekitsolutions-del/minarva-technologies-website` (not Minarva Biz).
+
+Verified baseline before this pending hardening PR:
+- PR #15 merged: `a5d2a55538e165dec8142ea69fac7ced38f98786`
+- Vercel production for exact SHA: READY.
+- GitHub exact-head: Production Route Smoke, Public Browser Runtime Smoke,
+  Release Security Negative Tests, Admin Access Integrity, Release Readiness Module Integrity: ALL PASS.
+- Vercel error clusters in inspected 30-minute window: 0.
+- Supabase latest scheduled snapshot observed: Healthy, failed outbox=0,
+  open dead letters=0, unlinked mobile technicians=0.
+- Real automated calling OFF, telephony emergency stop ON, live adapters=0.
+- Release gate state: 7/18 blocking PASS, 11/18 PENDING, no fabricated UAT.
+- Supabase Security Advisor: only Leaked Password Protection Disabled remains.
+
+**Applied/verified live migration:**
+- `supabase/migrations/20261010_platform_release_rpc_privilege_boundary.sql`
+- Public release/UAT mutator functions are now SECURITY INVOKER wrappers.
+- Privileged implementations reside in private schema and enforce active admin.
+- Authenticated direct INSERT/UPDATE/DELETE on UAT runs and steps removed.
+- Unsafe `platform_verify_leaked_password_gate(boolean,text)` self-attestation deleted.
+- All exposed privilege findings cleared; Auth leaked-password warning remains pending.
+- No synthetic production records created.
+- Non-admin-context negative SQL transaction verified that refresh/create UAT/
+  release-freeze RPCs reject execution; no UAT records were inserted.
+
+**In-progress next hardening milestone:**
+- Fix production route smoke to load, verify MIME/type/content and validate
+  `/release-readiness.js` guard, instead of looking for legacy inline text.
+- Add staged UAT backend/CSP isolation verification and browser outbound
+  production-backend request firewall.
+- CI negative tests must PASS before merge.
+- This remains a read-only staging preflight; full transactional UAT still pending.
+
+**External/user-dependent blockers (do not auto-pass):**
+- Dedicated isolated staging backend/frontend configuration and credentials
+  for genuine UAT (costs must be reviewed before paid resources).
+- Authenticated real business-flow, mobile and responsive evidence.
+- Leaked Password Protection disabled under current Supabase plan/config.
+- Release Freeze pending until all other blocking requirements PASS.
+- Live phone dialing remains OFF pending explicit separate authorization.
