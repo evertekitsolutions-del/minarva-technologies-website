@@ -39,3 +39,34 @@ Every completed gate records the UAT run ID, environment, exact Git SHA, timesta
 
 ## Production rule
 The automated full transactional suite must refuse to create synthetic data when BASE_URL is the production URL or when UAT_ALLOW_SYNTHETIC_DATA is not exactly true.
+
+## Enforced preflight (October 2026)
+
+`tools/uat-isolation.mjs` must run before a browser or secret-bearing UAT step.
+It checks every protected test route for a single, explicitly configured **non-production
+Supabase origin**, verifies locally referenced JavaScript modules, and requires the
+Content-Security-Policy `connect-src` to allow the staging backend and reject
+the production backend. A browser network guard blocks any attempted request to
+the production Supabase host.
+
+**Important current limitation:** the current production frontend HTML and
+`vercel.json` contain the production Supabase URL. Merely deploying this repo to
+a different Vercel preview URL does **not** isolate its database and therefore
+fails the preflight correctly. A staging-specific frontend configuration and
+independent staging Supabase project must exist before credentials are used.
+
+The workflow `Isolated UAT Preflight` reads the dedicated environment variable
+`UAT_SUPABASE_URL` from the GitHub `uat` environment and separate
+`UAT_ADMIN_EMAIL` / `UAT_ADMIN_PASSWORD` environment secrets. Do not paste
+credentials into issues or chats. Explicitly verify project costs before creating
+a Supabase staging branch/project.
+
+The historical filename `tools/transactional-uat.mjs` is retained for
+compatibility, but the implemented behavior is **read-only login and protected
+route preflight**, not transactional customer/invoice/payment/job UAT. This
+workflow does not create or clean up synthetic records, does not mark release
+gates PASS, and never initiates outbound messages or telephone calls.
+
+Full transactional E2E and evidence updates remain pending genuine isolated
+data fixtures, negative permission tests, cleanup validation and manual
+release authorization.
