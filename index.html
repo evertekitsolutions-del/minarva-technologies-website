@@ -48,29 +48,38 @@
     .soft-photo{display:block;width:100%;aspect-ratio:16/8;object-fit:cover;border-radius:16px;margin-bottom:22px;background:#e4edf7}
     @media(max-width:980px){.hero-photo img{height:380px}}
     @media(max-width:640px){.hero-photo img{height:250px}.hero-photo figcaption{left:12px;bottom:12px;font-size:10px}.card-photo{aspect-ratio:16/9}}
+
+    /* Progressive, accessible mobile improvements; existing lead workflows preserved. */
+    .skip-to-main{position:absolute;z-index:200;top:-100px;left:12px;background:#fff;color:#064da4;padding:12px;border:3px solid #ffb31c;border-radius:8px}.skip-to-main:focus{top:12px}
+    a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #ffc928;outline-offset:3px}
+    .guided-intro{background:#edf5ff;padding:42px 0}.guided-intro-inner{display:flex;justify-content:space-between;align-items:center;gap:25px}.guided-intro h2{font-size:clamp(24px,3.1vw,36px);line-height:1.15;margin:0}.guided-intro p{color:#415578;line-height:1.7;max-width:760px}
+    .guided-intro .btn{white-space:nowrap}.mobile-actions{display:none}
+    @media(max-width:760px){.guided-intro-inner{flex-direction:column;align-items:flex-start}.guided-intro .btn{width:100%}.mobile-actions{display:flex;position:fixed;bottom:0;left:0;right:0;gap:10px;z-index:49;background:#fff;padding:10px 12px;box-shadow:0 -5px 20px #0b286622}.mobile-actions a{flex:1;text-align:center;background:#0754c7;color:white;border-radius:12px;padding:12px;font-weight:800}.mobile-actions a:first-child{background:white;color:#0754c7;border:1px solid #a8cbf4}.wa{bottom:87px;right:14px;width:52px;height:52px}footer{padding-bottom:92px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.card{transition:none}}
   </style>
   <link rel="canonical" href="https://www.minarvatechnologies.com/">
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
   <meta property="og:image" content="https://www.minarvatechnologies.com/assets/site/hero.webp">
 </head>
 <body>
+  <a class="skip-to-main" href="#top">Skip to main content</a>
   <div class="topbar">
     <div class="shell">
       <div class="left"><span>Thiruvananthapuram</span><a href="tel:+916235353732">+91 6235353732</a><a href="mailto:minarvatechnologies@gmail.com">minarvatechnologies@gmail.com</a></div>
-      <div class="right"><a href="#services">Solutions</a><a href="#contact">Support</a></div>
+      <div class="right"><a href="#services">Solutions</a><a href="/support">Support</a></div>
     </div>
   </div>
 
   <header>
     <div class="shell nav">
       <a class="brand" href="#top"><img src="https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg" alt="Minarva Technologies"></a>
-      <nav class="links"><a href="#services">Services</a><a href="#security">Security & Power</a><a href="#software">Software & Web</a><a href="#about">Why Minarva</a><a href="#contact">Contact</a></nav>
+      <nav class="links" aria-label="Primary"><a href="#services">Services</a><a href="#security">Security & Power</a><a href="#software">Software & Web</a><a href="#about">Why Minarva</a><a href="/assistant">Find a Solution</a><a href="#contact">Contact</a></nav>
       <a class="btn btn-primary" href="#contact">Get a Quote →</a>
-      <button class="menu-btn" aria-label="Open menu" onclick="document.getElementById('mobileNav').toggleAttribute('hidden')">☰</button>
+      <button class="menu-btn" type="button" aria-label="Open navigation" aria-controls="mobileNav" aria-expanded="false" id="menuToggle">☰</button>
     </div>
     <div id="mobileNav" hidden style="border-top:1px solid #e5eef9;background:white">
       <div class="shell" style="display:grid;padding:12px 0 18px;gap:12px;font-weight:800;font-size:14px">
-        <a href="#services">Services</a><a href="#security">Security & Power</a><a href="#software">Software & Web</a><a href="#about">Why Minarva</a><a href="#contact">Contact</a>
+        <a href="#services">Services</a><a href="#security">Security & Power</a><a href="#software">Software & Web</a><a href="#about">Why Minarva</a><a href="/assistant">Find a Solution</a><a href="#contact">Contact</a>
       </div>
     </div>
   </header>
@@ -104,6 +113,7 @@
       </div>
     </div>
 
+    <section class="guided-intro" aria-labelledby="guidedHeading"><div class="shell guided-intro-inner"><div><p class="kicker">NEED HELP CHOOSING?</p><h2 id="guidedHeading">Not sure which technology solution fits?</h2><p>Try our free guided service finder to narrow down the options, then contact our team for a site-specific recommendation.</p></div><a class="btn btn-primary" href="/assistant">Find a Solution →</a></div></section>
     <section class="services" id="services">
       <div class="shell">
         <div class="section-head">
@@ -247,8 +257,20 @@
     <div class="shell footer-bottom"><span>© 2026 Minarva Technologies. All rights reserved.</span><span>Technology for a Brighter Tomorrow.</span></div>
   </footer>
 
-  <a class="wa" href="https://wa.me/916235353732" target="_blank" rel="noreferrer" aria-label="WhatsApp">WA</a>
+  <a class="wa" href="https://wa.me/916235353732" target="_blank" rel="noopener noreferrer" aria-label="Contact Minarva Technologies on WhatsApp">WA</a>
+  <nav class="mobile-actions" aria-label="Quick contact"><a href="tel:+916235353732">Call</a><a href="#contact">Send enquiry</a></nav>
 
+<script>
+    (function(){
+      const btn=document.getElementById('menuToggle');
+      const menu=document.getElementById('mobileNav');
+      if(!btn||!menu)return;
+      const close=()=>{menu.hidden=true;btn.setAttribute('aria-expanded','false')};
+      btn.addEventListener('click',()=>{menu.hidden=!menu.hidden;btn.setAttribute('aria-expanded',String(!menu.hidden))});
+      menu.querySelectorAll('a').forEach(a=>a.addEventListener('click',close));
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden){close();btn.focus()}});
+    })();
+  </script>
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
 
