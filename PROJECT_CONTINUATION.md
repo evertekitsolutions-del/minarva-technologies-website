@@ -1628,3 +1628,34 @@ Verified baseline before this pending hardening PR:
 - Leaked Password Protection disabled under current Supabase plan/config.
 - Release Freeze pending until all other blocking requirements PASS.
 - Live phone dialing remains OFF pending explicit separate authorization.
+
+## WEBSITE GROWTH 2026-10-11 — VERIFIED CONTINUATION
+
+Repository exclusively: `evertekitsolutions-del/minarva-technologies-website`.
+Separate project `evertekitsolutions-del/minarvabiz` must **not** be modified for this task.
+
+Production site: https://www.minarvatechnologies.com/
+
+Completed merges:
+- PR #17 `53aea609e923f8806722739442b1f3189b68cbd0`: six optimized local WebP representative website images, old advertisement creatives removed, official logo retained.
+- PR #18 `4c5dc691086868a61b18780f4bb1c19301147268`: seven individual service pages, dedicated enquiry forms via existing protected `public-enquiry-submit` Edge Function, FAQ, support page, privacy/terms, robots and sitemap, canonical metadata and service JSON-LD.
+- PR #19 `91b5911323c3b6871a7b9a4f85a9fa0dca98223f`: accessible mobile navigation, sticky call/enquiry actions and `/assistant` deterministic, browser-only free guided service finder. **Not a production AI model**.
+- PR #20 `1d5de9b4d73374ce66e035aa9646de1a5aa43a1e`: locally exercised 12 public routes on mobile/desktop Chromium (24 checks), plus setup details in `docs/PUBLIC_WEBSITE_GROWTH_VERIFICATION.md`. PR checks green and production deployed READY at exact main SHA.
+
+Core operational safety unchanged:
+- No fake reviews, fake site projects, fake UAT, paid providers or new model credentials.
+- Public customer records and invoice/job status remain protected; no anonymous portal exposing private records.
+- Real automated telephone calls OFF, emergency stop ON.
+- Existing CRM, quotations, invoices, payments, technician PWA, Customer Care remain untouched.
+- Existing official logo, phone, email and Thiruvananthapuram wording retained.
+
+Remaining work requiring verified accounts/data/approvals:
+- Google Search Console ownership and sitemap submission (owner authorization).
+- Google Business Profile verification (owner authorization; only genuine profile).
+- Real projects/gallery content with client permissions and authentic customer reviews.
+- Analytics provider and consent/compliance selection; no unsupported conversion metrics.
+- Real public AI assistant requires model/budget/privacy/abuse-control approval and tested integration. Rule-based guide must not be represented as an LLM.
+- Secure customer job status portal requires actual authenticated customer authorization and dedicated backend policy/UAT.
+- Platform-wide true authenticated end-to-end and mobile UAT, separated staging, and Supabase leaked-password Auth warning remain pending.
+
+Current overall Master Vision progress baseline remains approximate 98%; website UI growth and green CI do **not** alone clear the blocking release gates.
