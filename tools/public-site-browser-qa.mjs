@@ -39,7 +39,8 @@ try {
       assert.equal(overflow,false,route+' overflows at '+width)
       const localImageFail=await page.evaluate(async()=>{
         const imgs=[...document.querySelectorAll('img[src^="/assets/"]')]
-        await Promise.all(imgs.map(img=>img.decode().catch(()=>{})))
+        imgs.forEach(img=>{img.loading='eager'})
+        await Promise.race([Promise.all(imgs.map(img=>img.decode().catch(()=>{}))),new Promise(resolve=>setTimeout(resolve,5000))])
         return imgs.filter(img=>img.naturalWidth===0).map(img=>img.getAttribute('src'))
       })
       assert.deepEqual(localImageFail,[],route+' broken images')
