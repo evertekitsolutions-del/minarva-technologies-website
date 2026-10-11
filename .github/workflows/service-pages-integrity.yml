@@ -14,3 +14,4 @@ jobs:
         with:
           node-version: '22'
       - run: node tools/service-pages-integrity.mjs
+      - run: node tools/support-enquiry-contract.mjs
