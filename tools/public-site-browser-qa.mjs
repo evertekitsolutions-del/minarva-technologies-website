@@ -22,6 +22,12 @@ const evidence=[]
 try {
   for(const width of [390,1440]){
     const page=await browser.newPage({viewport:{width,height:860}})
+    // The local-source regression is intentionally offline with respect to
+    // external CDNs and CRM endpoints; live integration has separate smoke/UAT.
+    await page.route('**/*',request=>{
+      if(new URL(request.request().url()).origin!==base)return request.abort()
+      return request.continue()
+    })
     const localErrors=[]
     page.on('response',r=>{if(r.url().startsWith(base)&&r.status()>=400)localErrors.push(r.status()+' '+r.url())})
     for(const route of routes){
