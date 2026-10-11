@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /quotations
+Disallow: /invoices
+Disallow: /service-jobs
+Disallow: /job-sheet
+Disallow: /customer-care
+Disallow: /voice-runtime
+Disallow: /voice-simulator
+Disallow: /calling-readiness
+Disallow: /release-readiness
+Disallow: /platform-health
+Disallow: /technician
+Sitemap: https://www.minarvatechnologies.com/sitemap.xml
