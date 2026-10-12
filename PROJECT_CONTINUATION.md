@@ -1709,3 +1709,10 @@ Next: complete actual authenticated end-to-end and responsive UAT on an isolated
 - Known production domain names are forbidden in the UAT frontend preflight; preview deployment alone is NOT database isolation.
 - This is **preparation**, not staging project creation, not production data/UAT evidence and not a final release approval. No paid infrastructure is activated.
 - Full Master Vision baseline stays ~98%. Outstanding: dedicated isolated Supabase backend (review cost/account before creation), authenticated transactional UAT + recovery evidence, existing leaked-password Auth warning, and final release freeze.
+
+
+## Recovery Release Gate — Actual DB Restore Evidence (2026-10-12)
+
+Found a release-readiness false positive in the live Minarva Technologies production checklist: the auto `recovery_drill` gate was PASS although the sole recorded passed event was a non-production `configuration_restore`. No real `database_restore` or `full_recovery` evidence was present. Root cause: `private.platform_refresh_automated_release_checks()` accepted any passed recovery drill.
+
+Migration `supabase/migrations/20261012_recovery_gate_database_restore_evidence.sql` now requires eligible non-production database/full restore with timestamps, a recovery point and evidence reference, and clears the historic false-positive release gate to PENDING when no qualifying drill exists. Historical configuration drill remains untouched. Both function and immediate gate result need live verification after application; static source CI alone cannot prove live state. No restore is simulated; no production customer data is written. Estimated overall Master Vision completion remains ~98%, final freeze blocked until real verified UAT, real restore evidence and Auth hardening.
