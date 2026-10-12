@@ -56,6 +56,9 @@
     .guided-intro .btn{white-space:nowrap}.mobile-actions{display:none}
     @media(max-width:760px){.guided-intro-inner{flex-direction:column;align-items:flex-start}.guided-intro .btn{width:100%}.mobile-actions{display:flex;position:fixed;bottom:0;left:0;right:0;gap:10px;z-index:49;background:#fff;padding:10px 12px;box-shadow:0 -5px 20px #0b286622}.mobile-actions a{flex:1;text-align:center;background:#0754c7;color:white;border-radius:12px;padding:12px;font-weight:800}.mobile-actions a:first-child{background:white;color:#0754c7;border:1px solid #a8cbf4}.wa{bottom:87px;right:14px;width:52px;height:52px}footer{padding-bottom:92px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.btn,.card{transition:none}}
+    .contact-consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink);line-height:1.5;padding:4px 0;cursor:pointer}
+    .contact-consent input[type="checkbox"]{width:18px;height:18px;flex:none;margin:2px 0;accent-color:var(--blue)}
+    .contact-consent a{text-decoration:underline;color:var(--blue);font-weight:800}
   </style>
   <link rel="canonical" href="https://www.minarvatechnologies.com/">
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -239,6 +242,7 @@
               <option>Complete Technology Solution</option>
             </select>
             <textarea id="message" name="message" maxlength="4000" placeholder="Tell us about your requirement"></textarea>
+            <label class="contact-consent full" for="contactConsent"><input type="checkbox" id="contactConsent" name="consent_to_contact" required><span>I agree to be contacted about my enquiry and have read the <a href="/privacy">Privacy Policy</a>.</span></label>
             <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
             <button id="leadSubmit" class="btn btn-primary full" type="submit">Save & Send on WhatsApp →</button>
           </div>
@@ -309,6 +313,11 @@
 
       if (name.length < 2 || phone.length < 7 || phone.length > 30 || !/^[+0-9() .-]+$/.test(phone) || phone.replace(/\D/g, '').length < 7 || phone.replace(/\D/g, '').length > 15 || service.length < 2){
         setFormStatus('Please enter your name, a valid phone number and select a service.', 'err')
+        return
+      }
+
+      if (!document.getElementById('contactConsent').checked){
+        setFormStatus('Please agree to be contacted about your enquiry.', 'err')
         return
       }
 
