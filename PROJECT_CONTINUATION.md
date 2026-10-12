@@ -1679,3 +1679,22 @@ This milestone concerns **Minarva Technologies website only**, not Minarva Biz.
 ## Website Growth — bilingual customer service-finder (2026-10-12)
 
 Continuation from verified main `c47733cc6f1d3bb0752ba8a88208d3f6e912ac18`; this milestone applies only to Minarva Technologies public website. The service finder offers English and Malayalam choices, conservative keyword matching and multiple choices for ambiguous issues (for example Wi-Fi + CCTV), explicit human-support fallback, and accessible mobile layout. It remains browser-only, deterministic, and **not** an LLM. Added Chromium mobile and desktop tests for language switching, false-positive prevention, ambiguity, and reset; no customer data or outbound calls created. Do not call the milestone merged until exact-head CI is green, PR merged, and production deployment verified. Existing business-platform Release Checklist UAT and leaked-password protection warning remain pending.
+
+
+## Website Growth — Public enquiry consent enforcement (2026-10-12) — COMPLETE / VERIFIED
+
+Correct repo: `evertekitsolutions-del/minarva-technologies-website`. Do not mix with Minarva Biz.
+
+- PR #27 merged into main as `19f5bf14d4beb7dfcd98ef626a213dcca0e88c82`.
+- All seven service forms and the support form now use a named required `consent_to_contact` checkbox; the homepage already required consent.
+- All public forms send an explicit Boolean `consent_to_contact` in their Supabase Edge invocation.
+- Public `public-enquiry-submit` Edge API strictly requires `consent_to_contact === true` before consuming quota or creating CRM enquiries. Honeypot response, rate-limiting, Origin allowlist, CORS, phone checks, and other existing safeguards remain.
+- The consent is for contact relating to the submitted enquiry only: it does **not** establish marketing/automated-calling opt-in. Live automated phone calls remain OFF.
+- PR-head Chromium in-memory mocked-Edge browser tests, source contract checks, accessibility and all other 10 PR workflows: PASS. Post-merge main workflows: 12/12 PASS.
+- Vercel production deployment `dpl_2edwfcGVTAZzAHQjb3XCkaRXF13d` for exact main SHA was verified READY.
+- Supabase Edge `public-enquiry-submit` production version **4** was verified ACTIVE and read back to confirm strict consent check, rate-limit RPC and origin policy. Existing public `verify_jwt=false` setting preserved because this is a custom-guarded anonymous website endpoint.
+- No synthetic customer enquiries, invoices or production UAT records were created. Browser E2E uses an in-memory function mock; the live negative HTTP 400 path and authenticated end-to-end business UAT are not claimed independently exercised.
+- A first attempt at Edge v4 redeploy hit a stale inherited import-map path. Root cause fixed by explicitly setting `import_map_path: deno.json`; deployment completed and v4 read-back verified.
+- Latest Supabase Security Advisor still shows the external Auth setting blocker: `Leaked Password Protection Disabled`. Do not mark Release Freeze passed until applicable authenticated UAT and external security gates are genuinely verified.
+
+Next: complete actual authenticated end-to-end and responsive UAT on an isolated backend with genuine evidence; complete release-freeze gates. Separately, Google Search Console/Business Profile owner verification, real approved project photos/reviews, and any future paid model/telephony integrations require owner decisions. Current full Master Vision progress remains **approximately 98%**, not a verified 100% release.
