@@ -34,7 +34,7 @@
     .faq-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:52px}.faq-intro h2{font-size:42px;line-height:1.05;margin:0 0 15px}.faq-intro p{color:var(--muted);line-height:1.7}.faq-item{border-bottom:1px solid var(--line)}.faq-item button{width:100%;text-align:left;padding:18px 0;border:0;background:none;font:inherit;font-weight:800;color:var(--ink);display:flex;justify-content:space-between;gap:15px;cursor:pointer}.faq-answer{display:none;color:var(--muted);line-height:1.7;padding:0 0 18px;font-size:14px}.faq-item.open .faq-answer{display:block}
     .contact{background:linear-gradient(135deg,#eef6ff,#fff)}.contact-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:36px}.contact h2{font-size:44px;line-height:1.05;margin:0 0 17px}.contact-list{display:grid;gap:12px;margin-top:25px}.contact-list a,.contact-list span{background:white;border:1px solid var(--line);border-radius:14px;padding:14px 15px;font-size:14px}.form{background:white;border:1px solid var(--line);border-radius:24px;padding:26px;box-shadow:var(--shadow)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.form input,.form select,.form textarea{width:100%;padding:13px 14px;border:1px solid #cfdef1;border-radius:11px;font:inherit;outline:none}.form input:focus,.form select:focus,.form textarea:focus{border-color:var(--blue)}.form textarea{min-height:120px;resize:vertical;grid-column:1/-1}.form .full{grid-column:1/-1}.form small{display:block;color:var(--muted);margin-top:10px}.form-status{display:none;grid-column:1/-1;padding:11px 12px;border-radius:10px;font-size:13px;font-weight:700}.form-status.show{display:block}.form-status.ok{background:#ecfdf3;color:#087443}.form-status.err{background:#fff1f0;color:#9f1c15}.form button[disabled]{opacity:.7;cursor:not-allowed;transform:none}
     footer{background:#06172f;color:#b9c9e0;padding:50px 0 24px}.footer-grid{display:grid;grid-template-columns:1.4fr .8fr .8fr 1fr;gap:35px}.footer-logo{width:265px;background:white;border-radius:10px;padding:5px}.footer-grid h4{color:white;margin:0 0 14px}.footer-grid a,.footer-grid p{display:block;font-size:13px;line-height:1.9}.footer-grid a:hover{color:white}.footer-bottom{border-top:1px solid rgba(255,255,255,.1);margin-top:35px;padding-top:20px;display:flex;justify-content:space-between;font-size:12px}
-    .wa{position:fixed;right:20px;bottom:20px;z-index:50;width:58px;height:58px;border-radius:50%;background:#18b763;color:white;display:grid;place-items:center;font-weight:900;box-shadow:0 10px 30px rgba(24,183,99,.38);border:4px solid white}
+    .wa{position:fixed;right:20px;bottom:20px;z-index:50;width:58px;height:58px;border-radius:50%;background:#087443;color:white;display:grid;place-items:center;font-weight:900;box-shadow:0 10px 30px rgba(8,116,67,.32);border:4px solid white}
     @media(max-width:980px){.links,.nav>.btn{display:none}.menu-btn{display:block}.hero-grid,.feature-grid,.faq-grid,.contact-grid{grid-template-columns:1fr}.hero{padding-top:48px}.control{max-width:700px}.service-grid{grid-template-columns:repeat(2,1fr)}.software-grid{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.strip-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr 1fr}.brand img{width:230px}.section-head{display:block}.section-head>p{margin-top:14px}.gallery{grid-template-columns:1fr 1fr}.gallery img:first-child{grid-row:auto;height:235px}}
     @media(max-width:640px){.shell{width:min(100% - 24px,1180px)}.topbar .right,.topbar .left span:first-child{display:none}.topbar .left{width:100%;justify-content:space-between}.nav{height:68px}.brand img{width:205px;height:48px}.hero h1{font-size:44px}.lead{font-size:16px}.hero-actions .btn{width:100%}.live-grid{grid-template-columns:1fr}.mini-stack{grid-template-columns:1fr 1fr}.control-bottom{grid-template-columns:1fr}.service-grid,.steps,.strip-grid,.feature-list,.form-grid,.footer-grid{grid-template-columns:1fr}.strip-grid div{border-right:0;border-bottom:1px solid var(--line)}.section-head h2{font-size:35px}.gallery{grid-template-columns:1fr}.gallery img,.gallery img:first-child{height:230px}.faq-intro h2,.contact h2{font-size:36px}.footer-bottom{display:block;line-height:1.9}}
 
@@ -59,6 +59,7 @@
     .contact-consent{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--ink);line-height:1.5;padding:4px 0;cursor:pointer}
     .contact-consent input[type="checkbox"]{width:18px;height:18px;flex:none;margin:2px 0;accent-color:var(--blue)}
     .contact-consent a{text-decoration:underline;color:var(--blue);font-weight:800}
+    .contact-field{display:block;font-size:13px;font-weight:800;color:var(--ink)}.contact-field input,.contact-field textarea,.contact-field select{display:block;margin-top:7px;width:100%;font-weight:400}
   </style>
   <link rel="canonical" href="https://www.minarvatechnologies.com/">
   <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -227,10 +228,11 @@
           <input id="company_website" name="company_website" type="text" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute;left:-10000px;top:auto;width:1px;height:1px;overflow:hidden">
           <input id="form_started_at" name="form_started_at" type="hidden">
           <div class="form-grid">
-            <input id="name" name="name" autocomplete="name" maxlength="120" placeholder="Your name" required>
-            <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Phone / WhatsApp" required>
-            <input id="email" name="email" type="email" autocomplete="email" maxlength="320" placeholder="Email (optional)" class="full">
-            <select id="service" class="full" required>
+            <label class="contact-field" for="name">Your name *<input id="name" name="name" autocomplete="name" maxlength="120" placeholder="Your name" required></label>
+            <label class="contact-field" for="phone">Phone / WhatsApp *<input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="Phone / WhatsApp" required></label>
+            <label class="contact-field full" for="email">Email (optional)<input id="email" name="email" type="email" autocomplete="email" maxlength="320" placeholder="Email (optional)"></label>
+            <label class="contact-field full" for="service">Service required *
+            <select id="service" required>
               <option value="">Select a service</option>
               <option>CCTV & Security Systems</option>
               <option>Computer & Laptop Sales / Service</option>
@@ -240,8 +242,8 @@
               <option>Customized Software Solutions</option>
               <option>Website Development</option>
               <option>Complete Technology Solution</option>
-            </select>
-            <textarea id="message" name="message" maxlength="4000" placeholder="Tell us about your requirement"></textarea>
+            </select></label>
+            <label class="contact-field full" for="message">Your requirement (optional)<textarea id="message" name="message" maxlength="4000" placeholder="Tell us about your requirement"></textarea></label>
             <label class="contact-consent full" for="contactConsent"><input type="checkbox" id="contactConsent" name="consent_to_contact" required><span>I agree to be contacted about my enquiry and have read the <a href="/privacy">Privacy Policy</a>.</span></label>
             <div id="formStatus" class="form-status" role="status" aria-live="polite"></div>
             <button id="leadSubmit" class="btn btn-primary full" type="submit">Save & Send on WhatsApp →</button>
