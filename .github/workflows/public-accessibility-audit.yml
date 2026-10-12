@@ -1,0 +1,22 @@
+name: Public Website WCAG 2.1 AA
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  axe-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save playwright@1.55.0 axe-core@4.10.3
+      - run: npx playwright install --with-deps chromium
+      - run: node tools/public-accessibility-audit.mjs
