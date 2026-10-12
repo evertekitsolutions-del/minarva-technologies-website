@@ -1,1 +1,14 @@
-import assert from 'node:assert/strict';import fs from 'node:fs';const home=fs.readFileSync('index.html','utf8');const guide=fs.readFileSync('assistant.html','utf8');const code=fs.readFileSync('assets/service-finder.js','utf8');assert.ok(home.includes('id="menuToggle"'));assert.ok(home.includes('aria-expanded="false"'));assert.ok(home.includes('aria-controls="mobileNav"'));assert.ok(home.includes('class="skip-to-main"'));assert.ok(home.includes('class="mobile-actions"'));assert.ok(home.includes('href="/assistant"'));assert.ok(guide.includes('rule-based guide, not a live AI model'));assert.ok(guide.includes('role="status" aria-live="polite"'));for(const service of ['cctv','computer','network','solar','automation','software','web'])assert.ok(code.includes('"value":"'+service+'"'));assert.ok(!code.includes('fetch(')&&!code.includes('supabase'));console.log(JSON.stringify({ok:true,guide:true,offlineGuide:true,mobileActions:true,menuAccessibility:true}));
+import assert from 'node:assert/strict'
+import fs from 'node:fs'
+const home=fs.readFileSync('index.html','utf8')
+const guide=fs.readFileSync('assistant.html','utf8')
+const code=fs.readFileSync('assets/service-finder.js','utf8')
+for(const marker of ['id="menuToggle"','aria-expanded="false"','aria-controls="mobileNav"','class="skip-to-main"','class="mobile-actions"','href="/assistant"'])assert.ok(home.includes(marker),marker)
+for(const marker of ['rule-based guide, not a live AI model','role="status" aria-live="polite"','id="assistLanguage"','id="assistHero"','id="assistIntroduction"'])assert.ok(guide.includes(marker),marker)
+for(const service of ['cctv','computer','network','solar','automation','software','web'])assert.ok(code.includes('"value":"'+service+'"'),'Missing '+service)
+assert.ok(code.includes('mlKeys'),'Malayalam matching unavailable')
+assert.ok(code.includes('findMatches'),'Service ranking missing')
+assert.ok(code.includes('option-grid'),'Ambiguity option rendering missing')
+assert.ok(code.includes("text.includes(key)"),'Malayalam matching must be explicit')
+assert.ok(!code.includes('fetch(')&&!code.includes('supabase'),'Guidance must be browser-only')
+console.log(JSON.stringify({ok:true,offlineGuide:true,bilingual:true,noExternalAI:true,mobileActions:true,menuAccessibility:true}))
