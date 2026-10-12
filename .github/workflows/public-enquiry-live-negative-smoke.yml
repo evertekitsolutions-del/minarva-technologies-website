@@ -1,0 +1,23 @@
+name: Public Enquiry Live Negative Smoke
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  production-no-write:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify test syntax
+        run: node --check tools/live-public-enquiry-negative-smoke.mjs
+      - name: Reject non-consented and invalid requests at live Edge
+        run: node tools/live-public-enquiry-negative-smoke.mjs
