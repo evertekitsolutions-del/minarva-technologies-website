@@ -17,6 +17,9 @@ assert.equal((html.match(/class="soft-photo"/g)||[]).length,2,'Software and webs
 assert.ok(html.includes('class="hero-photo"'),'Hero photographic composition missing')
 assert.ok(!html.includes('class="control"'),'Remove fictitious systems-online hero widget')
 assert.ok(!/74988c6a-4636-4934-8d62-35c1e96e713c|61ba4707-e3d4-47ba-8644-8e0045112240|449b00ff-d315-4bd5-b8ed-17e7f9afc4aa/.test(html),'Old advertisement still referenced')
-assert.equal((html.match(/d2ol7oe51mr4n9.cloudfront.net/g)||[]).length,2,'Official logo must remain unchanged; no other CloudFront ads')
+const officialLogo='https://d2ol7oe51mr4n9.cloudfront.net/user_3JYhQBoashDwUEDFJKol0zcEPDo/c72de1c2-a67b-4c14-8717-5ea33fd1acf1.jpg'
+const remoteImages=[...html.matchAll(/https:\/\/d2ol7oe51mr4n9\.cloudfront\.net\/[^"'<>\s]+/g)].map(match=>match[0])
+assert.equal(remoteImages.length,3,'Official logo expected in header, footer, and Organization schema')
+assert.ok(remoteImages.every(url=>url===officialLogo),'Only the approved official logo may use the old CloudFront host')
 assert.ok(/<img[^>]+fetchpriority="high"/.test(html),'Hero image not prioritized')
 console.log(JSON.stringify({ok:true,optimizedImages:names.length,serviceImages:8,softwareImages:2,oldAdsRemoved:true,logoPreserved:true}))
