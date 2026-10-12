@@ -12,7 +12,7 @@ const moduleMock = String.raw`export function createClient(){
     if(window.__mockFailure)return {error:new Error('Simulated offline failure')};
     return {data:{accepted:true}};
   }}};
-}\`
+}`
 const types={'.html':'text/html; charset=utf-8','.js':'application/javascript; charset=utf-8','.css':'text/css','.webp':'image/webp'}
 const server=http.createServer((req,res)=>{
   const p=new URL(req.url,'http://127.0.0.1').pathname
