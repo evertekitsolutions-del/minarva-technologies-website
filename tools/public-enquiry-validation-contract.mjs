@@ -8,6 +8,9 @@ for(const [name,s] of [['service client',front],['homepage',home],['Supabase Edg
   assert.ok(s.includes('length<7')||s.includes('length < 7'),name+' phone minimum')
   assert.ok(s.includes('length>15')||s.includes('length > 15'),name+' phone max')
 }
+assert.ok(home.includes('id="contactConsent"')&&home.includes('name="consent_to_contact" required'),'Homepage contact consent required')
+assert.ok(home.includes("document.getElementById('contactConsent').checked"),'Homepage consent guard required')
+assert.ok(home.includes('href="/privacy"'),'Privacy policy must be linked')
 assert.ok(front.includes('Customer support request (manual review; no customer record lookup)'))
 assert.ok(edge.includes('consume_public_enquiry_quota'),'Rate limiting preserved')
 assert.ok(edge.includes('ALLOWED_ORIGINS'),'Origin restrictions preserved')
