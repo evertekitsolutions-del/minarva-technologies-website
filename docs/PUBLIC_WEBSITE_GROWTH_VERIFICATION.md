@@ -34,3 +34,9 @@ Do not inject tracking pixels or Google Analytics without verifying ownership, c
 - AI assistant: the existing voice sandbox is not a production-ready public LLM. Keep real phone calls OFF. A real web AI service requires verified budget, privacy, abuse protection, model choice and data-handling approval before rollout.
 - Customer job tracking must require real customer authorization and server-side permission checks. Do not expose records by reference number or phone number alone.
 - Final live authenticated UAT and business data flows remain evidence-dependent.
+
+## Public enquiry live API negative smoke
+
+The `tools/live-public-enquiry-negative-smoke.mjs` workflow makes only deliberately invalid requests to the public Edge endpoint: consent omitted, explicit false consent, invalid name with consent, and disallowed origin. It asserts HTTP status and the specific rejection reason. Names and phone numbers are empty in every request, so no customer/enquiry record can be created even if consent enforcement regresses. It uses the existing frontend **publishable** key, never privileged secrets, and runs in GitHub Actions.
+
+This is a production *negative-path* test, not an authenticated UAT run, nor proof that a valid live lead would be recorded successfully. A production network outage causes a test failure rather than a fabricated PASS.
