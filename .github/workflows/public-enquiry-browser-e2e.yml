@@ -17,6 +17,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: node tools/public-enquiry-validation-contract.mjs
+      - run: node --check tools/public-enquiry-browser-e2e.mjs
       - run: npm install --no-save playwright@1.55.0
       - run: npx playwright install --with-deps chromium
       - run: node tools/public-enquiry-browser-e2e.mjs
