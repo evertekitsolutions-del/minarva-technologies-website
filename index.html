@@ -345,6 +345,7 @@
             phone,
             email: email || null,
             service,
+            consent_to_contact: document.getElementById('contactConsent').checked,
             message: message || null,
             company_website: honeypot.value || '',
             form_started_at: Number(formStartedAt.value || 0)
