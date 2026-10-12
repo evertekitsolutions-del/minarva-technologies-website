@@ -16,4 +16,5 @@ jobs:
           node-version: '22'
       - run: node tools/release-security-negative-tests.mjs
       - run: node tools/release-control-privilege-integrity.mjs
+      - run: node tools/recovery-release-gate-contract.mjs
       - run: node tools/uat-isolation-contract-tests.mjs

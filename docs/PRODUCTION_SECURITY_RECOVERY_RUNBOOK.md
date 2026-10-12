@@ -109,3 +109,11 @@ Do not declare production freeze complete until:
 - no direct anonymous enquiry insert is possible
 - Customer Care dead letters/failures are reviewed
 - real automated calling remains OFF unless separately approved
+
+## Database restore qualification — October 12, 2026
+
+A successful `configuration_restore` rehearsal on 2026-10-07 previously caused the automated `recovery_drill` release checklist item to turn PASS, because the database refresh accepted **any** passed drill type. That was too permissive. It is **not proof of a database backup restore**.
+
+Migration `20261012_recovery_gate_database_restore_evidence.sql` corrects this gate. A qualifying drill must be of type `database_restore` or `full_recovery`, in an explicitly isolated non-production/staging/UAT/isolated-restore environment, with completed time later than start, a populated recovery point, and an evidence reference. Existing configuration-only evidence is preserved as historic operational evidence, but cannot certify database recovery for release. Until a qualifying drill is recorded, the release gate is Pending with no fabricated evidence. The migration also updates the existing private refresh implementation so subsequent admin refreshes cannot re-enable the false-positive PASS.
+
+**Important:** Even a properly entered drill is a manually supplied record, not cryptographic proof that a backup was restored. An operator must independently review restoration logs, schema, representative rows, storage links (when applicable), timings and the evidence source before sign-off. A backup drill must never target the production database destructively. The Auth leaked-password protection warning and genuine UAT gates remain separate blockers.
