@@ -1669,3 +1669,10 @@ This milestone concerns **Minarva Technologies website only**, not Minarva Biz.
 - **No real enquiries, UAT evidence, test customers or phone calls are created.** This is mock browser regression, not authenticated live end-to-end UAT.
 - Existing rate limiting, honeypot checks, origin restrictions and business/CRM modules are preserved.
 - Actual Edge deployment version must be verified after repo CI is green. Do not claim backend production parity before deployment.
+## Website Growth — public enquiry + structured data (2026-10-12)
+
+- PR #22 merged at main `8bc8d7420f85479c376a4fbde40595d3d3a32dcc`: browser-mocked contact form QA for service, support and homepage; consistent server/client 7–15 actual phone-digit validation. No dummy business records.
+- Supabase Edge `public-enquiry-submit` deployed/verified ACTIVE v3, with old public `verify_jwt=false` behavior unchanged. Anti-spam, allowed service names, CORS and rate limits preserved.
+- Vercel production explicitly deployed at exact SHA `8bc8d742...` and READY. `www.minarvatechnologies.com` served updated homepage and enquiry JS with HTTP 200.
+- New SEO milestone supplies factual organization JSON-LD, seven service breadcrumb JSON-LD objects, accessible visible breadcrumb navigation, static CI contract and a read-only live public URL/sitemap smoke tool.
+- Google Search Console ownership and Google Business Profile verification remain owner actions. No fake review metrics, actual customer photography, AI model benchmark, or indexing/traffic claims. Calling OFF; emergency stop ON.
