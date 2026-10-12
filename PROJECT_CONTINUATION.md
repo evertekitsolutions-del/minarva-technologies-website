@@ -1659,3 +1659,13 @@ Remaining work requiring verified accounts/data/approvals:
 - Platform-wide true authenticated end-to-end and mobile UAT, separated staging, and Supabase leaked-password Auth warning remain pending.
 
 Current overall Master Vision progress baseline remains approximate 98%; website UI growth and green CI do **not** alone clear the blocking release gates.
+## Website enquiries — real browser contract milestone (2026-10-12)
+
+This milestone concerns **Minarva Technologies website only**, not Minarva Biz.
+
+- The homepage and dedicated service/support enquiry forms now reject strings with fewer than 7 or more than 15 actual decimal digits in a phone number; allowed punctuation remains consistent with server policy.
+- `supabase/functions/public-enquiry-submit/index.ts` applies the matching validation on the server for direct requests.
+- `tools/public-enquiry-browser-e2e.mjs` drives Chromium with the Supabase ESM dependency replaced by a **browser-only in-memory mock**. It checks valid and invalid inputs, service categorization, urgency and visit date, support-request tagging, failure messaging, WhatsApp fallback and homepage submission.
+- **No real enquiries, UAT evidence, test customers or phone calls are created.** This is mock browser regression, not authenticated live end-to-end UAT.
+- Existing rate limiting, honeypot checks, origin restrictions and business/CRM modules are preserved.
+- Actual Edge deployment version must be verified after repo CI is green. Do not claim backend production parity before deployment.
