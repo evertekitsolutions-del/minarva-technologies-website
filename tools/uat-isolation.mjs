@@ -1,7 +1,7 @@
 // Fail closed: a non-production frontend URL does not prove backend isolation.
 // This preflight performs only anonymous GET requests and never writes business data.
 export const PRODUCTION_SUPABASE_HOST='kwullzwhlzziosjsejud.supabase.co'
-export const PRODUCTION_SITE_HOSTS=new Set(['minarva-technologies-website.vercel.app'])
+export const PRODUCTION_SITE_HOSTS=new Set(['minarva-technologies-website.vercel.app','minarvatechnologies.com','www.minarvatechnologies.com','minarva-technologies-website-minarva-biz.vercel.app','minarva-technologies-website-git-main-minarva-biz.vercel.app'])
 export const REQUIRED_ROUTES=['/','/admin','/quotations','/invoices','/service-jobs','/job-sheet','/customer-care','/voice-simulator','/calling-readiness','/release-readiness','/platform-health']
 const SUPABASE_ORIGINS=/https:\/\/[a-z0-9-]+\.supabase\.co/gi
 

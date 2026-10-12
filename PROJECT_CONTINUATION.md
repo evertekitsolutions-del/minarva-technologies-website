@@ -1698,3 +1698,14 @@ Correct repo: `evertekitsolutions-del/minarva-technologies-website`. Do not mix 
 - Latest Supabase Security Advisor still shows the external Auth setting blocker: `Leaked Password Protection Disabled`. Do not mark Release Freeze passed until applicable authenticated UAT and external security gates are genuinely verified.
 
 Next: complete actual authenticated end-to-end and responsive UAT on an isolated backend with genuine evidence; complete release-freeze gates. Separately, Google Search Console/Business Profile owner verification, real approved project photos/reviews, and any future paid model/telephony integrations require owner decisions. Current full Master Vision progress remains **approximately 98%**, not a verified 100% release.
+
+
+## UAT Isolation — Portable static frontend build (2026-10-12)
+
+- Source is exclusively Minarva Technologies `evertekitsolutions-del/minarva-technologies-website`.
+- `tools/build-isolated-uat.mjs` creates a standalone, production-source-preserving staging static output from explicitly supplied non-production Supabase URL + publishable key.
+- It rewrites all client-side Supabase references and CSP, excludes non-public repository paths, disables staging indexing, and refuses mixed credentials/production backend.
+- A new CI-only staging build contract verifies the generated artifact and runs the complete existing route isolation preflight in a mocked local transport without database access.
+- Known production domain names are forbidden in the UAT frontend preflight; preview deployment alone is NOT database isolation.
+- This is **preparation**, not staging project creation, not production data/UAT evidence and not a final release approval. No paid infrastructure is activated.
+- Full Master Vision baseline stays ~98%. Outstanding: dedicated isolated Supabase backend (review cost/account before creation), authenticated transactional UAT + recovery evidence, existing leaked-password Auth warning, and final release freeze.

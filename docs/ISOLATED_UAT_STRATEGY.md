@@ -70,3 +70,13 @@ gates PASS, and never initiates outbound messages or telephone calls.
 Full transactional E2E and evidence updates remain pending genuine isolated
 data fixtures, negative permission tests, cleanup validation and manual
 release authorization.
+
+## Isolated staging static build — milestone implemented (2026-10-12)
+
+The repository provides `tools/build-isolated-uat.mjs` to prepare **separate static frontend artifacts** for a dedicated staging Supabase backend. This does NOT create a staging database, account or deployment and does not touch production static files.
+
+On an authorized build runner, set `UAT_SUPABASE_URL=https://<dedicated-project>.supabase.co` and `UAT_SUPABASE_PUBLISHABLE_KEY=sb_publishable_<staging-key>` in secure runner configuration (never commit/paste real keys to GitHub issues). Run `node tools/build-isolated-uat.mjs --out dist/uat`; serve/deploy **only the generated dist/uat folder** as a separate Vercel project or an explicitly configured preview. Output directory must not exist; the builder refuses overwrites.
+
+The builder rewrites all deployed HTML/JS/static client code, service worker and Vercel CSP to the staging backend/key, rejects mixed or production endpoints, excludes migrations/Edge server source/GitHub workflows, adds `X-Robots-Tag: noindex` and disallows robots, and omits the sitemap. It never creates or populates a database. It will refuse a backend pointing to production or a non-publishable key.
+
+Nonsecret contract tests run against a synthetic staging URL and public-key placeholder and use in-memory HTTP emulation to exercise `runIsolationPreflight` across the complete protected-route list. They do **not** exercise an actual staging backend, authenticated UAT, restore drill or CI deployments. Genuine staging Supabase creation remains subject to organization/cost confirmation and safe configuration. Once independently available, deploy generated frontend to its own staging origin, run `tools/uat-isolation-cli.mjs` against the real staging URL, then continue authenticated non-production UAT. **Real calling stays disabled.**

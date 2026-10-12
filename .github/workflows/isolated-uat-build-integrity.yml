@@ -1,0 +1,25 @@
+name: Isolated UAT Build Integrity
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-artifact-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify staging builder syntax and isolation
+        run: |
+          node --check tools/build-isolated-uat.mjs
+          node --check tools/build-isolated-uat-contract-tests.mjs
+          node tools/uat-isolation-contract-tests.mjs
+          node tools/build-isolated-uat-contract-tests.mjs
