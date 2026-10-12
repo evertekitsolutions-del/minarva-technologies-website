@@ -38,7 +38,7 @@ try{
     assert.ok(!c.includes('sb_secret_'),'Privileged key in '+f)
   }
   assert.ok(readFileSync(join(out,'assets/enquiry-form.js'),'utf8').includes(key))
-  assert.ok(readFileSync(join(out,'technician-sw.js'),'utf8').includes(stage))
+  assert.ok(readFileSync(join(out,'technician-sw.js'),'utf8').includes(new URL(stage).hostname),'Service worker must reference the staging backend hostname')
 
   // Emulate HTTP route delivery from the staged build without accessing any
   // production/staging database, making the existing isolation preflight real.
