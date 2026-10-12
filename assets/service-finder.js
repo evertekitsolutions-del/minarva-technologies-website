@@ -10,10 +10,11 @@ const serviceLabel=document.querySelector('#serviceLabel');
 const queryLabel=document.querySelector('#queryLabel');
 const privacyNote=document.querySelector('#privacyNote');
 const normalize=text=>String(text||'').normalize('NFKC').toLocaleLowerCase('en').trim();
-const tokenize=text=>normalize(text).match(/[\\p{L}\\p{M}\\p{N}]+/gu)||[];
+const tokenize=text=>normalize(text).match(/[\p{L}\p{M}\p{N}]+/gu)||[];
 const matchTerm=(text,tokens,term)=>{
  const key=normalize(term);
- if(/[\\u0D00-\\u0D7F]/u.test(key))return text.includes(key);
+ if(/[\u0D00-\u0D7F]/u.test(key))return text.includes(key);
+ if(key.includes('-'))return text.includes(key);
  if(key.includes(' '))return (' '+text+' ').includes(' '+key+' ');
  return tokens.includes(key);
 };
