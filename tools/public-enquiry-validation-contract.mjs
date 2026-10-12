@@ -10,6 +10,14 @@ for(const [name,s] of [['service client',front],['homepage',home],['Supabase Edg
 }
 assert.ok(home.includes('id="contactConsent"')&&home.includes('name="consent_to_contact" required'),'Homepage contact consent required')
 assert.ok(home.includes("document.getElementById('contactConsent').checked"),'Homepage consent guard required')
+assert.ok(home.includes("consent_to_contact: document.getElementById('contactConsent').checked"),'Homepage must submit its consent value')
+assert.ok(front.includes("consent_to_contact:consent.checked"),'Service and support must submit their consent value')
+assert.ok(front.includes("form.querySelector('[name=\"consent_to_contact\"]')"),'Named consent control required')
+assert.ok(edge.includes('body.consent_to_contact!==true'),'Edge must strictly reject absent or false consent')
+for(const slug of ['cctv-security','computer-laptop','networking-wifi','solar-inverter','home-automation','custom-software','website-development']){
+  assert.ok(fs.readFileSync('services/'+slug+'.html','utf8').includes('name="consent_to_contact" required'),'Named contact consent missing on '+slug)
+}
+assert.ok(fs.readFileSync('support.html','utf8').includes('name="consent_to_contact" required'),'Named contact consent missing on support')
 assert.ok(home.includes('href="/privacy"'),'Privacy policy must be linked')
 assert.ok(front.includes('Customer support request (manual review; no customer record lookup)'))
 assert.ok(edge.includes('consume_public_enquiry_quota'),'Rate limiting preserved')

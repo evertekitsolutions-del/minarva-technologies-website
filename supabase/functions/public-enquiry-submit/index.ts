@@ -129,6 +129,12 @@ Deno.serve(async(req:Request)=>{
     return response(origin,{error:"Please refresh the page and try again."},400);
   }
 
+  // Contact permission is scoped to this enquiry, not promotional or automated calls.
+  // Enforce at the public API boundary; browser checkbox validation alone is bypassable.
+  if(body.consent_to_contact!==true){
+    return response(origin,{error:"Contact consent is required to submit an enquiry."},400);
+  }
+
   const name=cleanText(body.name,121);
   const phone=cleanText(body.phone,31);
   const email=cleanText(body.email,321);
