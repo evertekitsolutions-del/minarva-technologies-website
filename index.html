@@ -306,7 +306,7 @@
       const service = document.getElementById('service').value
       const message = document.getElementById('message').value.trim()
 
-      if (name.length < 2 || phone.length < 7 || service.length < 2){
+      if (name.length < 2 || phone.length < 7 || phone.length > 30 || !/^[+0-9() .-]+$/.test(phone) || phone.replace(/\D/g, '').length < 7 || phone.replace(/\D/g, '').length > 15 || service.length < 2){
         setFormStatus('Please enter your name, a valid phone number and select a service.', 'err')
         return
       }

@@ -8,7 +8,7 @@ if(form){
    e.preventDefault();if(!form.reportValidity())return;
    const value=name=>form.elements.namedItem(name)?.value?.trim()||'';
    const name=value('name'),phone=value('phone'),email=value('email'),service=value('service');
-   if(name.length<2||phone.length<7){status.textContent='Enter a valid name and phone number.';status.hidden=false;return}
+   if(name.length<2||phone.length<7||phone.length>30||!/^[+0-9() .-]+$/.test(phone)||phone.replace(/\D/g,'').length<7||phone.replace(/\D/g,'').length>15){status.textContent='Enter a name and a valid phone number containing 7–15 digits.';status.hidden=false;return}
    const detail=[form.dataset.enquiryKind==='support'?'Customer support request (manual review; no customer record lookup)':'',value('message'),value('urgency')?'Priority: '+value('urgency'):'',value('preferred_date')?'Preferred visit date (request only): '+value('preferred_date'):''].filter(Boolean).join(' | ');
    const message=detail.slice(0,3900),whatsapp='https://wa.me/916235353732?text='+encodeURIComponent(['Hello Minarva Technologies','Name: '+name,'Phone: '+phone,email?'Email: '+email:'','Service: '+service,'Requirement: '+(message||'Please contact me')].filter(Boolean).join('\n'));
    link.href=whatsapp;link.hidden=false;submit.disabled=true;status.hidden=false;status.textContent='Saving your enquiry…';

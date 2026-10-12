@@ -138,7 +138,8 @@ Deno.serve(async(req:Request)=>{
   if(name.length<2||name.length>120){
     return response(origin,{error:"Please enter a valid name."},400);
   }
-  if(phone.length<7||phone.length>30||!/^[+0-9() .-]+$/.test(phone)){
+  const phoneDigits=phone.replace(/\D/g,"");
+  if(phone.length<7||phone.length>30||!/^[+0-9() .-]+$/.test(phone)||phoneDigits.length<7||phoneDigits.length>15){
     return response(origin,{error:"Please enter a valid phone number."},400);
   }
   if(email&&(email.length>320||!/^[A-Z0-9._%+'-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email))){
