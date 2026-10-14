@@ -22,4 +22,5 @@ jobs:
           node --check tools/build-isolated-uat.mjs
           node --check tools/build-isolated-uat-contract-tests.mjs
           node tools/uat-isolation-contract-tests.mjs
+          node tools/uat-dependency-closure-tests.mjs
           node tools/build-isolated-uat-contract-tests.mjs
