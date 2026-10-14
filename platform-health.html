@@ -26,7 +26,7 @@
 </div></div>
 <main class="shell" style="padding-bottom:60px">
   <div class="head"><div><div class="eyebrow">PRODUCTION HARDENING</div><h1>Platform Health & Recovery</h1><div id="userLine" class="userline">Checking admin access…</div></div><div class="actions"><button id="refreshBtn" class="btn btn-ghost">Refresh</button></div></div>
-  <div class="notice"><strong>Evidence based:</strong> this screen only reports checks the system can actually verify. Backup/restore is not marked verified until a real recovery drill is recorded. Supabase leaked-password protection remains an external Auth setting and must be confirmed separately.</div>
+  <div class="notice"><strong>Recovery evidence:</strong> Only a recorded non-production database/full restore with its backup point, completion time and evidence can qualify. Configuration-only drills never verify database recovery. An administrator must independently review restoration logs and restored records. Supabase leaked-password protection is a separate Auth blocker.</div>
 
   <section class="grid">
     <div class="card"><div class="card-head"><h2>Database</h2><span id="dbPill" class="pill neutral">—</span></div><div id="dbBody" class="card-body metric">Loading…</div></div>
@@ -54,7 +54,8 @@
           <div class="form-grid">
             <div><label>Drill type</label><select id="drillType"><option value="database_restore">Database Restore</option><option value="storage_restore">Storage Restore</option><option value="configuration_restore">Configuration Restore</option><option value="full_recovery">Full Recovery</option></select></div>
             <div><label>Status</label><select id="drillStatus"><option value="planned">Planned</option><option value="running">Running</option><option value="passed">Passed</option><option value="failed">Failed</option><option value="cancelled">Cancelled</option></select></div>
-            <div><label>Started at</label><input id="drillStarted" type="datetime-local"></div>
+            <div><label>Isolated test environment</label><select id="drillEnvironment"><option value="non-production">Non-production</option><option value="staging">Staging</option><option value="uat">UAT</option><option value="isolated-restore">Isolated restore</option></select></div>
+             <div><label>Started at</label><input id="drillStarted" type="datetime-local"></div>
             <div><label>Completed at</label><input id="drillCompleted" type="datetime-local"></div>
             <div class="full"><label>Recovery point / backup reference</label><input id="drillRecoveryPoint" maxlength="500" placeholder="Actual backup/restore point used"></div>
             <div><label>Recovery time (minutes)</label><input id="drillMinutes" type="number" min="0" step="0.1"></div>
@@ -72,6 +73,7 @@
 import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.116.0/+esm'
     import { installAdminSessionGuard } from '/admin-session-guard.js'
 import { requireActiveAdmin } from '/admin-access.js'
+import { qualifiesDatabaseRecovery, validateRecoveryDrillInput } from '/assets/recovery-drill-qualification.js'
 const supabase=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
     installAdminSessionGuard(supabase)
 const $=id=>document.getElementById(id)
@@ -93,8 +95,8 @@ function renderHealth(){
   $('securityBody').innerHTML='Direct anon INSERT: <strong>'+(s.direct_anon_enquiry_insert?'ENABLED':'BLOCKED')+'</strong><br>Old anon policy: '+(s.website_anon_insert_policy_exists?'PRESENT':'REMOVED')+'<br>Rate limiter service-only: '+(s.public_enquiry_rate_limit_service_only?'YES':'NO')+'<br>Submit RPC service-only: '+(s.public_enquiry_submit_service_only?'YES':'NO')+'<br>24h hash cleanup scheduled: '+(s.anti_abuse_hash_cleanup_scheduled?'YES':'NO')+'<br>Leaked-password protection: <strong>EXTERNAL CHECK REQUIRED</strong>'
   pill('auditPill',a.covered_trigger_count>0?'ok':'bad',a.covered_trigger_count>0?'ACTIVE':'MISSING')
   $('auditBody').innerHTML='Audit events: <strong>'+esc(a.event_count||0)+'</strong><br>Covered table triggers: <strong>'+esc(a.covered_trigger_count||0)+'</strong><br>No duplicate PII snapshots are stored; audit records focus on action/status/changed-field metadata.'
-  pill('recoveryPill',r.verified?'ok':'warn',r.verified?'VERIFIED':'NOT DRILLED')
-  $('recoveryBody').innerHTML='Last successful drill: <strong>'+esc(fmt(r.last_successful_drill_at))+'</strong><br>Recovery is not considered verified until a real restore drill passes.'
+  pill('recoveryPill',r.verified?'ok':'warn',r.verified?'DB RESTORE RECORDED':'DB RESTORE PENDING')
+   $('recoveryBody').innerHTML='Last qualifying database/full restore record: <strong>'+esc(fmt(r.last_successful_drill_at))+'</strong><br>Last configuration-only drill (not qualifying): <strong>'+esc(fmt(r.last_configuration_drill_at))+'</strong><br>Actual restoration logs and restored records still need independent review.'
   const opBad=Number(o.failed_customer_contact_outbox||0)>0||Number(o.open_customer_care_dead_letters||0)>0
   pill('opsPill',opBad?'warn':'ok',opBad?'ATTENTION':'OK')
   $('opsBody').innerHTML='Failed contact outbox: <strong>'+esc(o.failed_customer_contact_outbox||0)+'</strong><br>Open dead letters: <strong>'+esc(o.open_customer_care_dead_letters||0)+'</strong><br>Active mobile technicians not linked: <strong>'+esc(o.active_mobile_technicians_unlinked||0)+'</strong>'
@@ -108,8 +110,8 @@ function renderAudit(){
   $('auditRows').innerHTML=audits.length?audits.map(x=>'<tr><td>'+esc(fmt(x.occurred_at))+'</td><td>'+esc(x.entity_type)+'<div class="meta">'+esc(x.entity_id||'')+'</div></td><td>'+esc(x.action)+'</td><td>'+esc(x.reference||'—')+'</td><td>'+esc(x.old_status||'—')+' → '+esc(x.new_status||'—')+'</td><td>'+esc((x.changed_fields||[]).join(', ')||'—')+'</td></tr>').join(''):'<tr><td colspan="6">No audit events yet.</td></tr>'
 }
 function renderDrills(){
-  $('recoveryList').innerHTML=drills.length?drills.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #edf2f8"><strong>'+esc(x.drill_type.replaceAll('_',' '))+'</strong> <span class="pill '+(x.status==='passed'?'ok':x.status==='failed'?'bad':'warn')+'">'+esc(x.status)+'</span><div class="meta">'+esc(fmt(x.started_at))+(x.completed_at?' → '+esc(fmt(x.completed_at)):'')+(x.evidence_reference?'<br>Evidence: '+esc(x.evidence_reference):'')+'</div></div>').join(''):'No recovery drill has been recorded yet.'
-}
+   $('recoveryList').innerHTML=drills.length?drills.map(x=>'<div style="padding:7px 0;border-bottom:1px solid #edf2f8"><strong>'+esc(x.drill_type.replaceAll('_',' '))+'</strong> <span class="pill '+(qualifiesDatabaseRecovery(x)?'ok':x.status==='failed'?'bad':'warn')+'">'+esc(x.status)+'</span> '+(x.status==='passed'&&!qualifiesDatabaseRecovery(x)?'<span class="meta">Not DB recovery evidence</span>':'')+'<div class="meta">'+esc(fmt(x.started_at))+(x.completed_at?' → '+esc(fmt(x.completed_at)):'')+(x.evidence_reference?'<br>Evidence: '+esc(x.evidence_reference):'')+'</div></div>').join(''):'No recovery drill has been recorded yet.'
+ }
 
 async function loadAll(){
   const [h,a,r]=await Promise.all([
@@ -124,26 +126,28 @@ async function loadAll(){
 
 async function saveDrill(){
   msg('')
-  const started=toIso($('drillStarted').value)
-  if(!started){msg('Actual or planned start time is required.','bad');return}
-  if($('drillStatus').value==='passed'&&!$('drillEvidence').value.trim()){
-    msg('A Passed drill requires an evidence reference.','bad');return
-  }
-  $('saveDrillBtn').disabled=true
-  const {data:{session}}=await supabase.auth.getSession()
-  const {error}=await supabase.from('platform_recovery_drills').insert({
+  const drill={
     drill_type:$('drillType').value,
-    environment:'non-production',
-    started_at:started,
+    environment:$('drillEnvironment').value,
+    started_at:toIso($('drillStarted').value),
     completed_at:toIso($('drillCompleted').value),
     status:$('drillStatus').value,
     recovery_point:$('drillRecoveryPoint').value.trim()||null,
     recovery_time_minutes:$('drillMinutes').value===''?null:Number($('drillMinutes').value),
     evidence_reference:$('drillEvidence').value.trim()||null,
-    notes:$('drillNotes').value.trim()||null,
-    performed_by:session?.user?.id||null
-  })
-  $('saveDrillBtn').disabled=false
+    notes:$('drillNotes').value.trim()||null
+  }
+  const validation=validateRecoveryDrillInput(drill)
+  if(!validation.ok){msg(validation.reason,'bad');return}
+  $('saveDrillBtn').disabled=true
+  let error
+  try{
+    const {data:{session}}=await supabase.auth.getSession()
+    ;({error}=await supabase.from('platform_recovery_drills').insert({
+      ...drill,performed_by:session?.user?.id||null
+    }))
+  }catch(e){error=e}
+  finally{$('saveDrillBtn').disabled=false}
   if(error){msg(error.message,'bad');return}
   msg('Recovery drill record saved.','ok');await loadAll()
 }
