@@ -23,6 +23,8 @@ const fake=async url=>{
 const result=await runIsolationPreflight(stage,backend,{routes:['/release-readiness'],fetcher:fake})
 assert.equal(result.ok,true)
 assert.equal(result.checks[0].moduleCount,1)
+assert.ok((await import('./uat-isolation.mjs')).REQUIRED_ROUTES.includes('/technician'))
+assert.ok((await import('./uat-isolation.mjs')).REQUIRED_ROUTES.includes('/support'))
 
 // Static route test must actually fetch and validate the extracted JS module;
 // a legacy inline-only test cannot prove release readiness works in production.
