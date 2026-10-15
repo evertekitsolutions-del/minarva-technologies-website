@@ -159,4 +159,49 @@ after update of customer_updates_opt_in,assigned_technician_id,scheduled_at,stat
 on public.service_jobs
 for each row execute function private.capture_service_lifecycle_messages();
 
+-- Atomic wrapper reuses validated numbering, customer, assignment and billing
+-- semantics of the existing create_service_job. No partial registration on error.
+create or replace function public.create_service_job_with_updates(
+  p_customer_id uuid,p_enquiry_id bigint default null,p_invoice_id uuid default null,
+  p_service_category text default null,p_site_address text default null,
+  p_equipment_details text default null,p_complaint text default null,
+  p_requested_work text default null,p_priority text default 'normal',
+  p_assigned_technician_id uuid default null,p_scheduled_at timestamptz default null,
+  p_follow_up_at timestamptz default null,p_internal_notes text default null,
+  p_customer_notes text default null,p_service_charge_estimate numeric default 0,
+  p_parts_estimate numeric default 0,p_customer_updates_opt_in boolean default false
+)
+returns jsonb language plpgsql security invoker set search_path='' as $
+declare
+  v_result jsonb;
+begin
+  if not private.is_active_admin() then
+    raise exception 'Only an active admin may register customer service notification permission'
+      using errcode='42501';
+  end if;
+  v_result:=public.create_service_job(
+    p_customer_id=>p_customer_id,p_enquiry_id=>p_enquiry_id,
+    p_invoice_id=>p_invoice_id,p_service_category=>p_service_category,
+    p_site_address=>p_site_address,p_equipment_details=>p_equipment_details,
+    p_complaint=>p_complaint,p_requested_work=>p_requested_work,
+    p_priority=>p_priority,p_assigned_technician_id=>p_assigned_technician_id,
+    p_scheduled_at=>p_scheduled_at,p_follow_up_at=>p_follow_up_at,
+    p_internal_notes=>p_internal_notes,p_customer_notes=>p_customer_notes,
+    p_service_charge_estimate=>p_service_charge_estimate,p_parts_estimate=>p_parts_estimate
+  );
+  if p_customer_updates_opt_in then
+    update public.service_jobs set customer_updates_opt_in=true
+      where id=(v_result->>'id')::uuid;
+    if not found then raise exception 'Failed to record service communication permission'; end if;
+  end if;
+  return v_result||jsonb_build_object('customer_updates_opt_in',p_customer_updates_opt_in);
+end;
+$;
+revoke all on function public.create_service_job_with_updates(
+ uuid,bigint,uuid,text,text,text,text,text,text,uuid,timestamptz,timestamptz,text,text,numeric,numeric,boolean
+) from public,anon,authenticated;
+grant execute on function public.create_service_job_with_updates(
+ uuid,bigint,uuid,text,text,text,text,text,text,uuid,timestamptz,timestamptz,text,text,numeric,numeric,boolean
+) to authenticated;
+
 commit;
