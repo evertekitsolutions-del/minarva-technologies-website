@@ -174,6 +174,14 @@
               <div class="info-box"><strong id="estimateTotal">₹0.00</strong></div>
             </div>
 
+            <div class="section-title">Customer WhatsApp Service Updates</div>
+            <div class="full">
+              <label style="display:flex;align-items:flex-start;gap:9px;font-size:12px">
+                <input id="customerUpdatesOptIn" type="checkbox" style="width:auto;margin-top:2px">
+                Customer explicitly agreed to receive WhatsApp updates about this service.
+              </label>
+              <div class="help">Unchecked by default. Confirm permission before checking. Registration, engineer assignment and visit scheduling create WhatsApp message records; live sending is OFF (mock only). Unchecking an existing job suppresses unsent updates.</div>
+            </div>
             <div class="section-title">Notes</div>
             <div class="full">
               <label for="internalNotes">Internal notes</label>
@@ -196,6 +204,8 @@
           <div class="section-title" style="margin-top:18px">Lifecycle History</div>
           <div id="eventList" class="event-list"><div class="empty" style="padding:14px">Save or open a job to view lifecycle history.</div></div>
 
+          <div class="section-title" style="margin-top:18px">Service WhatsApp Notification History</div>
+          <div id="serviceNotifications" class="event-list"><div class="empty" style="padding:14px">Open a job to see its notification queue and delivery status.</div></div>
           <div class="section-title" style="margin-top:18px">AI Customer-Care Follow-up Readiness</div>
           <div id="callReadiness" class="call-box"><p>Select a customer to evaluate follow-up readiness.</p></div>
         </div>
@@ -261,6 +271,8 @@
     const estimateTotal=document.getElementById('estimateTotal')
     const internalNotes=document.getElementById('internalNotes')
     const customerNotes=document.getElementById('customerNotes')
+    const customerUpdatesOptIn=document.getElementById('customerUpdatesOptIn')
+    const serviceNotifications=document.getElementById('serviceNotifications')
     const resetBtn=document.getElementById('resetBtn')
     const saveBtn=document.getElementById('saveBtn')
     const formStatusMsg=document.getElementById('formStatusMsg')
@@ -367,7 +379,7 @@
       jobList.innerHTML='<div class="loader">Loading service jobs…</div>'
       const {data,error}=await supabase
         .from('service_jobs')
-        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,created_at,updated_at,customers(name,phone),technicians(name,phone)')
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,customer_updates_opt_in,customer_updates_opt_in_at,created_at,updated_at,customers(name,phone),technicians(name,phone)')
         .order('created_at',{ascending:false}).limit(1500)
       if(error){jobList.innerHTML='<div class="empty">Could not load jobs: '+esc(error.message)+'</div>';return}
       jobs=data||[]
@@ -425,6 +437,8 @@
       partsEstimate.value='0'
       internalNotes.value=''
       customerNotes.value=''
+      customerUpdatesOptIn.checked=false
+      serviceNotifications.innerHTML='<div class="empty" style="padding:14px">Open a job to see notification status.</div>'
       jobInfo.style.display='none'
       eventList.innerHTML='<div class="empty" style="padding:14px">Save or open a job to view lifecycle history.</div>'
       formStatusMsg.textContent=''
@@ -459,6 +473,7 @@
       partsEstimate.value=Number(j.parts_estimate||0)
       internalNotes.value=j.internal_notes||''
       customerNotes.value=j.customer_notes||''
+      customerUpdatesOptIn.checked=j.customer_updates_opt_in===true
       jobInfo.style.display='grid'
       jobNumberInfo.textContent=j.job_number||'—'
       jobCreatedInfo.textContent=j.created_at?new Date(j.created_at).toLocaleString():'—'
@@ -481,11 +496,25 @@
         (e.note?'<div class="meta">'+esc(e.note)+'</div>':'')+'</div>').join('')
     }
 
+    async function loadServiceNotifications(jobId){
+      serviceNotifications.innerHTML='<div class="loader" style="padding:14px">Loading notification history…</div>'
+      const {data,error}=await supabase.from('customer_contact_outbox')
+        .select('event_type,requested_channel,status,suppression_reason,created_at,processed_at')
+        .eq('source_type','service_job').eq('source_id',jobId)
+        .order('created_at',{ascending:false}).limit(100)
+      if(error){serviceNotifications.innerHTML='<div class="empty">Unable to load notifications: '+esc(error.message)+'</div>';return}
+      serviceNotifications.innerHTML=data?.length
+        ?data.map(n=>'<div class="event"><strong>'+esc(n.event_type.replaceAll('_',' '))+'</strong> • '+esc(n.status)+
+          '<div class="meta">'+esc(new Date(n.created_at).toLocaleString())+' • '+esc(n.requested_channel||'')+
+          (n.suppression_reason?' • '+esc(n.suppression_reason):'')+'</div></div>').join('')
+        :'<div class="empty" style="padding:14px">No notifications queued. Service-update consent is required; existing delivery is mock/test only.</div>'
+    }
+
     async function openJob(id){
       const j=jobs.find(x=>String(x.id)===String(id))
       if(!j)return
       fillForm(j)
-      await loadEvents(j.id)
+      await Promise.all([loadEvents(j.id),loadServiceNotifications(j.id)])
       window.scrollTo({top:0,behavior:'smooth'})
     }
 
@@ -511,13 +540,16 @@
       if(enquiryRaw&&(!/^\d+$/.test(enquiryRaw)||Number(enquiryRaw)<1)){formStatusMsg.textContent='Source enquiry ID is invalid.';formStatusMsg.className='status-msg err';return}
       if(invoiceRaw&&invoiceValue===false){formStatusMsg.textContent='Source invoice ID is invalid.';formStatusMsg.className='status-msg err';return}
       if(serviceValue<0||partsValue<0){formStatusMsg.textContent='Estimate values cannot be negative.';formStatusMsg.className='status-msg err';return}
+      if(customerUpdatesOptIn.checked&&!String(customerById(customerId)?.phone||'').trim()){
+        formStatusMsg.textContent='Customer phone is required for opted-in WhatsApp updates.';formStatusMsg.className='status-msg err';return
+      }
 
       saveBtn.disabled=true
       saveBtn.textContent=activeJob?'Saving…':'Creating…'
       formStatusMsg.textContent=''
 
       if(!activeJob){
-        const {data,error}=await supabase.rpc('create_service_job',{
+        const {data,error}=await supabase.rpc('create_service_job_with_updates',{
           p_customer_id:customerId,
           p_enquiry_id:enquiryRaw?Number(enquiryRaw):null,
           p_invoice_id:invoiceValue||null,
@@ -533,14 +565,15 @@
           p_internal_notes:internalNotes.value.trim()||null,
           p_customer_notes:customerNotes.value.trim()||null,
           p_service_charge_estimate:serviceValue,
-          p_parts_estimate:partsValue
+          p_parts_estimate:partsValue,
+          p_customer_updates_opt_in:customerUpdatesOptIn.checked
         })
         saveBtn.disabled=false
         saveBtn.textContent='Create Job'
         if(error){formStatusMsg.textContent='Could not create job: '+error.message;formStatusMsg.className='status-msg err';return}
         await loadJobs()
         const created=jobs.find(j=>String(j.id)===String(data.id))
-        if(created){fillForm(created);await loadEvents(created.id)}
+        if(created){fillForm(created);await Promise.all([loadEvents(created.id),loadServiceNotifications(created.id)])}
         formStatusMsg.textContent='Created '+(data.job_number||'service job')+' successfully.'
         formStatusMsg.className='status-msg ok'
         return
@@ -563,11 +596,12 @@
         internal_notes:internalNotes.value.trim()||null,
         customer_notes:customerNotes.value.trim()||null,
         service_charge_estimate:serviceValue,
-        parts_estimate:partsValue
+        parts_estimate:partsValue,
+        customer_updates_opt_in:customerUpdatesOptIn.checked
       }
 
       const {data,error}=await supabase.from('service_jobs').update(payload).eq('id',activeJob.id)
-        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,created_at,updated_at').single()
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,customer_updates_opt_in,customer_updates_opt_in_at,created_at,updated_at').single()
 
       saveBtn.disabled=false
       saveBtn.textContent='Save Changes'
@@ -575,7 +609,7 @@
       await loadJobs()
       const latest=jobs.find(j=>String(j.id)===String(data.id))||data
       fillForm(latest)
-      await loadEvents(data.id)
+      await Promise.all([loadEvents(data.id),loadServiceNotifications(data.id)])
       formStatusMsg.textContent='Service job updated successfully.'
       formStatusMsg.className='status-msg ok'
     }
