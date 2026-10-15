@@ -1,7 +1,7 @@
 -- Administrator can safely refresh the visit PLANNER, never create jobs.
 begin;
 create or replace function public.refresh_maintenance_schedule()
-returns jsonb language plpgsql security invoker set search_path='' as $$
+returns jsonb language plpgsql security definer set search_path='' as $$
 begin
  if not private.is_active_admin() then
   raise exception 'Administrator access required' using errcode='42501';
