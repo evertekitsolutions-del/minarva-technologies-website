@@ -1,0 +1,86 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0754bd">
+<title>AMC, Warranty & Preventive Maintenance | Minarva Technologies</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#f3f7ff;color:#182e48}
+*{box-sizing:border-box}body{margin:0}main{max-width:1280px;margin:auto;padding:22px 14px 60px}
+header{display:flex;justify-content:space-between;flex-wrap:wrap;align-items:start;gap:12px}
+h1{font-size:clamp(25px,4vw,34px);margin:8px 0;color:#0754bd}
+nav{display:flex;gap:12px;flex-wrap:wrap;padding-top:12px}
+a{color:#0754bd;text-decoration:none;font-weight:700}
+p{line-height:1.55}.muted{color:#526883;font-size:13px}
+.note{padding:12px;border:1px solid #cbdaf1;background:#e9f3ff;border-radius:12px;margin:18px 0;font-size:13px;line-height:1.7}
+.grid{display:grid;grid-template-columns:minmax(300px,.85fr) minmax(0,1.15fr);gap:15px;align-items:start}
+.panel{background:white;border:1px solid #d6e2f4;border-radius:16px;padding:18px;min-width:0}
+h2{font-size:19px;margin:0 0 12px}
+form .fields{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+label{display:block;font-weight:700;font-size:13px}
+label.wide{grid-column:1/-1}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;padding:10px;border:1px solid #becee5;border-radius:9px;margin-top:5px;background:white}
+textarea{min-height:66px}
+button{background:#0754bd;color:white;border:none;border-radius:9px;font-weight:750;padding:11px 15px;cursor:pointer}
+button.ghost{background:#eff6ff;color:#0754bd;border:1px solid #c8dbf5}
+button:disabled{opacity:.55;cursor:wait}
+.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+#contracts,#visits{max-height:640px;overflow:auto}
+.entry{border-top:1px solid #e0e8f2;padding:13px 0}
+.entry strong{display:block;color:#173e70}
+.status{font-size:12px;min-height:18px;margin-top:8px;color:#33556c}
+.tag{display:inline-block;border-radius:7px;background:#e9f2ff;padding:3px 6px;margin:2px;color:#174d89;font-size:11px}
+.tag.warning{background:#fff0df;color:#924b11}
+.tab{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.tab button[aria-pressed=true]{background:#064386}
+@media(max-width:850px){.grid{grid-template-columns:1fr}}
+@media(max-width:520px){form .fields{grid-template-columns:1fr}}
+</style></head><body><main>
+<header><div>
+<div class="muted">MINARVA TECHNOLOGIES · FIELD SERVICE</div>
+<h1>AMC, Warranty & Preventive Maintenance</h1>
+<p id="userLine" class="muted">Checking active administrator access…</p></div>
+<nav aria-label="Service management navigation">
+<a href="/service-operations">Operations</a>
+<a href="/service-jobs">Service Jobs</a>
+<a href="/service-sla-alerts">SLA Inbox</a>
+<a href="/admin">Admin</a></nav></header>
+<div class="note"><strong>Safe recurring scheduling:</strong> Contracts start <strong>INACTIVE</strong>. Only after the administrator enables an AMC/Combined contract will a daily database task prepare the next 45 days of visit records. No job is created, engineer assigned, customer contacted or message sent automatically. Each planned visit must be explicitly converted to a Service Job. Warranty-only contracts do not generate visits. This is not a live WhatsApp or automatic calling service.</div>
+<p id="status" role="status" aria-live="polite">Loading contracts…</p>
+<div class="grid">
+<section class="panel" aria-labelledby="createHeading">
+<h2 id="createHeading">Register Coverage</h2>
+<form id="contractForm">
+<div class="fields">
+<label class="wide">Customer<select id="customerId" required><option value="">Choose customer…</option></select></label>
+<label>Coverage Type<select id="type"><option value="amc">AMC · Recurring</option><option value="warranty">Warranty only</option><option value="combined">AMC + Warranty</option></select></label>
+<label>Preferred Engineer<select id="engineerId"><option value="">Unassigned</option></select></label>
+<label class="wide">Service Category<input id="category" required maxlength="200" placeholder="CCTV Preventive Maintenance"></label>
+<label class="wide">Equipment / Device Details<textarea id="equipment" required maxlength="2000" placeholder="Camera/DVR type, quantity, model"></textarea></label>
+<label>Serial Number<input id="serial" maxlength="200"></label>
+<label>Contract Starts<input id="starts" type="date" required></label>
+<label>Contract Ends<input id="ends" type="date" required></label>
+<label class="wide">Service Site / Address<textarea id="site" maxlength="2000"></textarea></label>
+<label>Warranty Starts<input id="warrantyStarts" type="date"></label>
+<label>Warranty Ends<input id="warrantyEnds" type="date"></label>
+<label>AMC Visit Interval<select id="interval"><option value="3">Every 3 months</option><option value="1">Monthly</option><option value="2">Every 2 months</option><option value="4">Every 4 months</option><option value="6">Every 6 months</option><option value="12">Annual</option></select></label>
+<label>First Planned Visit<input id="firstVisit" type="date"></label>
+<label class="wide">Internal Notes<textarea id="notes" maxlength="4000"></textarea></label>
+</div>
+<p id="preview" class="muted">A visit preview appears after dates are entered. These are proposed dates, not confirmed appointments.</p>
+<div class="actions"><button type="submit" id="createBtn">Save Inactive Contract</button><button class="ghost" id="clearBtn" type="button">Clear</button></div>
+<div id="formStatus" class="status" role="status" aria-live="polite"></div>
+</form>
+</section>
+<div>
+<section class="panel" aria-labelledby="contractsHeading">
+<h2 id="contractsHeading">Customer Contracts</h2>
+<div class="actions"><button class="ghost" id="refreshBtn" type="button">Refresh Contracts & Visits</button></div>
+<div id="contracts"><p class="muted">Loading…</p></div>
+</section>
+<section class="panel" style="margin-top:15px" aria-labelledby="visitsHeading">
+<h2 id="visitsHeading">Preventive Maintenance Visit Planner</h2>
+<div class="muted">Due dates are plan records, not confirmed technician appointments. Create a Service Job only after confirming arrangements.</div>
+<div id="visits"><p class="muted">Loading…</p></div>
+</section>
+</div>
+</div></main><script type="module" src="/assets/service-maintenance.js"></script></body></html>
