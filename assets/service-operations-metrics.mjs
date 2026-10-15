@@ -9,7 +9,10 @@ export const FIELD_FILTERS=Object.freeze([
   ['callback_due','Customer callback'],
   ['awaiting_parts','Waiting for parts'],
   ['feedback_pending','Awaiting feedback'],
-  ['priority_urgent','Urgent open jobs']
+  ['priority_urgent','Urgent open jobs'],
+  ['sla_response_breached','Response SLA breached'],
+  ['sla_resolution_breached','Resolution SLA breached'],
+  ['sla_due_soon','SLA deadline within 60 min']
 ])
 const TERMINAL=new Set(['completed','cancelled'])
 const due=(value,now)=>value!=null&&value!==''&&Number.isFinite(Date.parse(value))&&Date.parse(value)<now
@@ -28,7 +31,25 @@ export function computeServiceOperations(jobs,technicians,feedback,{now=Date.now
     const id=text(job.id)
     const active=!TERMINAL.has(job.status)
     const assigned=Boolean(job.assigned_technician_id)
+    // SLA measurements are based only on explicit job deadlines. Travel start
+    // is NOT arrival. No response outcome is inferred from a completed job
+    // when the actual arrival timestamp is missing.
+    const responseDue=Date.parse(job.sla_response_due_at)
+    const resolutionDue=Date.parse(job.sla_resolution_due_at)
+    const responseAt=Date.parse(job.arrived_at)
+    const resolvedAt=Date.parse(job.completed_at)
+    const responsePending=active&&!Number.isFinite(responseAt)
+    const resolutionPending=active&&!Number.isFinite(resolvedAt)
+    const responseBreached=job.status!=='cancelled'&&Number.isFinite(responseDue)&&(
+      Number.isFinite(responseAt)?responseAt>responseDue:responsePending&&now>responseDue)
+    const resolutionBreached=job.status!=='cancelled'&&Number.isFinite(resolutionDue)&&(
+      Number.isFinite(resolvedAt)?resolvedAt>resolutionDue:resolutionPending&&now>resolutionDue)
+    const nearing=deadline=>Number.isFinite(deadline)&&deadline>=now&&deadline-now<=3600000
     const flags={
+      sla_response_breached:responseBreached,
+      sla_resolution_breached:resolutionBreached,
+      sla_due_soon:active&&!responseBreached&&!resolutionBreached&&
+        ((responsePending&&nearing(responseDue))||(resolutionPending&&nearing(resolutionDue))),
       unassigned:active&&!assigned,
       missed_visit:active&&due(job.scheduled_at,now)&&!job.visit_started_at,
       followup_due:active&&due(job.follow_up_at,now),
@@ -55,7 +76,7 @@ export function computeServiceOperations(jobs,technicians,feedback,{now=Date.now
     }
     return {...job,operations:flags}
   })
-  const order=['missed_visit','callback_due','revisit_due','unassigned','followup_due','awaiting_parts','priority_urgent','feedback_pending']
+  const order=['sla_response_breached','sla_resolution_breached','sla_due_soon','missed_visit','callback_due','revisit_due','unassigned','followup_due','awaiting_parts','priority_urgent','feedback_pending']
   enriched.sort((a,b)=>{
     const ai=order.findIndex(k=>a.operations[k])
     const bi=order.findIndex(k=>b.operations[k])
@@ -70,7 +91,8 @@ export function computeServiceOperations(jobs,technicians,feedback,{now=Date.now
   return {jobs:enriched,flagsByJob,counters,engineers,
     activeCount:jobs.filter(j=>!TERMINAL.has(j.status)).length,
     completedCount:jobs.filter(j=>j.status==='completed').length,
-    attentionCount:enriched.filter(j=>j.operations.attention).length}
+    attentionCount:enriched.filter(j=>j.operations.attention).length,
+    slaEscalationCount:enriched.filter(j=>j.operations.sla_response_breached||j.operations.sla_resolution_breached).length}
 }
 export function boardMatches(job,filter){
   if(filter==='all')return true
