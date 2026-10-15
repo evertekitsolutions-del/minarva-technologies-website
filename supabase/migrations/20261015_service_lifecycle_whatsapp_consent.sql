@@ -11,6 +11,15 @@ alter table public.service_jobs
 create or replace function private.service_capture_customer_update_consent()
 returns trigger language plpgsql set search_path='' as $$
 begin
+  if new.customer_id is distinct from old.customer_id then
+    if new.customer_updates_opt_in then
+      raise exception 'Reconfirm customer WhatsApp permission after changing the customer';
+    end if;
+    new.customer_updates_opt_in_at:=null;
+    new.customer_updates_opt_in_source:=null;
+    new.customer_updates_opt_out_at:=now();
+    return new;
+  end if;
   if new.customer_updates_opt_in is distinct from old.customer_updates_opt_in then
     if new.customer_updates_opt_in then
       new.customer_updates_opt_in_at:=now();
@@ -30,7 +39,7 @@ $$;
 revoke all on function private.service_capture_customer_update_consent() from public,anon,authenticated;
 drop trigger if exists service_capture_customer_update_consent on public.service_jobs;
 create trigger service_capture_customer_update_consent
-before update of customer_updates_opt_in,customer_updates_opt_in_at,customer_updates_opt_in_source,customer_updates_opt_out_at
+before update of customer_id,customer_updates_opt_in,customer_updates_opt_in_at,customer_updates_opt_in_source,customer_updates_opt_out_at
 on public.service_jobs
 for each row execute function private.service_capture_customer_update_consent();
 
@@ -66,7 +75,8 @@ on conflict(template_key,channel,language) do nothing;
 -- Mock provider only. Do not enable an external WhatsApp adapter here.
 insert into public.notification_event_routes
 (event_type,channel,template_key,enabled,provider_adapter_key,fallback_channels)
-select event_type,'whatsapp',template_key,true,
+select event_type,'whatsapp',template_key,
+ exists(select 1 from public.customer_care_provider_adapters where adapter_key='mock_whatsapp' and runtime_mode='test' and config->>'mock'='true'),
  (select adapter_key from public.customer_care_provider_adapters
    where adapter_key='mock_whatsapp' and runtime_mode='test' and config->>'mock'='true'),
  '[]'::jsonb
@@ -119,7 +129,8 @@ revoke all on function private.queue_service_lifecycle_whatsapp(uuid,text) from 
 create or replace function private.capture_service_lifecycle_messages()
 returns trigger language plpgsql security definer set search_path='' as $
 begin
-  if old.customer_updates_opt_in=true and new.customer_updates_opt_in=false then
+  if (old.customer_updates_opt_in=true and new.customer_updates_opt_in=false)
+      or (new.status='cancelled' and old.status is distinct from 'cancelled') then
     update public.customer_contact_outbox
     set status='suppressed',suppression_reason='Customer withdrew service WhatsApp consent'
     where source_type='service_job' and source_id=new.id::text
@@ -155,7 +166,7 @@ $;
 revoke all on function private.capture_service_lifecycle_messages() from public,anon,authenticated;
 drop trigger if exists service_lifecycle_customer_messages on public.service_jobs;
 create trigger service_lifecycle_customer_messages
-after update of customer_updates_opt_in,assigned_technician_id,scheduled_at,status
+after update of customer_id,customer_updates_opt_in,assigned_technician_id,scheduled_at,status
 on public.service_jobs
 for each row execute function private.capture_service_lifecycle_messages();
 
