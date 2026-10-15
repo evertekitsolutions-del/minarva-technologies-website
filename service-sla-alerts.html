@@ -1,0 +1,52 @@
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0754bd">
+<title>Internal SLA Alert Inbox | Minarva Technologies</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#17304b;background:#f4f8fe}
+*{box-sizing:border-box}body{margin:0;padding:22px 14px}main{max-width:1100px;margin:auto}
+header{display:flex;align-items:start;justify-content:space-between;flex-wrap:wrap;gap:12px}
+h1{font-size:clamp(25px,4vw,34px);color:#0754bd;margin:10px 0}h2{font-size:19px;margin:0}
+nav{display:flex;flex-wrap:wrap;gap:12px;padding-top:10px}
+nav a{color:#0754bd;text-decoration:none;font-weight:700}
+p{line-height:1.6}.muted{color:#526a85;font-size:14px}
+.notice{border:1px solid #cbdcf2;background:#eaf3ff;padding:13px;border-radius:11px;margin:17px 0;font-size:13px;line-height:1.6}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:17px 0}
+label{font-weight:700}select,button{border:1px solid #b9cee8;padding:10px 12px;border-radius:9px;background:#fff;font:inherit}
+button{background:#0754bd;color:#fff;border:0;font-weight:700;cursor:pointer}
+button:disabled{opacity:.55;cursor:default}
+#summary{background:#fff;padding:12px;border:1px solid #d7e5f5;border-radius:10px;margin:12px 0;font-weight:650}
+#alerts{display:grid;gap:12px}
+.alert{background:white;border:1px solid #d4e2f2;padding:17px;border-radius:13px}
+.alerthead{display:flex;align-items:start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.alerthead a{color:#0754bd;font-weight:750;text-decoration:none}
+.tag{display:inline-block;font-size:12px;background:#fff0de;color:#8d3d00;border-radius:8px;padding:5px 8px;font-weight:750}
+.tag.acknowledged{background:#e9f1ff;color:#155caa}
+.tag.resolved{background:#e8f7ed;color:#146735}
+.meta{font-size:13px;line-height:1.65;color:#51667e;margin-top:7px}
+#status{min-height:19px;color:#2c4a6c;font-size:13px}
+@media(max-width:600px){.alert{padding:13px}}
+</style></head><body><main>
+<header><div><div class="muted">MINARVA TECHNOLOGIES · FIELD SERVICE</div>
+<h1>Internal SLA Alert Inbox</h1><p id="userLine" class="muted">Checking administrator access…</p></div>
+<nav aria-label="Service navigation">
+<a href="/service-operations">Operations</a>
+<a href="/service-sla-policies">SLA Policies</a>
+<a href="/service-jobs">Service Jobs</a><a href="/admin">Admin</a>
+</nav></header>
+<div class="notice"><strong>Internal-only escalation.</strong> Existing pg_cron refreshes recorded service SLA alerts every 15 minutes. Response means engineer arrival, and resolution means recorded completion. Only explicitly saved job deadlines are evaluated; missing evidence is not treated as a proven late visit. Alerts stay in the private administrator inbox until acknowledged or the underlying condition clears. No email, WhatsApp, SMS, push notification, or telephone call is sent.</div>
+<div class="controls">
+<label for="stateFilter">Alert status</label>
+<select id="stateFilter">
+<option value="open">Open · Needs review</option>
+<option value="acknowledged">Acknowledged</option>
+<option value="resolved">Resolved · History</option>
+<option value="all">All alerts</option>
+</select>
+<button id="refreshBtn" type="button">Refresh</button>
+</div>
+<div id="status" role="status" aria-live="polite">Loading alerts…</div>
+<div id="summary"></div>
+<section id="alerts" aria-label="Service SLA escalation alerts"></section>
+</main><script type="module" src="/assets/service-sla-alerts.js"></script>
+</body></html>
