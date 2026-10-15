@@ -20,6 +20,8 @@ try{
   assert.ok(report.files>=25,'Expected the actual website static pages and assets')
   assert.ok(report.rewritten>=10,'Expected to rewrite all production backend references')
   assert.ok(existsSync(join(out,'assets/site/hero.webp')))
+  assert.ok(existsSync(join(out,'assets/service-operations-metrics.mjs')),'Shared field metrics must be present in isolated UAT')
+  assert.ok(existsSync(join(out,'service-operations.html')),'Field operations route must be available in isolated UAT')
   assert.ok(existsSync(join(out,'services/cctv-security.html')))
   assert.equal(existsSync(join(out,'supabase')),false,'Never publish Supabase privileged source')
   assert.equal(existsSync(join(out,'.github')),false)

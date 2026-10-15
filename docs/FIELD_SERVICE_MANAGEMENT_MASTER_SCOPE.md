@@ -34,3 +34,10 @@ A customer service request is a tracked job, not just a CRM enquiry. Apply to CC
 ## Non-negotiable verification
 
 Protect production and existing records. Use database transactions, RLS, administrative access, no anonymous job/data leakage; no credentials in client source. All notification tests must use mock/test recipients and no real external contact, with asserted idempotency, consent withdrawal, outbox suppression and delivery failure behavior. Real UAT only on dedicated isolated staging. Never record fake feedback/reviews or false provider-delivered status.
+
+
+## Field Operations Control Tower milestone — 2026-10-15
+
+Admin-only `/service-operations` complements existing `/service-jobs`, Technician PWA, Feedback and Customer Care. It reads real authenticated records using bounded Supabase pagination, computes engineer workloads, unassigned jobs, overdue scheduled visits (only before Visit Start), overdue follow-ups, dated return visits, callbacks due, waiting parts/on hold, urgent jobs and completed jobs without feedback. Action buttons link straight to the existing Service Job and Job Sheet. A pure Node regression suite checks state transitions, cancellation, future due dates, callback date handling and respect for all customer feedback ratings. The dashboard NEVER fabricates records, sends messages, mutates data or equates internal overdue reminders with contractual SLA breaches. Truncated paginated snapshots are visibly flagged as partial.
+
+**Still pending:** explicit customer-approved per-service SLA durations, contractual breach/escalation semantics, inventory/AMC recurring contracts, technician location permission and work scheduling, end-to-end live WhatsApp provider review/approval, WhatsApp template governance, authenticated isolated transactional UAT, real restore drill, and final release owner approval. Do not falsely mark these done.

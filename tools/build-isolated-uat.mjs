@@ -7,7 +7,7 @@ import {validateEnvironment, PRODUCTION_SUPABASE_HOST} from './uat-isolation.mjs
 // Build only the deployed static website, never server-side functions, migrations,
 // local credentials or repository workflow artifacts.
 const ROOT=resolve(fileURLToPath(new URL('..',import.meta.url)))
-const PUBLIC_EXTENSIONS=new Set(['.html','.js','.css','.webp','.png','.jpg','.jpeg','.svg','.webmanifest'])
+const PUBLIC_EXTENSIONS=new Set(['.html','.js','.mjs','.css','.webp','.png','.jpg','.jpeg','.svg','.webmanifest'])
 const ROOT_EXTENSIONS=new Set(['.html','.js','.svg','.webmanifest'])
 const PRODUCTION_HOST=PRODUCTION_SUPABASE_HOST
 const PUBLIC_KEY_RE=/sb_publishable_[A-Za-z0-9_-]+/g
