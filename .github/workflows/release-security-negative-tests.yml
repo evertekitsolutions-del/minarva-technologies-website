@@ -20,4 +20,5 @@ jobs:
       - run: node tools/platform-health-recovery-contract.mjs
       - run: node tools/service-lifecycle-whatsapp-contract.mjs
       - run: node tools/service-feedback-contract.mjs
+      - run: node tools/service-feedback-private-rpc-contract.mjs
       - run: node tools/uat-isolation-contract-tests.mjs
