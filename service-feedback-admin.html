@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Service Feedback Management | Minarva Technologies</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f8ff;color:#132c48;font-family:system-ui,sans-serif;padding:18px}
+main{max-width:950px;margin:auto}.card{background:white;border:1px solid #d8e5f5;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 8px 26px #1128510b}
+h1{font-size:26px;margin-bottom:6px;color:#0754bd}h2{font-size:19px;margin-top:0}p{line-height:1.6;color:#45607b}
+input,select{width:100%;padding:12px;border:1px solid #b9cce5;border-radius:10px;margin:7px 0;font:inherit}
+button,a.btn{display:inline-block;border:0;border-radius:10px;padding:11px 14px;background:#0754bd;color:white;font:inherit;font-weight:650;cursor:pointer;text-decoration:none;margin:6px 6px 6px 0}
+button.secondary,a.btn.secondary{background:#eef5ff;color:#0754bd;border:1px solid #b6cff5}button:disabled{opacity:.5;cursor:default}.muted{color:#65788e;font-size:13px}#linkOutput{font-size:12px}
+.feedback{border-top:1px solid #dce7f5;padding:12px 0;line-height:1.5;white-space:pre-wrap}#status,#linkStatus{min-height:20px}label{font-weight:700}
+</style></head><body><main>
+<a href="/service-jobs" class="btn secondary">Back to Service Jobs</a>
+<h1>Service Feedback & Google Reviews</h1>
+<p id="userLine">Checking administrator access…</p>
+<div class="card"><h2>Completed service job</h2>
+<label for="jobSelect">Choose completed service</label>
+<select id="jobSelect"><option value="">Loading jobs…</option></select>
+<p class="muted">Only completed jobs can generate a feedback link. Send the link privately to the correct customer. This action does not automatically send WhatsApp.</p>
+<button id="issueBtn" disabled>Create Secure Feedback Link</button>
+<button id="revokeBtn" class="secondary" disabled>Revoke Unused Link</button>
+<p id="linkStatus" role="status"></p>
+<label for="linkOutput">Private link (shown only after generation)</label><input id="linkOutput" readonly placeholder="Select a completed job and create link">
+<button id="copyBtn" class="secondary" disabled>Copy Feedback Link</button>
+</div>
+<div class="card"><h2>Customer feedback received</h2><div id="feedbackList">Select a service.</div></div>
+<div class="card"><h2>Official Google Business Profile review URL</h2>
+<p class="muted">Enter only your own official Google review link. The invitation will appear to every eligible feedback visitor, regardless of rating, without incentives.</p>
+<label for="googleReviewUrl">Review link</label>
+<input id="googleReviewUrl" type="url" placeholder="Official Google review URL (optional)">
+<button id="saveReviewBtn">Save Review URL</button>
+<p id="status" role="status"></p></div>
+</main><script type="module" src="/assets/service-feedback-admin.js"></script></body></html>
