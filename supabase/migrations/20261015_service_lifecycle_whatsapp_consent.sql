@@ -93,7 +93,7 @@ on conflict(event_type,channel) do nothing;
 create or replace function private.queue_service_lifecycle_whatsapp(
   p_job_id uuid,p_event_type text
 )
-returns void language plpgsql security definer set search_path='' as $
+returns void language plpgsql security definer set search_path='' as $$
 declare
   v_job public.service_jobs%rowtype;
   v_customer public.customers%rowtype;
@@ -123,11 +123,11 @@ begin
         to_char(v_job.scheduled_at at time zone 'Asia/Kolkata','DD Mon YYYY HH12:MI AM'),'')
     ),'pending');
 end;
-$;
+$$;
 revoke all on function private.queue_service_lifecycle_whatsapp(uuid,text) from public,anon,authenticated;
 
 create or replace function private.capture_service_lifecycle_messages()
-returns trigger language plpgsql security definer set search_path='' as $
+returns trigger language plpgsql security definer set search_path='' as $$
 begin
   if (old.customer_updates_opt_in=true and new.customer_updates_opt_in=false)
       or (new.status='cancelled' and old.status is distinct from 'cancelled') then
@@ -162,7 +162,7 @@ begin
   end if;
   return new;
 end;
-$;
+$$;
 revoke all on function private.capture_service_lifecycle_messages() from public,anon,authenticated;
 drop trigger if exists service_lifecycle_customer_messages on public.service_jobs;
 create trigger service_lifecycle_customer_messages
@@ -182,7 +182,7 @@ create or replace function public.create_service_job_with_updates(
   p_customer_notes text default null,p_service_charge_estimate numeric default 0,
   p_parts_estimate numeric default 0,p_customer_updates_opt_in boolean default false
 )
-returns jsonb language plpgsql security invoker set search_path='' as $
+returns jsonb language plpgsql security invoker set search_path='' as $$
 declare
   v_result jsonb;
 begin
@@ -207,7 +207,7 @@ begin
   end if;
   return v_result||jsonb_build_object('customer_updates_opt_in',p_customer_updates_opt_in);
 end;
-$;
+$$;
 revoke all on function public.create_service_job_with_updates(
  uuid,bigint,uuid,text,text,text,text,text,text,uuid,timestamptz,timestamptz,text,text,numeric,numeric,boolean
 ) from public,anon,authenticated;
