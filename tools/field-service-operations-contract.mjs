@@ -57,7 +57,7 @@ assert.equal(boardMatches(report.jobs.find(x=>x.id==='missed'),'engineer:eng-a')
 assert.equal(report.jobs[0].id,'missed','Missed visit ranks as first operational priority')
 assert.ok(report.engineers.some(x=>x.id==='eng-a'&&x.open===5),'Workload counts open jobs')
 assert.ok(report.engineers.some(x=>x.id==='eng-b'&&x.open===2),'Second engineer workload')
-assert.equal(FIELD_FILTERS.length,9)
+assert.equal(FIELD_FILTERS.length,12)
 assert.deepEqual(computeServiceOperations([],[],[],{now}).counters,
   Object.fromEntries(FIELD_FILTERS.map(([k])=>[k,0])),'No real jobs = zero, not fabricated statistics')
 assert.throws(()=>computeServiceOperations([],null,[],{now}),/Expected live service lists/)

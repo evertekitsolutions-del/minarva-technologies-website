@@ -15,4 +15,5 @@ jobs:
           node-version: '22'
       - run: node tools/service-pages-integrity.mjs
       - run: node tools/field-service-operations-contract.mjs
+      - run: node tools/service-sla-contract.mjs
       - run: node tools/support-enquiry-contract.mjs

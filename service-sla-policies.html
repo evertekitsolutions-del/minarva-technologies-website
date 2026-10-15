@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Service SLA Policies | Minarva Technologies</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#16304a;background:#f4f8ff}
+*{box-sizing:border-box}body{margin:0;padding:18px}
+main{max-width:1050px;margin:auto}
+header{display:flex;align-items:start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+h1{font-size:clamp(24px,3vw,32px);color:#0754bd;margin:9px 0}h2{font-size:20px;margin:0 0 13px}
+a{color:#0754bd;text-decoration:none;font-weight:700}
+nav{display:flex;gap:12px;flex-wrap:wrap;padding-top:12px}
+.note{border:1px solid #ccddf2;background:#edf5ff;border-radius:12px;padding:13px;font-size:14px;line-height:1.6;margin:16px 0}
+#policyRows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.policy{background:white;border:1px solid #d4e2f5;border-radius:15px;padding:18px}
+label{display:block;font-size:14px;font-weight:700;margin-top:12px}
+label.toggle{display:flex;gap:9px;align-items:center}
+input[type=number]{width:100%;padding:11px;border:1px solid #bfd1e8;border-radius:9px;margin:6px 0}
+button{margin-top:16px;padding:12px 16px;background:#0754bd;border:0;border-radius:9px;color:white;font-weight:750;cursor:pointer}
+button:disabled{opacity:.55;cursor:wait}
+.hint{font-size:12px;color:#506781;line-height:1.55;margin-top:9px}
+.status{font-size:13px;min-height:17px;margin-top:10px;color:#275c51}
+#userLine{font-size:13px;color:#556b82}
+@media(max-width:700px){#policyRows{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header><div><div class="hint">MINARVA TECHNOLOGIES · FIELD SERVICE</div>
+<h1>Service SLA Policies</h1>
+<p id="userLine">Checking active administrator access…</p></div>
+<nav aria-label="Service navigation"><a href="/service-operations">Field Operations</a><a href="/service-jobs">Service Jobs</a><a href="/admin">Admin</a></nav></header>
+<p class="note"><strong>All SLA policies are disabled by default.</strong> Enter the customer-agreed response and/or resolution target in minutes and explicitly enable the relevant priority. These deadlines apply only to <strong>new</strong> jobs created after activation; existing jobs retain their original commitments. Response means engineer <strong>arrival on site</strong>, not assignment or departure. Resolution means job completion. Targets run in elapsed clock time, including holidays and on-hold periods; business-hours SLA, pauses and contractual escalation rules have not been configured. This screen never sends WhatsApp or places calls.</p>
+<p id="status" role="status" aria-live="polite">Loading SLA policies…</p>
+<div id="policyRows"></div>
+</main><script type="module" src="/assets/service-sla-policies.js"></script></body>
+</html>

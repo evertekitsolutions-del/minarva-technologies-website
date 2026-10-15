@@ -83,6 +83,9 @@ function renderJobs(){
     const tags=FIELD_FILTERS.filter(([key])=>key!=='all'&&job.operations[key])
       .map(([,label])=>'<span class="tag alert">'+safe(label)+'</span>').join('')
     const id=encodeURIComponent(job.id)
+    const slaDates=[job.sla_response_due_at?'Arrival SLA '+inIST(job.sla_response_due_at):null,
+      job.sla_resolution_due_at?'Completion SLA '+inIST(job.sla_resolution_due_at):null]
+      .filter(Boolean).join(' · ')
     const date=job.scheduled_at?'Visit '+inIST(job.scheduled_at):'No appointment scheduled'
     const follow=job.follow_up_at?' · Follow-up '+inIST(job.follow_up_at):''
     return '<article class="job"><div class="jobhead"><a href="/service-jobs?job='+id+
@@ -91,7 +94,7 @@ function renderJobs(){
       safe(customerName(job))+' · '+safe(job.service_category||'')+
       ' · Engineer: '+safe(engineerName(job))+' · Priority: '+
       safe(job.priority||'normal')+'</div><div class="meta">'+safe(date+follow)+
-      '</div>'+tags+'<div class="meta"><a href="/job-sheet?job='+id+
+      '</div>'+tags+(slaDates?'<div class="meta">'+safe(slaDates)+'</div>':'')+'<div class="meta"><a href="/job-sheet?job='+id+
       '">Open visit / job sheet</a></div></article>'
   }).join('')+
     (rows.length>250?'<p class="note">Only the first 250 matching jobs are displayed. Narrow search/filter for the rest.</p>':'')
@@ -108,7 +111,7 @@ async function refresh(){
   try{
     const [jobs,engineers,feedback]=await Promise.all([
       readAll('service_jobs',
-       'id,job_number,customer_id,service_category,complaint,site_address,priority,status,assigned_technician_id,created_at,scheduled_at,follow_up_at,next_visit_at,visit_started_at,resolution_status,callback_required,callback_at,customers(name),technicians(name)',
+       'id,job_number,customer_id,service_category,complaint,site_address,priority,status,assigned_technician_id,created_at,scheduled_at,follow_up_at,next_visit_at,visit_started_at,arrived_at,completed_at,sla_response_due_at,sla_resolution_due_at,resolution_status,callback_required,callback_at,customers(name),technicians(name)',
        'created_at'),
       readAll('technicians','id,name,active','name'),
       readAll('service_feedback','service_job_id,rating,callback_requested,created_at','created_at')
@@ -118,9 +121,10 @@ async function refresh(){
     if(jobs.truncated||engineers.truncated||feedback.truncated)
       statusText('PARTIAL DATA: at least one query exceeded the safe 10,000-row page cap. Metrics reflect loaded records ONLY.',true)
     else
-      statusText('Live read-only snapshot · '+new Intl.DateTimeFormat('en-IN',{
+      statusText((board.slaEscalationCount?'ATTENTION: '+board.slaEscalationCount+' jobs have recorded response/resolution SLA breaches. Review and escalate internally. · ':'')+
+        'Live read-only snapshot · '+new Intl.DateTimeFormat('en-IN',{
         timeZone:'Asia/Kolkata',dateStyle:'medium',timeStyle:'short'
-      }).format(new Date())+' IST · '+jobs.rows.length+' jobs · no SLA assumptions')
+      }).format(new Date())+' IST · '+jobs.rows.length+' jobs · SLA flags only for explicit recorded deadlines')
   }catch(error){
     board=null
     el('cards').replaceChildren()

@@ -176,6 +176,16 @@
               <div class="info-box"><strong id="estimateTotal">₹0.00</strong></div>
             </div>
 
+            <div class="section-title">Contractual Service SLA · <a href="/service-sla-policies">Configure priority targets</a></div>
+            <div class="full help" id="slaHelp">New jobs use enabled priority policies. SLA is OFF until a target is explicitly configured. Existing job deadlines can be edited after opening the job.</div>
+            <div>
+              <label for="slaResponseDue">Engineer arrival deadline (SLA)</label>
+              <input id="slaResponseDue" type="datetime-local" disabled>
+            </div>
+            <div>
+              <label for="slaResolutionDue">Service completion deadline (SLA)</label>
+              <input id="slaResolutionDue" type="datetime-local" disabled>
+            </div>
             <div class="section-title">Customer WhatsApp Service Updates</div>
             <div class="full">
               <label style="display:flex;align-items:flex-start;gap:9px;font-size:12px">
@@ -268,6 +278,9 @@
     const technicianSelect=document.getElementById('technicianSelect')
     const scheduledAt=document.getElementById('scheduledAt')
     const followUpAt=document.getElementById('followUpAt')
+    const slaResponseDue=document.getElementById('slaResponseDue')
+    const slaResolutionDue=document.getElementById('slaResolutionDue')
+    const slaHelp=document.getElementById('slaHelp')
     const serviceEstimate=document.getElementById('serviceEstimate')
     const partsEstimate=document.getElementById('partsEstimate')
     const estimateTotal=document.getElementById('estimateTotal')
@@ -381,7 +394,7 @@
       jobList.innerHTML='<div class="loader">Loading service jobs…</div>'
       const {data,error}=await supabase
         .from('service_jobs')
-        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,customer_updates_opt_in,customer_updates_opt_in_at,created_at,updated_at,customers(name,phone),technicians(name,phone)')
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,sla_response_due_at,sla_resolution_due_at,sla_target_source,customer_updates_opt_in,customer_updates_opt_in_at,created_at,updated_at,customers(name,phone),technicians(name,phone)')
         .order('created_at',{ascending:false}).limit(1500)
       if(error){jobList.innerHTML='<div class="empty">Could not load jobs: '+esc(error.message)+'</div>';return}
       jobs=data||[]
@@ -435,6 +448,11 @@
       technicianSelect.value=''
       scheduledAt.value=''
       followUpAt.value=''
+      slaResponseDue.value=''
+      slaResolutionDue.value=''
+      slaResponseDue.disabled=true
+      slaResolutionDue.disabled=true
+      slaHelp.textContent='New jobs use enabled priority policy targets only. No targets assumed if no policy is enabled. Review or explicitly change SLA dates after saving the job.'
       serviceEstimate.value='0'
       partsEstimate.value='0'
       internalNotes.value=''
@@ -471,6 +489,11 @@
       technicianSelect.value=j.assigned_technician_id||''
       scheduledAt.value=toLocalInput(j.scheduled_at)
       followUpAt.value=toLocalInput(j.follow_up_at)
+      slaResponseDue.value=toLocalInput(j.sla_response_due_at)
+      slaResolutionDue.value=toLocalInput(j.sla_resolution_due_at)
+      slaResponseDue.disabled=false
+      slaResolutionDue.disabled=false
+      slaHelp.textContent='SLA source: '+(j.sla_target_source==='priority_policy'?'priority target when job was created':j.sla_target_source==='manual'?'manual administrator adjustment':'not configured')+'. Deadline changes require confirmation. Changing priority does not alter existing deadlines. On-hold time is not paused.'
       serviceEstimate.value=Number(j.service_charge_estimate||0)
       partsEstimate.value=Number(j.parts_estimate||0)
       internalNotes.value=j.internal_notes||''
@@ -602,8 +625,20 @@
         customer_updates_opt_in:customerUpdatesOptIn.checked
       }
 
+      const slaResponse=toIso(slaResponseDue.value)
+      const slaResolution=toIso(slaResolutionDue.value)
+      const previousResponse=activeJob.sla_response_due_at?new Date(activeJob.sla_response_due_at).toISOString():null
+      const previousResolution=activeJob.sla_resolution_due_at?new Date(activeJob.sla_resolution_due_at).toISOString():null
+      if(slaResponse!==previousResponse||slaResolution!==previousResolution){
+        if(!confirm("Update this service's contractual SLA deadlines? Existing commitments will change.")){
+          saveBtn.disabled=false;saveBtn.textContent='Save Changes';return
+        }
+        payload.sla_response_due_at=slaResponse
+        payload.sla_resolution_due_at=slaResolution
+        payload.sla_target_source='manual'
+      }
       const {data,error}=await supabase.from('service_jobs').update(payload).eq('id',activeJob.id)
-        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,customer_updates_opt_in,customer_updates_opt_in_at,created_at,updated_at').single()
+        .select('id,job_number,customer_id,enquiry_id,invoice_id,service_category,site_address,equipment_details,complaint,requested_work,priority,status,assigned_technician_id,scheduled_at,follow_up_at,completed_at,internal_notes,customer_notes,service_charge_estimate,parts_estimate,total_estimate,sla_response_due_at,sla_resolution_due_at,sla_target_source,customer_updates_opt_in,customer_updates_opt_in_at,created_at,updated_at').single()
 
       saveBtn.disabled=false
       saveBtn.textContent='Save Changes'
