@@ -78,4 +78,85 @@ from (values
 ) as service_routes(event_type,template_key)
 on conflict(event_type,channel) do nothing;
 
+-- Enqueue only when the service customer explicitly opted into WhatsApp updates
+-- and has not since opted out. Never bypass Customer Care consent controls.
+create or replace function private.queue_service_lifecycle_whatsapp(
+  p_job_id uuid,p_event_type text
+)
+returns void language plpgsql security definer set search_path='' as $
+declare
+  v_job public.service_jobs%rowtype;
+  v_customer public.customers%rowtype;
+begin
+  select * into v_job from public.service_jobs where id=p_job_id;
+  if not found or v_job.customer_updates_opt_in is distinct from true
+    or v_job.customer_updates_opt_in_at is null then return; end if;
+  select * into v_customer from public.customers where id=v_job.customer_id;
+  if not found or nullif(btrim(coalesce(v_customer.phone,'')),'') is null then return; end if;
+  if exists(select 1 from public.customer_contact_preferences p
+    where p.customer_id=v_job.customer_id and p.channel='whatsapp'
+      and p.opted_out=true) then return; end if;
+  insert into public.customer_contact_outbox(
+    customer_id,source_type,source_id,source_event_key,event_type,
+    requested_channel,language,recipient,payload,status)
+  values(
+    v_job.customer_id,'service_job',v_job.id::text,
+    'service-lifecycle:'||v_job.id::text||':'||p_event_type||':'||gen_random_uuid()::text,
+    p_event_type,'whatsapp',
+    case when v_customer.preferred_language='en' then 'en' else 'ml' end,
+    btrim(v_customer.phone),
+    jsonb_build_object(
+      'job_number',v_job.job_number,'service_category',v_job.service_category,
+      'engineer_name',coalesce((select name from public.technicians
+        where id=v_job.assigned_technician_id),''),
+      'scheduled_at',coalesce(
+        to_char(v_job.scheduled_at at time zone 'Asia/Kolkata','DD Mon YYYY HH12:MI AM'),'')
+    ),'pending');
+end;
+$;
+revoke all on function private.queue_service_lifecycle_whatsapp(uuid,text) from public,anon,authenticated;
+
+create or replace function private.capture_service_lifecycle_messages()
+returns trigger language plpgsql security definer set search_path='' as $
+begin
+  if old.customer_updates_opt_in=true and new.customer_updates_opt_in=false then
+    update public.customer_contact_outbox
+    set status='suppressed',suppression_reason='Customer withdrew service WhatsApp consent'
+    where source_type='service_job' and source_id=new.id::text
+      and requested_channel='whatsapp' and status in ('pending','ready');
+    return new;
+  end if;
+  if new.customer_updates_opt_in is distinct from true
+    or new.status in ('cancelled','completed') then return new; end if;
+
+  if old.customer_updates_opt_in is distinct from true then
+    perform private.queue_service_lifecycle_whatsapp(new.id,'service_registered');
+    if new.assigned_technician_id is not null then
+      perform private.queue_service_lifecycle_whatsapp(new.id,'service_engineer_assigned');
+    end if;
+    if new.scheduled_at is not null then
+      perform private.queue_service_lifecycle_whatsapp(new.id,'service_visit_scheduled');
+    end if;
+    return new;
+  end if;
+  if new.assigned_technician_id is distinct from old.assigned_technician_id
+    and new.assigned_technician_id is not null then
+    perform private.queue_service_lifecycle_whatsapp(new.id,'service_engineer_assigned');
+  end if;
+  if new.scheduled_at is distinct from old.scheduled_at
+    and new.scheduled_at is not null then
+    perform private.queue_service_lifecycle_whatsapp(new.id,
+      case when old.scheduled_at is null then 'service_visit_scheduled'
+           else 'service_visit_rescheduled' end);
+  end if;
+  return new;
+end;
+$;
+revoke all on function private.capture_service_lifecycle_messages() from public,anon,authenticated;
+drop trigger if exists service_lifecycle_customer_messages on public.service_jobs;
+create trigger service_lifecycle_customer_messages
+after update of customer_updates_opt_in,assigned_technician_id,scheduled_at,status
+on public.service_jobs
+for each row execute function private.capture_service_lifecycle_messages();
+
 commit;
