@@ -39,7 +39,7 @@ const checks=[
  ['explicit job creation',page.includes("if(!confirm('Create one Service Job")],
  ['no calls',!page.includes('functions.invoke(')],
  ['staging route',read('tools/uat-isolation.mjs').includes("'/service-maintenance'")],
- ['CI script',read('.github/workflows/service-pages-integrity.yml').includes('tools/service-maintenance-contract.mjs')]
+ ['CI script',read('tools/service-pages-integrity.mjs').includes("await import('./service-maintenance-contract.mjs')")]
 ]
 for(const [label,valid] of checks)assert.ok(valid,label)
 assert.equal(addCalendarMonths('2026-01-31',1),'2026-02-28')
