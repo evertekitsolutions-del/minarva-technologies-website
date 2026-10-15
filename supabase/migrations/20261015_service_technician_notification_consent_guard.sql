@@ -12,6 +12,13 @@ begin
   ) then
     new.status:='suppressed';
     new.suppression_reason:='Customer did not opt in to service notifications';
+  elsif exists(
+    select 1 from public.customer_contact_preferences p
+    where p.customer_id=new.customer_id and p.channel=new.channel
+      and p.opted_out=true
+  ) then
+    new.status:='suppressed';
+    new.suppression_reason:='Customer opted out of the selected channel';
   end if;
   return new;
 end;
