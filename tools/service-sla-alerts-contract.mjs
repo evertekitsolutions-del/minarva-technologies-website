@@ -64,7 +64,7 @@ assert.ok(pageLinks.includes('/service-jobs'))
 assert.ok(pageLinks.includes('/service-operations'))
 const scenarios=[
  // status, arrival, completion, due, observed time -> response breach
- ['open before', 'open',null,null,5,10,false],
+ ['open before', 'open',null,null,5,4,false],
  ['open after', 'open',null,null,5,4,true],
  ['arrival on time','in_progress',3,null,5,10,false],
  ['arrival late','in_progress',6,null,5,10,true],
