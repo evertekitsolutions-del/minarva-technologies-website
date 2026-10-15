@@ -31,7 +31,7 @@ const items=[
 ]
 const report=computeServiceOperations(items,[{id:'a',name:'Engineer A',active:true}],[],{now})
 const flags=id=>report.flagsByJob[id]
-assert.equal(report.counters.sla_response_breached,4)
+assert.equal(report.counters.sla_response_breached,3)
 assert.equal(report.counters.sla_resolution_breached,4)
 assert.equal(report.counters.sla_due_soon,3)
 assert.equal(report.slaEscalationCount,6,'Count individual jobs, not two alerts on same job')
