@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#0754bd">
+<title>Field Service Control Tower | Minarva Technologies</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#152943;background:#f2f7ff}
+*{box-sizing:border-box}body{margin:0}button,input,select{font:inherit}
+main{max-width:1380px;margin:auto;padding:22px 16px 70px}
+header{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+nav{display:flex;flex-wrap:wrap;gap:8px}
+nav a,.button{border:1px solid #b7d1f4;border-radius:10px;padding:10px 12px;background:#f8fbff;color:#0754bd;text-decoration:none;font-weight:700;cursor:pointer}
+h1{margin:8px 0;font-size:clamp(25px,3vw,35px);color:#083c84}.sub,.muted{color:#566a83;line-height:1.5}
+#userLine{font-size:12px}#status{min-height:22px;color:#344965;font-size:13px}
+#cards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin:20px 0}
+.metric{background:#fff;border:1px solid #d2e3f8;border-radius:15px;padding:16px;text-align:left;cursor:pointer;min-height:108px;box-shadow:0 8px 22px #0f315708}
+.metric:hover,.metric[aria-pressed=true]{border:2px solid #0754bd;padding:15px;background:#eef6ff}
+.metric span{display:block;font-size:12px;color:#435b78}.metric strong{display:block;font-size:26px;margin-top:7px;color:#0a3b85}
+.grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(270px,1fr);gap:15px;align-items:start}
+.panel{background:white;border:1px solid #d6e5f8;border-radius:16px;padding:17px;min-width:0}
+.panel h2{font-size:18px;margin:0 0 12px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:11px}
+.controls input,.controls select{padding:10px;border-radius:9px;border:1px solid #bacfea;background:#fff;max-width:100%}
+.controls input{flex:1;min-width:180px}
+#jobRows{max-height:900px;overflow:auto}article.job{border-top:1px solid #e1e9f4;padding:13px 2px}
+.jobhead{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.jobhead a{font-weight:750;color:#0754bd;text-decoration:none}.jobhead a:hover{text-decoration:underline}
+.meta{font-size:12px;color:#526680;line-height:1.65;margin-top:4px}
+.tag{display:inline-block;border-radius:8px;background:#eaf2ff;color:#134c93;padding:4px 7px;font-size:11px;margin:3px 5px 3px 0}
+.tag.alert{background:#fff0e8;color:#9a3716}
+#engineerRows{max-height:770px;overflow:auto}
+.engineer{display:block;width:100%;text-align:left;border:0;border-top:1px solid #e0e9f6;background:white;padding:13px 4px;cursor:pointer}
+.engineer:hover,.engineer[aria-pressed=true]{background:#edf5ff}
+.engineer strong{display:block;color:#173e71;margin-bottom:5px}
+.engineer small{display:block;color:#5c6e86}
+.note{padding:11px 13px;background:#f4f7fd;border:1px solid #d8e2f1;border-radius:10px;font-size:12px;line-height:1.65;margin-top:15px}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #3b82f6;outline-offset:2px}
+@media(max-width:1050px){#cards{grid-template-columns:repeat(3,1fr)}.grid{grid-template-columns:1fr}}
+@media(max-width:620px){main{padding:13px 10px 40px}#cards{grid-template-columns:repeat(2,1fr)}.metric{min-height:95px;padding:12px}.metric[aria-pressed=true]{padding:11px}.metric strong{font-size:23px}.panel{padding:12px}}
+</style></head><body>
+<main>
+<header>
+<div>
+<div class="sub">MINARVA TECHNOLOGIES · SERVICE OPERATIONS</div>
+<h1>Field Service Control Tower</h1>
+<div class="sub">Engineer allocation, overdue visits, callbacks, revisits, and customer feedback.</div>
+<p id="userLine" class="muted">Checking administrator access…</p>
+</div>
+<nav aria-label="Field service navigation">
+<a href="/service-jobs">Service Jobs</a>
+<a href="/technician">Technician Mobile</a>
+<a href="/service-feedback-admin">Feedback & Reviews</a>
+<a href="/customer-care">Customer Care</a>
+<a href="/admin">Admin</a>
+</nav>
+</header>
+<div id="status" role="status" aria-live="polite">Loading secure service data…</div>
+<section id="cards" aria-label="Service attention categories"></section>
+<div class="grid">
+<section class="panel" aria-labelledby="jobsTitle">
+<h2 id="jobsTitle">Jobs requiring attention</h2>
+<div class="controls">
+<input id="search" type="search" aria-label="Search service job" placeholder="Search job, customer, engineer or service">
+<select id="filter" aria-label="Attention filter"></select>
+<button id="refresh" class="button" type="button">Refresh</button>
+</div>
+<div class="muted" id="jobCount"></div>
+<div id="jobRows"><p>Checking service records…</p></div>
+</section>
+<aside class="panel" aria-labelledby="engineersTitle">
+<h2 id="engineersTitle">Engineer workload</h2>
+<p class="muted">Active jobs and attention flags by assigned engineer.</p>
+<div id="engineerRows"></div>
+<div class="note">Attention flags are operational reminders derived from real recorded appointment and follow-up times. They are <strong>not</strong> contracted SLA breaches. No notification or customer message is sent from this dashboard.</div>
+</aside>
+</div>
+</main>
+<script type="module" src="/assets/service-operations.js"></script>
+</body></html>
