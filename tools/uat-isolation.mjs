@@ -3,7 +3,7 @@
 // customers, invoices, payments, recovery evidence, or phone calls.
 export const PRODUCTION_SUPABASE_HOST='kwullzwhlzziosjsejud.supabase.co'
 export const PRODUCTION_SITE_HOSTS=new Set(['minarva-technologies-website.vercel.app','minarvatechnologies.com','www.minarvatechnologies.com','minarva-technologies-website-minarva-biz.vercel.app','minarva-technologies-website-git-main-minarva-biz.vercel.app'])
-export const REQUIRED_ROUTES=['/','/admin','/quotations','/invoices','/service-jobs','/job-sheet','/technician','/customer-care','/voice-simulator','/voice-runtime','/calling-readiness','/release-readiness','/platform-health','/support','/service-feedback','/service-feedback-admin','/service-operations']
+export const REQUIRED_ROUTES=['/','/admin','/quotations','/invoices','/service-jobs','/job-sheet','/technician','/customer-care','/voice-simulator','/voice-runtime','/calling-readiness','/release-readiness','/platform-health','/support','/service-feedback','/service-feedback-admin','/service-operations','/service-sla-policies']
 const SUPABASE_ORIGINS=/https:\/\/[a-z0-9-]+\.supabase\.co/gi
 const SCRIPT_TAG=/<script\b[^>]*>/gi
 const MODULE_CONTENT=/<script\b[^>]*\btype=["']module["'][^>]*>([\s\S]*?)<\/script>/gi
