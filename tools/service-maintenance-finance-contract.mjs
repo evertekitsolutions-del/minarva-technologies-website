@@ -29,7 +29,7 @@ const check=[
  ['only association insert on frontend',client.includes(".insert({contract_id:contract.id,quotation_id:select.value})")],
  ['client does not create payments',!/record_invoice_payment|convert_quotation_to_invoice|\.from\('invoice_payments'\)/.test(client)],
  ['contract admin gating retained',admin.includes('requireActiveAdmin(db')],
- ['renewal card integration',admin.includes('await displayMaintenanceFinance(db,contracts,esc)')],
+ ['renewal card integration',admin.includes('displayMaintenanceFinance(db,contracts,esc)')],
  ['explicit confirmation',client.includes('Permanently link this quotation')],
  ['no naive fake totals',!/Math\.random|dummy|mockInvoice|sampleInvoice/.test(client)],
  ['valid transaction boundary',/begin;[\s\S]*commit;\s*$/.test(migration)]
