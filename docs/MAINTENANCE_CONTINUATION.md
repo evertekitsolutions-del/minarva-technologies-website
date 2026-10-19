@@ -105,3 +105,37 @@ work. Real messaging still requires explicit owner-approved provider
 integration, customer consent, approved templates, delivery tracking, and
 legal compliance. Authenticated transactional UAT, restoration proof and Auth
 leaked-password setting remain pending; do not call the full project done.
+
+## Manual follow-up audit and operator history — 2026-10-19
+
+Milestone after merged PR #45. New migration
+`20261019_maintenance_manual_followup_audit.sql` creates a secure
+append-only `service_maintenance_followup_events` history table with
+contract/customer foreign keys, an idempotent client event UUID, server-side
+authenticated actor/time, manual event type, channel/language, short
+permission-reference attestation and optional note. The insert trigger
+fails closed for missing admin or customer mismatch and rejects outbound
+phone-related records when the customer is marked `do_not_call`.
+Active admin alone may SELECT/INSERT under RLS; anonymous users and
+UPDATE/DELETE are denied. No RPC escalates privileges.
+
+The `/service-maintenance` admin view adds a separate manual log panel
+and a bounded 100-row chronological history per selected contract. It records
+**operator assertions** (`draft_reviewed`, `manual_attempt_reported`,
+`customer_reply_reported`) rather than fabricated provider sent/delivered
+events. Permission reference text is operator-supplied and NOT independently
+verified consent. Recording a follow-up does not message the customer.
+The existing English/Malayalam review + clipboard experience is preserved.
+
+The migration must be applied and checked with live SQL before the new
+history UI can write/read actual records. During implementation the linked
+Supabase app returned `link_id must identify an eligible linked account`.
+Code and CI tests may merge independently, but **do not claim this database
+milestone deployed, verified or end-to-end operational** until live
+migration, RLS/ACL readback, negative tests and isolated authenticated UAT
+pass. On production environments still missing the migration, the new
+history panel reports unavailability while old manual draft/copy remains
+usable. Never auto-send WhatsApp, SMS or telephone messages without separate
+customer consent, owner approval and provider integration. The existing Auth
+leaked-password protection warning and backup recovery evidence remain
+release blockers.
