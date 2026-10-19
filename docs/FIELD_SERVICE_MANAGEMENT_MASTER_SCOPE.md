@@ -59,3 +59,34 @@ Existing `pg_cron` refreshes `private.refresh_service_sla_alerts()` every 15 min
 A new authenticated active-admin-only `/service-sla-alerts` dashboard displays open/acknowledged/resolved alerts and links to the service job/job sheet. Admin can explicitly confirm acknowledgement; the audit fields record identity and timestamp. Direct anonymous access and table writes are forbidden by grants and RLS. The dashboard reads up to 250 recent matching alert records and displays partial record counts when capped. The pre-existing Field Operations metrics dashboard remains read-only.
 
 The scheduler runs inside the existing Supabase PostgreSQL instance. **No external calls**: no WhatsApp, SMS, email, phone, external pushes or new paid infrastructure are activated. This is an internal inbox, not guaranteed instantaneous notification: up to 15-minute polling delay, and no unattended mobile push. Business-hours holidays, pause contracts, service AMC/warranty, escalation recipient routing and approved WhatsApp templates remain unfinished.
+
+
+## Read-only Field Service Control Tower exports — 2026-10-19
+
+Add `assets/service-operations-export.mjs` and controls to administrator-only
+`/service-operations`. Authorized administrators can explicitly download
+**currently loaded, filtered and searched** service records as a local CSV,
+including job identifier, customer/engineer names, category, status, priority,
+real saved appointment/follow-up/SLA timestamps in IST and actual computed
+attention flags. Complaint details, contact telephone/email, site address,
+photos and payment information are excluded. CSV is escaped and mitigates
+spreadsheet formula injection. The operator confirms exporting sensitive names.
+
+A separate local `.ics` calendar download exports only actual recorded
+`scheduled_at` timestamps for open jobs with valid UUIDs; completed/cancelled
+records are excluded. No appointment duration, customer confirmation, arrival,
+reminder, attendee, customer address or calendar invitation is invented. Every
+event is marked TENTATIVE and transparent; recorded appointment dates remain
+subject to customer confirmation. Calendar file names/UIDs are stable per job.
+
+Exports operate entirely in-browser from the existing bounded Control Tower
+snapshot; query cap at 10,000 rows remains and partial-source export warnings
+are explicit. No data is created or changed in Supabase, no provider or
+subscription is activated, and real automated calling/WhatsApp remain OFF.
+All exports require an active administrator session and intentional clicks.
+
+The separately prepared AMC follow-up audit migration in PR #46 remains
+**unapplied** while the linked Supabase connector reports an invalid link ID.
+Do not call the follow-up audit history live until DB migration, permissions
+and genuine authenticated UAT are independently verified. Full release
+requires backup recovery evidence and Auth leaked-password protection.

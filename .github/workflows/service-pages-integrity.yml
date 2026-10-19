@@ -15,6 +15,7 @@ jobs:
           node-version: '22'
       - run: node tools/service-pages-integrity.mjs
       - run: node tools/field-service-operations-contract.mjs
+      - run: node tools/service-operations-export-contract.mjs
       - run: node tools/service-sla-contract.mjs
       - run: node tools/service-sla-alerts-contract.mjs
       - run: node tools/service-rpc-boundary-contract.mjs
