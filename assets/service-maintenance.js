@@ -5,6 +5,7 @@ import {maintenancePreview} from '/assets/maintenance-calendar.mjs'
 import {nextRenewalStart,renewalAttention,renewalWatch} from '/assets/maintenance-renewal.mjs'
 import {displayMaintenanceFinance} from '/assets/maintenance-finance.mjs'
 import {installRenewalFollowupDesk} from '/assets/maintenance-renewal-followup.mjs'
+import {installManualFollowupHistory} from '/assets/maintenance-followup-audit.mjs'
 const db=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 installAdminSessionGuard(db)
 const el=id=>document.getElementById(id)
@@ -19,6 +20,7 @@ const nowDate=()=>{
 let authorized=false,customers=[],technicians=[],contracts=[],visits=[]
 let renewalSourceId=null
 const renderFollowupDesk=installRenewalFollowupDesk(el('renewalFollowupDesk'))
+const renderFollowupHistory=installManualFollowupHistory(el('renewalFollowupHistory'),db)
 const status=(v)=>{el('status').textContent=v}
 const formStatus=v=>{el('formStatus').textContent=v}
 function setType(){
@@ -140,7 +142,10 @@ async function reload(){
   contracts=cs.data||[];visits=vs.data||[]
   renderContracts();renderRenewalWatch();renderVisits(vs.count||0)
   renderFollowupDesk({contracts,customers,asOf:nowDate()})
-  await displayMaintenanceFinance(db,contracts,esc)
+  await Promise.all([
+    displayMaintenanceFinance(db,contracts,esc),
+    renderFollowupHistory({contracts,customers})
+  ])
   status(contracts.length+' contracts'+(contracts.length===1000?' (first 1000 only; renewal watch is partial)':'')+
     ' · '+visits.length+' planned/linked/skipped visits loaded. No outbound communications.')
 }
