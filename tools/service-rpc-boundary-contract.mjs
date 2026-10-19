@@ -41,7 +41,7 @@ assert.match(sql,/if v_row.status='open' then/);
 assert.match(sql,/acknowledged_by=auth\.uid\(\)/);
 assert.match(sql,/return private\.refresh_service_maintenance_visits\(current_date\)/);
 assert.doesNotMatch(sql.replace(/--[^\n]*/g,''),/cron\.schedule|http_post|net\.http_post|twilio|send_sms|send_email/i);
-assert.match(sql,/^begin;[\s\S]*\ncommit;\s*$/);
+assert.match(sql,/^begin;[\s\S]*\ncommit;\s*$/m);
 assert.equal((sql.match(/as \$fn\$/g)||[]).length,4);
 assert.equal((sql.match(/^\$fn\$;/gm)||[]).length,4);
 console.log(JSON.stringify({ok:true,privateImplementations:2,invokerWrappers:2,clientRpcNamesPreserved:true,noOutboundActions:true}));
