@@ -18,3 +18,31 @@ The new regression contract runs in Service Pages Integrity CI.
 A live SQL privilege check and a fresh Supabase Security Advisor scan are
 required before this milestone may be marked verified. The independent
 Auth leaked-password protection warning remains outside this migration.
+
+## AMC/Warranty renewal successor drafts — 2026-10-19
+
+Add `20261019_service_maintenance_renewal_links.sql` to the existing secure
+contract registry. Administrator-only `/service-maintenance` now displays
+a 60-day expiry watch for loaded contracts and can prefill a successor renewal
+draft. The draft starts the day AFTER the original contract ends and always
+requires an explicitly reviewed end date, revised visit dates and (where
+applicable) warranty terms. Saving creates a separate INACTIVE contract;
+it never extends or silently edits the prior signed contract.
+
+The database enforces a single successor for each source, same customer,
+strictly non-overlapping coverage dates, immutable source lineage,
+no self-renewal, and initial inactivity. Existing private/admin RLS is not
+weakened. Existing contracts have NULL predecessor and are unchanged.
+The frontend renewal watch intentionally reports only loaded records
+(currently 1000 max), never an unverified database-wide count. New
+`assets/maintenance-renewal.mjs` provides leap-year/date-safe renewal
+calculations; `tools/service-maintenance-renewal-contract.mjs` covers
+security and date regression in existing Service Pages CI.
+
+This is renewal TRACKING / DRAFTING only, not a signed renewal, automatic
+activation, quotation, paid AMC invoice, online payment or service reminder.
+Any billing must reuse the existing explicit quotation -> invoice -> payment
+workflow with proper financial audit. WhatsApp and phone calls remain OFF.
+Actual authenticated staging UAT / backup restore / Auth leak protection
+release gates remain pending. Expanded full-scope completion percentage
+remains unverified.
