@@ -104,6 +104,48 @@ button:disabled{opacity:.55;cursor:wait}
 </div>
 <p class="status" data-followup="status" role="status" aria-live="polite"></p>
 </section>
+<section class="panel" id="renewalFollowupHistory" style="margin-top:15px" aria-labelledby="historyHeading">
+<h2 id="historyHeading">Renewal Follow-up Activity · Administrator Audit</h2>
+<p class="muted">This is an append-only operator-entered activity log, not a delivery receipt or verified customer consent database. Recording an entry never sends a message.</p>
+<div class="fields">
+<label class="wide">Service coverage
+<select data-history="contract"><option value="">Choose contract…</option></select>
+</label>
+<label>Activity
+<select data-history="event">
+<option value="draft_reviewed">Draft reviewed / approved internally</option>
+<option value="manual_attempt_reported">I manually attempted contact outside this app</option>
+<option value="customer_reply_reported">I received a customer reply outside this app</option>
+</select>
+</label>
+<label>External channel
+<select data-history="channel">
+<option value="whatsapp">WhatsApp (manual)</option>
+<option value="email">Email (manual)</option>
+<option value="sms">SMS (manual)</option>
+<option value="phone">Phone (manual; Do Not Call enforced)</option>
+<option value="other">Other</option>
+</select>
+</label>
+<label>Language
+<select data-history="language"><option value="en">English</option><option value="ml">Malayalam</option></select>
+</label>
+<label class="wide">Where separate customer permission was obtained
+<textarea data-history="permission" rows="2" maxlength="400" placeholder="Source, date and scope of independently obtained permission. Required for draft review and manual attempt."></textarea>
+</label>
+<label class="wide">Internal outcome / note
+<textarea data-history="summary" rows="2" maxlength="500" placeholder="Do not include sensitive documents, card information or unverified delivery claims."></textarea>
+</label>
+</div>
+<label style="display:flex;gap:8px;align-items:flex-start;margin-top:12px">
+<input type="checkbox" data-history="attestation" style="width:auto;margin:3px 0 0">
+<span>I confirm this is an accurate manual operator record. It is not a provider-confirmed delivery or a system-verified consent record.</span>
+</label>
+<div class="actions"><button type="button" data-history="save" disabled>Record activity in audit</button></div>
+<p class="status" data-history="status" role="status" aria-live="polite"></p>
+<h2 style="margin-top:24px">Recent administrator entries</h2>
+<div class="muted" data-history="events" aria-live="polite">Choose a service contract to load activity history.</div>
+</section>
 <section class="panel" style="margin-top:15px" aria-labelledby="visitsHeading">
 <h2 id="visitsHeading">Preventive Maintenance Visit Planner</h2>
 <div class="muted">Due dates are plan records, not confirmed technician appointments. Create a Service Job only after confirming arrangements.</div>
