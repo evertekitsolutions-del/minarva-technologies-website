@@ -67,8 +67,12 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 <input id="search" type="search" aria-label="Search service job" placeholder="Search job, customer, engineer or service">
 <select id="filter" aria-label="Attention filter"></select>
 <button id="refresh" class="button" type="button">Refresh</button>
+<button id="exportCsv" class="button" type="button" disabled>Export filtered CSV</button>
+<button id="exportCalendar" class="button" type="button" disabled>Export planned visits (.ics)</button>
 </div>
 <div class="muted" id="jobCount"></div>
+<p id="exportStatus" class="muted" role="status" aria-live="polite"></p>
+<div class="note">Exports contain only the currently loaded, filtered live records. CSV contains names but excludes phone numbers, addresses, fault descriptions and photos. Calendar slots are <strong>TENTATIVE</strong>; they do not reserve a technician, confirm the customer's availability or send invitations. Treat exported files as private.</div>
 <div id="jobRows"><p>Checking service records…</p></div>
 </section>
 <aside class="panel" aria-labelledby="engineersTitle">
