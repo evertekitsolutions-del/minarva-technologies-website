@@ -48,7 +48,8 @@ button:disabled{opacity:.55;cursor:wait}
 <p id="status" role="status" aria-live="polite">Loading contracts…</p>
 <div class="grid">
 <section class="panel" aria-labelledby="createHeading">
-<h2 id="createHeading">Register Coverage</h2>
+<h2 id="createHeading">Register Coverage or Renewal</h2>
+<p id="renewalBanner" class="note" hidden aria-live="polite"></p>
 <form id="contractForm">
 <div class="fields">
 <label class="wide">Customer<select id="customerId" required><option value="">Choose customer…</option></select></label>
@@ -67,12 +68,18 @@ button:disabled{opacity:.55;cursor:wait}
 <label class="wide">Internal Notes<textarea id="notes" maxlength="4000"></textarea></label>
 </div>
 <p id="preview" class="muted">A visit preview appears after dates are entered. These are proposed dates, not confirmed appointments.</p>
-<div class="actions"><button type="submit" id="createBtn">Save Inactive Contract</button><button class="ghost" id="clearBtn" type="button">Clear</button></div>
+<div class="actions"><button type="submit" id="createBtn">Save Inactive Contract</button><button class="ghost" id="clearBtn" type="button">Clear</button><button class="ghost" id="cancelRenewalBtn" type="button" hidden>Cancel Renewal Draft</button></div>
 <div id="formStatus" class="status" role="status" aria-live="polite"></div>
 </form>
 </section>
 <div>
 <section class="panel" aria-labelledby="contractsHeading">
+<section aria-labelledby="renewalHeading">
+<h2 id="renewalHeading">Renewal Watch · 60 Days</h2>
+<p class="muted">Shows near-expiry and expired coverage from loaded records. A renewal is a separate inactive contract, never an extension or automatic payment request.</p>
+<div id="renewalWatch" aria-live="polite"><p class="muted">Checking coverage dates…</p></div>
+</section>
+<hr style="border:0;border-top:1px solid #d6e2f4;margin:20px 0">
 <h2 id="contractsHeading">Customer Contracts</h2>
 <div class="actions"><button class="ghost" id="refreshBtn" type="button">Refresh Contracts & Visits</button></div>
 <div id="contracts"><p class="muted">Loading…</p></div>

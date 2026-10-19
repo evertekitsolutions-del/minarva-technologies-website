@@ -2,6 +2,7 @@ import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 import {requireActiveAdmin} from '/admin-access.js'
 import {installAdminSessionGuard} from '/admin-session-guard.js'
 import {maintenancePreview} from '/assets/maintenance-calendar.mjs'
+import {nextRenewalStart,renewalAttention,renewalWatch} from '/assets/maintenance-renewal.mjs'
 const db=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 installAdminSessionGuard(db)
 const el=id=>document.getElementById(id)
@@ -14,6 +15,7 @@ const nowDate=()=>{
   return p.year+'-'+p.month+'-'+p.day
 }
 let authorized=false,customers=[],technicians=[],contracts=[],visits=[]
+let renewalSourceId=null
 const status=(v)=>{el('status').textContent=v}
 const formStatus=v=>{el('formStatus').textContent=v}
 function setType(){
@@ -51,11 +53,26 @@ async function loadSelectors(){
   el('engineerId').innerHTML='<option value="">Unassigned</option>'+
     technicians.filter(t=>t.active).map(t=>'<option value="'+esc(t.id)+'">'+esc(t.name)+'</option>').join('')
 }
+function renderRenewalWatch(){
+  const due=renewalWatch(contracts,nowDate())
+  el('renewalWatch').innerHTML=due.length?
+    '<strong>'+due.length+' expiring or expired contracts among loaded records</strong>'+
+    '<div class="muted">Review renewal terms with the customer before saving an inactive successor.</div>'+
+    due.slice(0,12).map(({contract,attention})=>
+      '<div class="entry"><a href="#contract-'+esc(contract.id)+'">'+
+      esc(contract.contract_number)+'</a> · '+esc(customerName(contract.customer_id))+
+      '<div class="muted">'+esc(attention.label)+'</div></div>').join('')+
+    (due.length>12?'<div class="muted">Showing the first 12 requiring attention.</div>':'')
+  :'<p class="muted">No expiries within 60 days among loaded contracts without a recorded successor.</p>'
+}
 function renderContracts(){
+  const successors=new Map(contracts.filter(c=>c.renewed_from_contract_id).map(c=>[c.renewed_from_contract_id,c]))
   el('contracts').innerHTML=contracts.length?contracts.map(c=>{
     const active=c.active===true
     const recurring=c.contract_type!=='warranty'
-    return '<article class="entry"><strong>'+esc(c.contract_number)+'</strong>'+
+    const successor=successors.get(c.id)
+    const attention=renewalAttention(c,nowDate(),Boolean(successor))
+    return '<article class="entry" id="contract-'+esc(c.id)+'"><strong>'+esc(c.contract_number)+'</strong>'+
       '<div class="muted">'+esc(customerName(c.customer_id))+' · '+esc(c.contract_type.toUpperCase())+
       ' · '+esc(c.service_category)+'</div>'+
       '<div class="muted">Equipment: '+esc(c.equipment_details)+' · '+esc(date(c.starts_on))+
@@ -65,11 +82,18 @@ function renderContracts(){
       (recurring?' · Every '+esc(c.maintenance_interval_months)+' months':' · No recurring visits')+
       ' · Engineer: '+esc(technicianName(c.assigned_technician_id))+'</div>'+
       '<span class="tag '+(active?'':'warning')+'">'+(active?'ACTIVE':'INACTIVE')+'</span>'+
+      (attention.code==='expiring'||attention.code==='expired'||attention.code==='renewed'?
+        '<span class="tag '+(attention.needsAttention?'warning':'')+'">'+esc(attention.label)+'</span>':'')+
+      (c.renewed_from_contract_id?
+        '<div class="muted">Renews contract '+esc(contracts.find(x=>x.id===c.renewed_from_contract_id)?.contract_number||c.renewed_from_contract_id)+'</div>':'')+
       '<div class="actions"><button type="button" class="ghost" data-contract="'+esc(c.id)+'" data-action="'+(active?'deactivate':'activate')+'">'+
-      (active?'Deactivate Contract':'Activate Contract')+'</button></div></article>'
+      (active?'Deactivate Contract':'Activate Contract')+'</button>'+
+      (!successor?'<button type="button" class="ghost" data-contract="'+esc(c.id)+'" data-action="renew">Draft Renewal</button>':
+      '<span class="muted">Successor: '+esc(successor.contract_number)+'</span>')+
+      '</div></article>'
   }).join(''):'<p class="muted">No real AMC/Warranty contracts have been registered yet.</p>'
   for(const button of el('contracts').querySelectorAll('[data-contract]')){
-    button.addEventListener('click',()=>toggleContract(button))
+    button.addEventListener('click',()=>button.dataset.action==='renew'?beginRenewal(button.dataset.contract):toggleContract(button))
   }
 }
 function renderVisits(total){
@@ -102,7 +126,7 @@ async function reload(){
   status('Reading contracts and planned visits…')
   const [cs,vs]=await Promise.all([
     db.from('service_maintenance_contracts')
-      .select('id,contract_number,customer_id,contract_type,service_category,equipment_details,equipment_serial,starts_on,ends_on,warranty_starts_on,warranty_ends_on,maintenance_interval_months,first_visit_on,site_address,assigned_technician_id,active,activated_at,created_at')
+      .select('id,contract_number,customer_id,renewed_from_contract_id,contract_type,service_category,equipment_details,equipment_serial,starts_on,ends_on,warranty_starts_on,warranty_ends_on,maintenance_interval_months,first_visit_on,site_address,assigned_technician_id,active,activated_at,created_at')
       .order('created_at',{ascending:false}).limit(1000),
     db.from('service_maintenance_visits')
       .select('id,contract_id,due_on,service_job_id,skipped_at,skip_reason,generated_at',{count:'exact'})
@@ -110,8 +134,49 @@ async function reload(){
   ])
   if(cs.error||vs.error){status('Data unavailable: '+String(cs.error?.message||vs.error?.message));return}
   contracts=cs.data||[];visits=vs.data||[]
-  renderContracts();renderVisits(vs.count||0)
-  status(contracts.length+' contracts · '+visits.length+' planned/linked/skipped visits loaded. No outbound communications.')
+  renderContracts();renderRenewalWatch();renderVisits(vs.count||0)
+  status(contracts.length+' contracts'+(contracts.length===1000?' (first 1000 only; renewal watch is partial)':'')+
+    ' · '+visits.length+' planned/linked/skipped visits loaded. No outbound communications.')
+}
+function clearRenewalDraft(){
+  renewalSourceId=null
+  el('renewalBanner').hidden=true
+  el('cancelRenewalBtn').hidden=true
+  el('createBtn').textContent='Save Inactive Contract'
+  el('contractForm').reset()
+  setType()
+}
+function beginRenewal(contractId){
+  if(!authorized)return
+  const source=contracts.find(c=>c.id===contractId)
+  if(!source)return
+  if(contracts.some(c=>c.renewed_from_contract_id===contractId)){
+    formStatus('A renewal successor is already recorded for this contract.')
+    return
+  }
+  renewalSourceId=source.id
+  el('customerId').value=source.customer_id
+  el('type').value=source.contract_type
+  el('engineerId').value=source.assigned_technician_id||''
+  el('category').value=source.service_category
+  el('equipment').value=source.equipment_details
+  el('serial').value=source.equipment_serial||''
+  el('site').value=source.site_address||''
+  el('starts').value=nextRenewalStart(source.ends_on)
+  el('ends').value=''
+  el('warrantyStarts').value=''
+  el('warrantyEnds').value=''
+  el('interval').value=String(source.maintenance_interval_months||3)
+  el('firstVisit').value=''
+  el('notes').value=''
+  setType()
+  el('renewalBanner').textContent='Draft renewal of '+source.contract_number+
+    '. Coverage starts after '+source.ends_on+'. Review the new end date, visit dates, warranty terms and customer details. No invoice or message will be created.'
+  el('renewalBanner').hidden=false
+  el('cancelRenewalBtn').hidden=false
+  el('createBtn').textContent='Save Inactive Renewal'
+  formStatus('Renewal draft ready. Complete and verify required dates before saving.')
+  el('contractForm').scrollIntoView({behavior:'smooth',block:'start'})
 }
 async function toggleContract(button){
   const active=button.dataset.action==='activate',id=button.dataset.contract
@@ -174,11 +239,17 @@ async function createContract(e){
   if(recurring&&(!firstVisit||firstVisit<starts||firstVisit>ends)){
     formStatus('First AMC visit date must fall inside coverage dates.');return
   }
-  if(!confirm('Save this coverage as INACTIVE? Nothing will schedule until the administrator activates it.'))return
+  if(renewalSourceId&&contracts.find(c=>c.id===renewalSourceId)?.customer_id!==el('customerId').value){
+    formStatus('Renewal customer must match the original contract.');return
+  }
+  const confirmation=renewalSourceId?
+    'Create an INACTIVE renewal successor? This will not amend the prior contract, generate invoices or contact the customer.':
+    'Save this coverage as INACTIVE? Nothing will schedule until the administrator activates it.'
+  if(!confirm(confirmation))return
   el('createBtn').disabled=true
   formStatus('Saving contract…')
   const data={
-    customer_id:el('customerId').value,contract_type:type,
+    customer_id:el('customerId').value,renewed_from_contract_id:renewalSourceId,contract_type:type,
     service_category:el('category').value.trim(),
     equipment_details:el('equipment').value.trim(),equipment_serial:el('serial').value.trim()||null,
     site_address:el('site').value.trim()||null,assigned_technician_id:el('engineerId').value||null,
@@ -190,16 +261,18 @@ async function createContract(e){
     const {data:record,error}=await db.from('service_maintenance_contracts')
       .insert(data).select('id,contract_number').single()
     if(error||!record)throw error||Error('Contract registration failed')
-    el('contractForm').reset();setType()
+    const renewalSaved=Boolean(renewalSourceId)
+    clearRenewalDraft()
     await reload()
-    formStatus('Saved '+record.contract_number+' (inactive). Activate explicitly to schedule visits.')
+    formStatus('Saved '+record.contract_number+(renewalSaved?' as inactive renewal successor':' (inactive)')+'. Activate explicitly to schedule visits.')
   }catch(e){formStatus('Could not register contract: '+String(e.message||e))}
   finally{el('createBtn').disabled=false}
 }
 el('type').addEventListener('change',setType)
 for(const id of ['starts','ends','firstVisit','interval'])el(id).addEventListener('change',updatePreview)
 el('contractForm').addEventListener('submit',createContract)
-el('clearBtn').addEventListener('click',()=>{el('contractForm').reset();setType();formStatus('')})
+el('clearBtn').addEventListener('click',()=>{clearRenewalDraft();formStatus('')})
+el('cancelRenewalBtn').addEventListener('click',()=>{clearRenewalDraft();formStatus('Renewal draft cleared.')})
 el('refreshBtn').addEventListener('click',async()=>{
  if(!authorized)return
  const {error}=await db.rpc('refresh_maintenance_schedule')
