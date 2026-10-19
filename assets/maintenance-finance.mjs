@@ -20,6 +20,25 @@ async function readByIds(db,table,column,ids,fields){
   return result;
 }
 function href(path,id){return path+'?'+(path==='/quotations'?'quotation':'invoice')+'='+encodeURIComponent(id);}
+
+function businessDate(){
+  const parts=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{
+    timeZone:'Asia/Kolkata',year:'numeric',month:'2-digit',day:'2-digit'
+  }).formatToParts(new Date()).map(p=>[p.type,p.value]));
+  return parts.year+'-'+parts.month+'-'+parts.day;
+}
+export function paymentAttention(invoice,today){
+  if(!invoice||invoice.status==='cancelled')return null;
+  if(invoice.balance_due===null||invoice.balance_due===undefined||
+      !Number.isFinite(Number(invoice.balance_due))||Number(invoice.balance_due)<=0)return null;
+  const due=String(invoice.due_date||'');
+  if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(due)||!/^\\d{4}-\\d{2}-\\d{2}$/.test(today))return null;
+  const delta=Math.round((Date.parse(due+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/86400000);
+  if(!Number.isFinite(delta))return null;
+  if(delta<0)return 'Payment overdue by '+(-delta)+' day(s) — internal follow-up';
+  if(delta<=7)return 'Payment due in '+delta+' day(s) — internal follow-up';
+  return null;
+}
 export function invoiceFinanceState(invoice){
   if(!invoice)return {code:'missing',text:'No invoice converted yet'};
   const status=String(invoice.status||'unknown');
@@ -41,7 +60,7 @@ export async function displayMaintenanceFinance(db,contracts,esc){
     quotes=await readByIds(db,'quotations','id',links.map(l=>l.quotation_id),
       'id,quotation_number,status,currency,total_amount');
     invoices=await readByIds(db,'invoices','source_quotation_id',links.map(l=>l.quotation_id),
-      'id,invoice_number,source_quotation_id,status,payment_status,currency,total_amount,amount_paid,balance_due');
+      'id,invoice_number,source_quotation_id,status,payment_status,currency,total_amount,amount_paid,balance_due,due_date');
   }catch(error){
     for(const c of renewals)show(c.id,'<span class="muted">Billing data unavailable: '+esc(error.message||error)+'</span>');
     return;
@@ -69,7 +88,8 @@ export async function displayMaintenanceFinance(db,contracts,esc){
         esc(invoice.invoice_number)+'</a> · '+esc(invoiceState.text)+
         ' · Total '+esc(money(invoice.total_amount,invoice.currency))+
         ' · Received '+esc(money(invoice.amount_paid,invoice.currency))+
-        ' · Outstanding '+esc(money(invoice.balance_due,invoice.currency))+'</div>':
+        ' · Outstanding '+esc(money(invoice.balance_due,invoice.currency))+'</div>'+ 
+        (paymentAttention(invoice,businessDate())?'<div class="tag warning">'+esc(paymentAttention(invoice,businessDate()))+'</div>':''):
         '<div class="muted">'+esc(invoiceState.text)+'. Convert only via the existing quotation workflow.</div>')+
       '<div class="muted">Quotation association is immutable; payment corrections remain in Invoice Ledger.</div>');
   }
