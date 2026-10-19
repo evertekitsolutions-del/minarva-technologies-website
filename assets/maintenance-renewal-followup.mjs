@@ -1,4 +1,4 @@
-import {renewalWatch} from '/assets/maintenance-renewal.mjs';
+import {renewalWatch} from './maintenance-renewal.mjs';
 
 // This module deliberately has NO customer-care outbox, WhatsApp or call adapter.
 const languages=new Set(['en','ml']);
@@ -6,8 +6,14 @@ const clean=value=>String(value??'').trim();
 const escapeHtml=value=>clean(value).replace(/[&<>"']/g,char=>({
   '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
 }[char]));
-const validDate=value=>/^\d{4}-\d{2}-\d{2}$/.test(clean(value)) &&
-  !Number.isNaN(Date.parse(clean(value)+'T00:00:00Z'));
+const validDate=value=>{
+  const s=clean(value);
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(s))return false;
+  const [year,month,day]=s.split('-').map(Number);
+  const date=new Date(Date.UTC(year,month-1,day));
+  return date.getUTCFullYear()===year &&
+    date.getUTCMonth()===month-1 && date.getUTCDate()===day;
+};
 
 export function draftRenewalFollowup({contract,customer,today,language='en'}){
   const name=clean(customer?.name),code=clean(contract?.contract_number);
