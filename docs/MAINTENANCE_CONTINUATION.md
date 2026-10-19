@@ -46,3 +46,31 @@ workflow with proper financial audit. WhatsApp and phone calls remain OFF.
 Actual authenticated staging UAT / backup restore / Auth leak protection
 release gates remain pending. Expanded full-scope completion percentage
 remains unverified.
+
+## Renewal quotation, invoice & payment read model — 2026-10-19
+
+Migration `20261019_maintenance_renewal_quote_links.sql` adds an append-only
+active-admin-only renewal→existing quotation association. Renewal successor
+and quotation MUST belong to the same customer, only one quotation per renewal,
+and one renewal per quotation. A SQL trigger blocks changing the customer's
+identity on a linked quotation. Existing `create_quotation`,
+`convert_quotation_to_invoice`, `record_invoice_payment`, and void/
+cancel RPCs remain the only finance creation/mutation paths.
+
+`/service-maintenance` now links to `/quotations?customer=<id>` for
+explicit drafting, allows manual administrator selection of an existing
+eligible quotation, and after confirmation shows the saved quotation and
+any existing invoice via `invoices.source_quotation_id`. Invoice totals,
+payment_status, amount_paid and balance_due are displayed from the
+authoritative invoice ledger, not re-derived locally. Due/overdue warnings
+are internal UI hints only and require a real unpaid balance and saved
+invoice due date. No WhatsApp, SMS, email or telephone action is fired.
+
+UI lists are bounded: only the first 1000 loaded contracts feed the
+renewal/finance cards and the newest 50 eligible quotations are offered
+per customer. The underlying SQL uniqueness guards cross-page races.
+Association links are immutable and cannot be updated/deleted by
+authenticated browser clients. Real authenticated staging end-to-end
+financial tests, release recovery proof and leaked-password setting
+remain outstanding. The broad renewal billing workflow is not claimed
+complete beyond this evidence-backed linkage milestone.

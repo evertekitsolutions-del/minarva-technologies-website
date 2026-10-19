@@ -3,6 +3,7 @@ import {requireActiveAdmin} from '/admin-access.js'
 import {installAdminSessionGuard} from '/admin-session-guard.js'
 import {maintenancePreview} from '/assets/maintenance-calendar.mjs'
 import {nextRenewalStart,renewalAttention,renewalWatch} from '/assets/maintenance-renewal.mjs'
+import {displayMaintenanceFinance} from '/assets/maintenance-finance.mjs'
 const db=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 installAdminSessionGuard(db)
 const el=id=>document.getElementById(id)
@@ -85,7 +86,8 @@ function renderContracts(){
       (attention.code==='expiring'||attention.code==='expired'||attention.code==='renewed'?
         '<span class="tag '+(attention.needsAttention?'warning':'')+'">'+esc(attention.label)+'</span>':'')+
       (c.renewed_from_contract_id?
-        '<div class="muted">Renews contract '+esc(contracts.find(x=>x.id===c.renewed_from_contract_id)?.contract_number||c.renewed_from_contract_id)+'</div>':'')+
+        '<div class="muted">Renews contract '+esc(contracts.find(x=>x.id===c.renewed_from_contract_id)?.contract_number||c.renewed_from_contract_id)+'</div>'+ 
+        '<div class="entry" data-renewal-finance="'+esc(c.id)+'"><span class="muted">Loading linked finance records…</span></div>':'')+
       '<div class="actions"><button type="button" class="ghost" data-contract="'+esc(c.id)+'" data-action="'+(active?'deactivate':'activate')+'">'+
       (active?'Deactivate Contract':'Activate Contract')+'</button>'+
       (!successor?'<button type="button" class="ghost" data-contract="'+esc(c.id)+'" data-action="renew">Draft Renewal</button>':
@@ -135,6 +137,7 @@ async function reload(){
   if(cs.error||vs.error){status('Data unavailable: '+String(cs.error?.message||vs.error?.message));return}
   contracts=cs.data||[];visits=vs.data||[]
   renderContracts();renderRenewalWatch();renderVisits(vs.count||0)
+  await displayMaintenanceFinance(db,contracts,esc)
   status(contracts.length+' contracts'+(contracts.length===1000?' (first 1000 only; renewal watch is partial)':'')+
     ' · '+visits.length+' planned/linked/skipped visits loaded. No outbound communications.')
 }
