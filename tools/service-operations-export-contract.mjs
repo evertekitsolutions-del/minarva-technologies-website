@@ -48,7 +48,7 @@ assert.match(ics,/DTSTART:20261019T080000Z/);
 assert.match(ics,/DTSTAMP:20261019T110000Z/);
 assert.match(ics,/STATUS:TENTATIVE/);
 assert.match(ics,/TRANSP:TRANSPARENT/);
-assert.match(ics,/UID:service-job-64f9bb92-4421-4312-a07f-1a1fc948bd35@minarvatechnologies.com/);
+assert.match(ics.replace(/\r\n /g,''),/UID:service-job-64f9bb92-4421-4312-a07f-1a1fc948bd35@minarvatechnologies.com/);
 assert.doesNotMatch(ics,/PRIVATE ADDRESS|PRIVATE fault details|HYPERLINK|ATTENDEE|ORGANIZER|BEGIN:VALARM/);
 assert.equal(ics.match(/BEGIN:VEVENT/g)?.length,1);
 assert.equal(makeServiceVisitIcs([{...job,scheduled_at:null}],{
