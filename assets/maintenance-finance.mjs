@@ -32,7 +32,7 @@ export function paymentAttention(invoice,today){
   if(invoice.balance_due===null||invoice.balance_due===undefined||
       !Number.isFinite(Number(invoice.balance_due))||Number(invoice.balance_due)<=0)return null;
   const due=String(invoice.due_date||'');
-  if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(due)||!/^\\d{4}-\\d{2}-\\d{2}$/.test(today))return null;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(due)||!/^\d{4}-\d{2}-\d{2}$/.test(today))return null;
   const delta=Math.round((Date.parse(due+'T00:00:00Z')-Date.parse(today+'T00:00:00Z'))/86400000);
   if(!Number.isFinite(delta))return null;
   if(delta<0)return 'Payment overdue by '+(-delta)+' day(s) — internal follow-up';
