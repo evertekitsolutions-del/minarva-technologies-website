@@ -46,6 +46,7 @@ const checks=[
   ['function is security invoker',/language plpgsql security invoker set search_path=''/.test(sql)],
   ['private function revoke',/revoke all on function private\.maintenance_prepare_followup_event\(\)/.test(sql)],
   ['no server-side message sending',!/cron\.schedule|http_post|net\.http|twilio|send_sms|send_email|insert into public\.customer_contact_outbox/i.test(sql.replace(/--[^\n]*/g,''))],
+  ['unapplied backend fails closed',/saveButton\.disabled=!storageReady/.test(client)&&/storageReady=!probeError/.test(client)],
   ['UI only inserts audit events',/\.from\('service_maintenance_followup_events'\)\.insert\(payload\)/.test(client)],
   ['explicit reviewed-record confirmation',/if\(!confirm\('Store an append-only administrator statement/.test(client)],
   ['no webhooks or provider APIs in UI',!/functions\.invoke|fetch\(|WebSocket|\.rpc\(|window\.open/.test(client)],
