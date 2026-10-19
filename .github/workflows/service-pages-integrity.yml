@@ -18,4 +18,5 @@ jobs:
       - run: node tools/service-sla-contract.mjs
       - run: node tools/service-sla-alerts-contract.mjs
       - run: node tools/service-rpc-boundary-contract.mjs
+      - run: node tools/service-maintenance-renewal-contract.mjs
       - run: node tools/support-enquiry-contract.mjs
