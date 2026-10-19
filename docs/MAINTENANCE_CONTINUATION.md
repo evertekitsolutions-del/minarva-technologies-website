@@ -74,3 +74,34 @@ authenticated browser clients. Real authenticated staging end-to-end
 financial tests, release recovery proof and leaked-password setting
 remain outstanding. The broad renewal billing workflow is not claimed
 complete beyond this evidence-backed linkage milestone.
+
+## AMC/Warranty manual renewal follow-up desk — 2026-10-19
+
+The authenticated Service Maintenance admin page now includes a **Manual Renewal
+Follow-up Desk**, built directly on the existing 60-day renewal watch and
+customer master. For near-expiry/expired coverage without a renewal successor,
+admins can review a real customer's contract details, select English or
+Malayalam, edit a conservative message draft and manually copy it **only**
+after confirming appropriate independent customer messaging permission.
+
+`assets/maintenance-renewal-followup.mjs` has deterministic date-aware
+templates without asserted pricing, no inferred WhatsApp opt-in, an explicit
+DO NOT CALL notice where flagged, and a safe clipboard button. Copy is
+disabled by default, reset on contract/language switch or message edits, and
+requires fresh confirmation. The customer `preferred_contact_channel` and
+`call_consent` are not interpreted as WhatsApp marketing consent. No
+provider API, outbox insertion, logging of contact, auto-calling, sending,
+scheduled reminders, paid credits or synthetic customer data is introduced.
+
+A dedicated regression `tools/service-maintenance-followup-contract.mjs`
+checks Malayalam/English expiry text, malformed contract dates,
+renewal-suppression, opt-in acknowledgement and zero outbound actions in
+Service Pages CI. This milestone uses existing authorized customer reads
+only and **has no new migration**.
+
+Production database connector must be reconnected for subsequent stored
+follow-up statuses, server-authorized consent evidence or any new RLS schema
+work. Real messaging still requires explicit owner-approved provider
+integration, customer consent, approved templates, delivery tracking, and
+legal compliance. Authenticated transactional UAT, restoration proof and Auth
+leaked-password setting remain pending; do not call the full project done.

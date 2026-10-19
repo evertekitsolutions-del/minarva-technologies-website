@@ -84,6 +84,26 @@ button:disabled{opacity:.55;cursor:wait}
 <div class="actions"><button class="ghost" id="refreshBtn" type="button">Refresh Contracts & Visits</button></div>
 <div id="contracts"><p class="muted">Loading…</p></div>
 </section>
+<section class="panel" id="renewalFollowupDesk" style="margin-top:15px" aria-labelledby="followupHeading">
+<h2 id="followupHeading">Renewal Follow-up Desk · Manual Only</h2>
+<p class="muted">Prepare English or Malayalam follow-up text from existing coverage records. Nothing is sent, scheduled, charged or logged as customer contact. Check separate customer permission before sharing externally.</p>
+<p class="muted" data-followup="count">Available once authorized records load.</p>
+<div class="fields">
+<label class="wide">Coverage needing attention<select data-followup="contract" aria-label="Renewal contract for follow-up"><option value="">Choose contract…</option></select></label>
+<label>Message language<select data-followup="language"><option value="en">English</option><option value="ml">മലയാളം</option></select></label>
+</div>
+<p class="note" data-followup="notice">Choose a contract. Customer call consent or a preferred channel is not proof of permission to receive a renewal message.</p>
+<label for="followupMessage">Draft for review and optional editing</label>
+<textarea id="followupMessage" data-followup="message" rows="9" maxlength="3500" placeholder="Select a real contract to generate a draft."></textarea>
+<label style="display:flex;align-items:flex-start;gap:8px;margin-top:12px">
+<input data-followup="permission" type="checkbox" style="width:auto;margin:3px 0 0">
+<span>I have separately verified this customer's permission for this renewal follow-up. This checkbox is not stored as consent and does not send a message.</span>
+</label>
+<div class="actions">
+<button type="button" data-followup="copy" disabled>Copy reviewed draft</button>
+</div>
+<p class="status" data-followup="status" role="status" aria-live="polite"></p>
+</section>
 <section class="panel" style="margin-top:15px" aria-labelledby="visitsHeading">
 <h2 id="visitsHeading">Preventive Maintenance Visit Planner</h2>
 <div class="muted">Due dates are plan records, not confirmed technician appointments. Create a Service Job only after confirming arrangements.</div>

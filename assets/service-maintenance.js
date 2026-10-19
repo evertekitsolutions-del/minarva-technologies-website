@@ -4,6 +4,7 @@ import {installAdminSessionGuard} from '/admin-session-guard.js'
 import {maintenancePreview} from '/assets/maintenance-calendar.mjs'
 import {nextRenewalStart,renewalAttention,renewalWatch} from '/assets/maintenance-renewal.mjs'
 import {displayMaintenanceFinance} from '/assets/maintenance-finance.mjs'
+import {installRenewalFollowupDesk} from '/assets/maintenance-renewal-followup.mjs'
 const db=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 installAdminSessionGuard(db)
 const el=id=>document.getElementById(id)
@@ -17,6 +18,7 @@ const nowDate=()=>{
 }
 let authorized=false,customers=[],technicians=[],contracts=[],visits=[]
 let renewalSourceId=null
+const renderFollowupDesk=installRenewalFollowupDesk(el('renewalFollowupDesk'))
 const status=(v)=>{el('status').textContent=v}
 const formStatus=v=>{el('formStatus').textContent=v}
 function setType(){
@@ -44,7 +46,7 @@ function customerName(id){return customers.find(c=>c.id===id)?.name||'Customer'}
 function technicianName(id){return id?(technicians.find(t=>t.id===id)?.name||'Unknown Engineer'):'Unassigned'}
 async function loadSelectors(){
   const [cs,ts]=await Promise.all([
-    db.from('customers').select('id,name').order('name',{ascending:true}).limit(1000),
+    db.from('customers').select('id,name,preferred_language,preferred_contact_channel,call_consent,do_not_call').order('name',{ascending:true}).limit(1000),
     db.from('technicians').select('id,name,active').order('name',{ascending:true}).limit(1000)
   ])
   if(cs.error||ts.error)throw cs.error||ts.error
@@ -137,6 +139,7 @@ async function reload(){
   if(cs.error||vs.error){status('Data unavailable: '+String(cs.error?.message||vs.error?.message));return}
   contracts=cs.data||[];visits=vs.data||[]
   renderContracts();renderRenewalWatch();renderVisits(vs.count||0)
+  renderFollowupDesk({contracts,customers,asOf:nowDate()})
   await displayMaintenanceFinance(db,contracts,esc)
   status(contracts.length+' contracts'+(contracts.length===1000?' (first 1000 only; renewal watch is partial)':'')+
     ' · '+visits.length+' planned/linked/skipped visits loaded. No outbound communications.')
