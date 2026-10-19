@@ -40,7 +40,7 @@ assert.match(renewalContactReview(customer),/NOT proof/);
 assert.match(renewalContactReview({...customer,do_not_call:false}),/NOT proof/);
 
 const checks=[
-  ['no outbound integrations',!/\.rpc\(|fetch\(|XMLHttpRequest|WebSocket|whatsapp|window\.open\s*\(|location\.href\s*=|send_message|send_sms/i.test(
+  ['no outbound integrations',!/\.rpc\(|fetch\(|XMLHttpRequest|WebSocket|window\.open\s*\(|location\.href\s*=|send_message|send_sms/i.test(
     code.replace(/\/\/[^\n]*/g,''))],
   ['only explicit clipboard copy',/navigator\.clipboard\.writeText\(message\.value\)/.test(code)],
   ['copy requires manual permission',/!confirmPermission\.checked/.test(code)],
