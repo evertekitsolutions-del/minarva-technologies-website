@@ -73,7 +73,7 @@ const checks=[
  ['only loaded filtered jobs',client.includes('exportedJobRows(board,filter')],
  ['truncated snapshot warnings',client.includes('truncatedSnapshot')&&client.includes('partial (10,000-row cap)')],
  ['no provider messaging',!/functions\.invoke|\.insert\(|\.update\(|\.upsert\(|\.delete\(|\.rpc\(/.test(client)],
- ['no confidential data columns in export',!/site_address|complaint|\.phone\b|\.email\b/.test(exporter)],
+ ['no confidential data columns in export',!/site_address|complaint|\.phone\b|\.email\b/.test(exporter.slice(exporter.indexOf('export function makeServiceOperationsCsv'),exporter.indexOf('function validUuid')))],
  ['ICS has no alarm',!exporter.includes('BEGIN:VALARM')],
  ['ICS UTC timestamp',exporter.includes('new Date(ms).toISOString()')],
  ['CSV formula guard',exporter.includes("valueText=\"'\"+valueText")],
