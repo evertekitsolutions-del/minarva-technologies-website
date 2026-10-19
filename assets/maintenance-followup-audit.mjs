@@ -42,7 +42,7 @@ export function installManualFollowupHistory(root,db){
   const langSelect=el('language'),permissionField=el('permission');
   const noteField=el('summary'),confirmField=el('attestation');
   const saveButton=el('save'),eventsEl=el('events'),statusEl=el('status');
-  let byId=new Map(),customerById=new Map(),requestId=null,revision=0;
+  let byId=new Map(),customerById=new Map(),requestId=null,revision=0,storageReady=false;
   const invalidate=()=>{
     requestId=null;
     confirmField.checked=false;
@@ -56,7 +56,7 @@ export function installManualFollowupHistory(root,db){
       contract:c,customer,event_type:typeSelect.value,channel:channelSelect.value,
       language:langSelect.value,consent_reference:permissionField.value,summary:noteField.value
     });
-    saveButton.disabled=Boolean(error)||!confirmField.checked;
+    saveButton.disabled=!storageReady||Boolean(error)||!confirmField.checked;
     return error;
   };
   for(const control of [contractSelect,typeSelect,channelSelect,langSelect,
@@ -103,6 +103,7 @@ export function installManualFollowupHistory(root,db){
     const error=validateFollowupActivity({
       contract,customer,event_type,channel,language,consent_reference,summary
     });
+    if(!storageReady){statusEl.textContent='Audit database is not available. Nothing was recorded.';return;}
     if(error||!confirmField.checked){statusEl.textContent=error||'Confirm this manually entered account.';return;}
     if(!confirm('Store an append-only administrator statement? This does not send a message or prove delivery.'))return;
     requestId??=crypto.randomUUID();
@@ -141,6 +142,18 @@ export function installManualFollowupHistory(root,db){
     contractSelect.value=byId.has(previous)?previous:'';
     // Preserve input only if the chosen contract is unchanged. Reset approvals on reload.
     invalidate();
+    storageReady=false;
+    const {error:probeError}=await db.from('service_maintenance_followup_events')
+      .select('id').limit(1);
+    storageReady=!probeError;
+    if(probeError){
+      ++revision;
+      eventsEl.textContent='Persistent history unavailable until the database migration is applied: '+
+        probeError.message+'. The existing manual draft/copy facility remains available.';
+      statusEl.textContent='Audit log is disabled. No events can be recorded.';
+      reflect();
+      return;
+    }
     reflect();
     await loadHistory();
   };
