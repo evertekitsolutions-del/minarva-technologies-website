@@ -2,6 +2,7 @@ import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 import {requireActiveAdmin} from '/admin-access.js'
 import {installAdminSessionGuard} from '/admin-session-guard.js'
 import {computeServiceOperations,boardMatches,FIELD_FILTERS} from '/assets/service-operations-metrics.mjs'
+import {exportedJobRows,makeServiceOperationsCsv,makeServiceVisitIcs} from '/assets/service-operations-export.mjs'
 
 const db=createClient('https://kwullzwhlzziosjsejud.supabase.co','sb_publishable_qfPTbekhbQy8IcU7qCpvUA_i1sdvMuj')
 installAdminSessionGuard(db)
@@ -21,6 +22,7 @@ const statusText=(text,error=false)=>{
 }
 let board=null
 let filter='all'
+let truncatedSnapshot=false
 const PAGE=500,MAX_PAGES=20 // 10,000-record safety cap, clearly marked partial.
 async function readAll(table,columns,order){
   const rows=[]
@@ -67,16 +69,14 @@ function renderEngineers(){
   for(const button of el('engineerRows').querySelectorAll('[data-engineer-id]'))
     button.addEventListener('click',()=>{filter='engineer:'+button.dataset.engineerId;render()})
 }
+function currentRows(){
+  return exportedJobRows(board,filter,el('search').value)
+}
 function renderJobs(){
   if(!board)return
-  const query=el('search').value.trim().toLocaleLowerCase()
-  const rows=board.jobs.filter(job=>{
-    if(!boardMatches(job,filter))return false
-    if(!query)return true
-    return [job.job_number,job.service_category,job.complaint,
-      customerName(job),engineerName(job),job.site_address
-    ].join(' ').toLocaleLowerCase().includes(query)
-  })
+  const rows=currentRows()
+  el('exportCsv').disabled=rows.length===0
+  el('exportCalendar').disabled=!rows.some(job=>job.scheduled_at&&job.status!=='completed'&&job.status!=='cancelled')
   el('jobCount').textContent=rows.length+' displayed of '+board.jobs.length+
     ' loaded · '+board.activeCount+' active · '+board.completedCount+' completed'
   el('jobRows').innerHTML=rows.length?rows.slice(0,250).map(job=>{
@@ -117,6 +117,7 @@ async function refresh(){
       readAll('service_feedback','service_job_id,rating,callback_requested,created_at','created_at')
     ])
     board=computeServiceOperations(jobs.rows,engineers.rows,feedback.rows)
+    truncatedSnapshot=jobs.truncated||engineers.truncated||feedback.truncated
     render()
     if(jobs.truncated||engineers.truncated||feedback.truncated)
       statusText('PARTIAL DATA: at least one query exceeded the safe 10,000-row page cap. Metrics reflect loaded records ONLY.',true)
@@ -127,6 +128,9 @@ async function refresh(){
       }).format(new Date())+' IST · '+jobs.rows.length+' jobs · SLA flags only for explicit recorded deadlines')
   }catch(error){
     board=null
+    truncatedSnapshot=false
+    el('exportCsv').disabled=true
+    el('exportCalendar').disabled=true
     el('cards').replaceChildren()
     el('jobRows').textContent='Service data unavailable. Check the administrator account and connection.'
     el('engineerRows').replaceChildren()
@@ -134,6 +138,58 @@ async function refresh(){
     statusText('Unable to load board: '+String(error.message||error),true)
   }finally{el('refresh').disabled=false}
 }
+function downloadExport(filename,content,mime){
+  const file=new Blob([content],{type:mime})
+  const url=URL.createObjectURL(file)
+  const a=document.createElement('a')
+  a.href=url
+  a.download=filename
+  a.hidden=true
+  document.body.append(a)
+  try{a.click()}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+}
+function exportSnapshot(type){
+  if(!board)return
+  const rows=currentRows()
+  if(!rows.length){
+    el('exportStatus').textContent='No matching service jobs to export.'
+    return
+  }
+  const mode=type==='csv'?'CSV':'calendar'
+  const limit=truncatedSnapshot?'Warning: loaded records are partial (10,000-row cap). ':''
+  if(type==='csv'&&!confirm(limit+'Export '+rows.length+
+    ' filtered service jobs, including customer names, to this device? Keep the file private.'))return
+  if(type!=='csv'&&truncatedSnapshot&&!confirm(limit+
+    'Export only currently loaded appointment records?'))return
+  const stamp=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Kolkata',
+    year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())
+    .replace(/\//g,'-')
+  try{
+    if(type==='csv'){
+      downloadExport('minarva-field-service-'+stamp+'.csv',
+        makeServiceOperationsCsv(rows),'text/csv;charset=utf-8')
+      el('exportStatus').textContent=limit+'CSV export requested for '+rows.length+
+        ' matching jobs. No server changes or customer messages.'
+    }else{
+      const calendar=makeServiceVisitIcs(rows)
+      if(!calendar.eventCount){
+        el('exportStatus').textContent='No valid, active recorded appointments in the current filter.'
+        return
+      }
+      if(!confirm('Export '+calendar.eventCount+
+        ' internal TENTATIVE service slots? This does not confirm any appointment or send invitations.'))return
+      downloadExport('minarva-planned-visits-'+stamp+'.ics',
+        calendar.content,'text/calendar;charset=utf-8')
+      el('exportStatus').textContent=limit+'Calendar export requested for '+
+        calendar.eventCount+' tentative appointments. No external invitations sent.'
+    }
+  }catch(error){
+    el('exportStatus').textContent='Export unsuccessful: '+String(error.message||error)
+  }
+}
+el('exportCsv').addEventListener('click',()=>exportSnapshot('csv'))
+el('exportCalendar').addEventListener('click',()=>exportSnapshot('calendar'))
+
 for(const [key,label] of FIELD_FILTERS)el('filter').add(new Option(label,key))
 el('filter').addEventListener('change',()=>{filter=el('filter').value;render()})
 el('search').addEventListener('input',renderJobs)
