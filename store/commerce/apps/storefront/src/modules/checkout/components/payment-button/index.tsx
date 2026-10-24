@@ -8,6 +8,7 @@ import { useElements, useStripe } from "@stripe/react-stripe-js"
 import { useParams } from "next/navigation"
 import React, { useState } from "react"
 import ErrorMessage from "../error-message"
+import CashfreeSandboxButton from "../cashfree-sandbox-button"
 
 type PaymentButtonProps = {
   cart: HttpTypes.StoreCart
@@ -28,6 +29,18 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   const paymentSession = cart.payment_collection?.payment_sessions?.[0]
 
   switch (true) {
+    case paymentSession?.provider_id ===
+      "pp_minarva-cashfree-sandbox_cashfree-sandbox":
+      return (
+        <CashfreeSandboxButton
+          notReady={notReady}
+          paymentSessionId={
+            (paymentSession?.data as Record<string, unknown> | undefined)
+              ?.payment_session_id
+          }
+          data-testid={dataTestId}
+        />
+      )
     case isStripeLike(paymentSession?.provider_id):
       return (
         <StripePaymentButton
@@ -38,7 +51,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isManual(paymentSession?.provider_id):
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        process.env.NODE_ENV === "development" &&
+        process.env.NEXT_PUBLIC_STORE_DEV_MANUAL_CHECKOUT_ENABLED === "true"
+          ? <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+          : <Button disabled>Manual test checkout is not available</Button>
       )
     default:
       return <Button disabled>Select a payment method</Button>
