@@ -79,6 +79,18 @@ const data = (overrides: Record<string, unknown> = {}) => ({
   rawBody:event(),
   nowMs,
   ...overrides,
+  test("signed replay after Medusa capture verifies identical proof without a second authorization", async () => {
+    const input=data({db:fakeDb(sessionRow({
+      status:"captured",collection_status:"completed",
+    }))})
+    const result=await recordSignedCashfreeWebhook(input as any)
+    expect(result.status).toBe("verified_replay")
+    expect(result.fulfillmentReady).toBe(false)
+    expect(result.medusaPaymentSessionId).toBe(medusaId)
+    expect(input.db.raw).toHaveBeenCalledTimes(2)
+    expect(input.sdk.PGFetchOrder).toHaveBeenCalledTimes(1)
+  })
+
 })
 
 describe("staging Medusa-owned Cashfree payment evidence", () => {
