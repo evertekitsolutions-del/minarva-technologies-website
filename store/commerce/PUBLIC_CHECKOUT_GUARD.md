@@ -14,3 +14,7 @@ This milestone reuses Medusa's native `src/api/middlewares.ts` support (no route
 **Before permitting production public orders**: verified Cashfree paid/refund lifecycle, Shiprocket actual all-in delivery rates and residual COD merchant agreement, real product catalog + stock + dimensions, India GST/legal policies, device tests, domain/hosting and explicit merchant release approval. No payment system can be marked live based on CI mocks.
 
 Source: official [Medusa middleware documentation](https://docs.medusajs.com/learn/fundamentals/api-routes/middlewares) supports route-scoped matching for POST requests; built-in cart completion endpoint is used by the existing `sdk.store.cart.complete` flow.
+
+## Real HTTP regression check (STORE-019)
+
+The existing GitHub Medusa runtime smoke job now starts actual Medusa v2 against **disposable** PostgreSQL 16 and Redis 7, waits for `/health`, then makes a real `POST /store/carts/cart_ci_never_create/complete` HTTP request with both checkout flags explicitly false. It must receive HTTP 503 with the exact Minarva release-gate message. HTTP 401/404 do **not** count as a pass because those would not prove our middleware intercepted the request. No merchant token, real cart, payment, or shipment is created.
