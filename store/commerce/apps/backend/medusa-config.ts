@@ -7,6 +7,7 @@ const isProduction = environment === "production"
 const shiprocketRequested = process.env.STORE_SHIPROCKET_PLUGIN_ENABLED === "true"
 const automationsRequested = process.env.STORE_AUTOMATIONS_PLUGIN_ENABLED === "true"
 const cashfreeSandboxRequested = process.env.STORE_CASHFREE_SANDBOX_ENABLED === "true"
+const analyticsRequested = process.env.STORE_ANALYTICS_PLUGIN_ENABLED === "true"
 
 // External courier accounts can charge real money even on staging.
 // Require explicit, independent opt-in; production deliberately cannot use it
@@ -45,6 +46,10 @@ if (cashfreeSandboxRequested) {
   }
 }
 
+if (analyticsRequested && (isProduction || process.env.STORE_ANALYTICS_STAGING_APPROVED !== "true")) {
+  throw new Error("Admin analytics plugin is disabled pending staging verification")
+}
+
 if (isProduction) {
   for (const name of ["JWT_SECRET", "COOKIE_SECRET"]) {
     const value = process.env[name] || ""
@@ -71,9 +76,10 @@ module.exports = defineConfig({
   },
   // Existing MIT Medusa modules remain the transactional authority.
   // Installed plugin code is inert by default and forbidden in production.
-  ...(shiprocketRequested || automationsRequested ? {
+  ...(shiprocketRequested || automationsRequested || analyticsRequested ? {
     plugins: [
       ...(shiprocketRequested ? [{ resolve: "@sam-ael/medusa-plugin-shiprocket", options: {} }] : []),
+      ...(analyticsRequested ? [{ resolve: "@agilo/medusa-analytics-plugin", options: {} }] : []),
       ...(automationsRequested ? [{
         resolve: "@codee-sh/medusa-plugin-automations",
         options: {
