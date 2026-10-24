@@ -7,7 +7,7 @@ No WooCommerce. Existing Medusa DTC Starter MIT source provides product, invento
 - Medusa integrations listing: https://medusajs.com/integrations/%40sam-aelmedusa-plugin-shiprocket
 - Package: `@sam-ael/medusa-plugin-shiprocket` **0.2.1** (MIT per npm registry; https://www.npmjs.com/package/@sam-ael/medusa-plugin-shiprocket)
 - Advertises rates, fulfillment, label/manifest, AWB, pickup and tracking.
-- **Not** installed/activated for production, and not assumed capable of customer-shipping-advance + residual COD. It may auto-book couriers and pickups; tests with real credentials can incur charges.
+- **Installed as an exact pinned dependency in the isolated Medusa backend, but disabled by default and blocked entirely in production**; not assumed capable of customer-shipping-advance + residual COD. It may auto-book couriers and pickups; tests with real credentials can incur charges.
 - Required before activation: package provenance verification, static review of outbound API calls, quote and dimensions validation, webhook HMAC/token strategy, idempotent shipping, cancellation/reconciliation, blocking real shipment in test, and confirmation that courier can collect only the unpaid product value.
 - Do not enable if merchant account cannot guarantee partial COD balance collection.
 
