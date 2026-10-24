@@ -23,6 +23,9 @@ const validPaise = (value, label) => {
   return value
 }
 
+// In-process provenance: an arbitrary browser-shaped object is not a verified draft.
+const verifiedDrafts = new WeakSet()
+
 const fingerprint = (...parts) =>
   createHash("sha256").update(parts.join("\0")).digest("hex").slice(0, 48)
 
@@ -71,7 +74,7 @@ export async function prepareShippingHandoff({
   }
 
   const collectablePaise = split.onDeliveryPaise
-  return Object.freeze({
+  const draft = Object.freeze({
     provider: "shiprocket",
     medusaOrderRef,
     gatewayOrderId: proof.orderId,
@@ -89,6 +92,8 @@ export async function prepareShippingHandoff({
     // This is NOT an instruction to send any shipment automatically.
     status: "validated_draft_not_booked",
   })
+  verifiedDrafts.add(draft)
+  return draft
 }
 
 /**
@@ -98,7 +103,9 @@ export async function prepareShippingHandoff({
  * function itself performs NO external cancellation/booking.
  */
 export function assertCourierBookingMatchesHandoff(handoff, receipt) {
-  if (!handoff || handoff.status !== "validated_draft_not_booked") {
+  if (!handoff || typeof handoff !== "object" ||
+      !verifiedDrafts.has(handoff) ||
+      handoff.status !== "validated_draft_not_booked") {
     throw new TypeError("A server-verified shipment draft is required")
   }
   if (!receipt || receipt.provider !== "shiprocket" ||
