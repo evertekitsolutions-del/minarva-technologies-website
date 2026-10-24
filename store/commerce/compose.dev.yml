@@ -1,0 +1,38 @@
+# Local development only. No public ports, no cloud spend, no shipments.
+# Medusa app and Next.js storefront run on the host using the upstream scripts.
+name: minarva-cctv-store-dev
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: minarva_cctv_store
+      POSTGRES_USER: minarva_store
+      POSTGRES_PASSWORD: ${STORE_DEV_DB_PASSWORD:?Set STORE_DEV_DB_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:55432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U minarva_store -d minarva_cctv_store"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - medusa_pg:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "127.0.0.1:56379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+    volumes:
+      - medusa_redis:/data
+
+volumes:
+  medusa_pg:
+  medusa_redis:
