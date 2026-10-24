@@ -1,0 +1,65 @@
+name: Store - Cashfree evidence PostgreSQL integrity
+
+on:
+  pull_request:
+    paths:
+      - 'store/lib/cashfree-evidence-ledger.mjs'
+      - 'store/commerce/apps/backend/sql/staging/**'
+      - 'store/tests/cashfree-evidence-ledger.test.mjs'
+      - 'store/tests/sql/cashfree-ledger.integration.sql'
+      - '.github/workflows/store-cashfree-ledger.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'store/lib/cashfree-evidence-ledger.mjs'
+      - 'store/commerce/apps/backend/sql/staging/**'
+      - 'store/tests/sql/cashfree-ledger.integration.sql'
+      - '.github/workflows/store-cashfree-ledger.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  evidence-integrity:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: minarva_ledger_ci
+          POSTGRES_PASSWORD: ci-ledger-isolated-test-only
+          POSTGRES_DB: minarva_ledger_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U minarva_ledger_ci -d minarva_ledger_ci"
+          --health-interval 5s --health-timeout 3s --health-retries 20
+
+    env:
+      PGPASSWORD: ci-ledger-isolated-test-only
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGUSER: minarva_ledger_ci
+      PGDATABASE: minarva_ledger_ci
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Exercise Cashfree evidence adapter without any gateway access
+        run: node --test store/tests/*.test.mjs
+      - name: Ensure PostgreSQL client exists
+        shell: bash
+        run: |
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y postgresql-client
+          fi
+      - name: Apply restricted schema only to disposable CI DB
+        run: |
+          psql --set ON_ERROR_STOP=1 -f store/commerce/apps/backend/sql/staging/20261025_cashfree_payment_evidence.sql
+      - name: Verify idempotent receipts, conflict and immutability with real PostgreSQL
+        run: |
+          psql --set ON_ERROR_STOP=1 -f store/tests/sql/cashfree-ledger.integration.sql
