@@ -211,4 +211,16 @@ describe("staging Medusa-owned Cashfree payment evidence", () => {
     await expect(recordSignedCashfreeWebhook(input as any))
       .rejects.toThrow(/relation does not exist/)
   })
+  test("signed replay after Medusa capture verifies identical proof without a second authorization", async () => {
+    const input=data({db:fakeDb(sessionRow({
+      status:"captured",collection_status:"completed",
+    }))})
+    const result=await recordSignedCashfreeWebhook(input as any)
+    expect(result.status).toBe("verified_replay")
+    expect(result.fulfillmentReady).toBe(false)
+    expect("medusaPaymentSessionId" in result && result.medusaPaymentSessionId).toBe(medusaId)
+    expect(input.db.raw).toHaveBeenCalledTimes(2)
+    expect(input.sdk.PGFetchOrder).toHaveBeenCalledTimes(1)
+  })
+
 })
