@@ -39,7 +39,12 @@ test("browser redirect and webhooks cannot mark Medusa payment captured", () => 
   assert.match(src, /return \{ action: PaymentActions\.NOT_SUPPORTED \}/)
   assert.match(src, /Cashfree capture disabled pending trusted Medusa/)
   assert.match(src, /Cashfree refunds disabled pending refund idempotency/)
-  assert.doesNotMatch(src, /status:\s*PaymentSessionStatus\.CAPTURED/)
+  // CAPTURED is now allowed *only* behind explicit sandbox settlement
+  // opt-ins after the immutable Medusa + Cashfree full-prepaid proof.
+  assert.match(src, /STORE_CASHFREE_SANDBOX_SETTLEMENT_ENABLED !== "true"/)
+  assert.match(src, /STORE_CASHFREE_SANDBOX_SETTLEMENT_APPROVED !== "true"/)
+  assert.match(src, /await confirmCashfreePrepaidProof\(/)
+  assert.match(src, /status: PaymentSessionStatus\.CAPTURED/)
 })
 
 test("merchant secrets remain server-side, no public env is introduced", () => {
