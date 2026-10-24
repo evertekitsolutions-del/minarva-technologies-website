@@ -12,11 +12,13 @@ import { publicCheckoutGateFromEnvironment } from '../lib/store-checkout-release
 export default defineMiddlewares({
   routes: [
     {
-      method: ["POST"],
-      matcher: new RegExp("^/store/carts/[^/]+/complete/?$"),
+      // Global route middleware runs BEFORE Medusa route-body validation;
+      // method-scoped middleware can be bypassed by request validation.
+      // Exact anchored matcher avoids affecting other Store routes.
+      matcher: new RegExp("^/store/carts/[^/]+/complete/?$", "i"),
       middlewares: [
-        (_req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
-          if (!publicCheckoutGateFromEnvironment()) {
+        (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
+          if (req.method === "POST" && !publicCheckoutGateFromEnvironment()) {
             return res.status(503).json({
               error: "Customer checkout is not yet available",
             })

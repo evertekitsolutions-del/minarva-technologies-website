@@ -51,6 +51,8 @@ jobs:
       STORE_ALLOW_EXTERNAL_PROVIDER_STAGING: "false"
       STORE_AUTOMATIONS_PLUGIN_ENABLED: "false"
       STORE_AUTOMATIONS_STAGING_APPROVED: "false"
+      STORE_PUBLIC_CHECKOUT_TEST_ENABLED: "false"
+      STORE_PUBLIC_CHECKOUT_TEST_APPROVED: "false"
 
     steps:
       - uses: actions/checkout@v4
@@ -79,6 +81,39 @@ jobs:
             if curl --fail --silent --max-time 3 http://127.0.0.1:9000/health > "$RUNNER_TEMP/health-response.txt"; then
               echo "Medusa Health endpoint responded successfully"
               cat "$RUNNER_TEMP/health-response.txt"
+              # Bypass the Next.js UI and target Medusa's public cart API.
+              # Must fail at the actual backend middleware before any order
+              # is created, regardless of publishable client checkout logic.
+              # Medusa's native Store API requires a publishable key even
+              # before custom middleware. Use the throwaway CI default key
+              # from Medusa's own isolated database, never a merchant key.
+              if ! command -v psql >/dev/null 2>&1; then
+                sudo apt-get update -qq
+                sudo apt-get install -y postgresql-client
+              fi
+              publishable_ci=$(psql "$DATABASE_URL" -Atqc \
+                "SELECT token FROM api_key WHERE type = 'publishable' AND deleted_at IS NULL LIMIT 1")
+              if [[ -z "$publishable_ci" ]]; then
+                echo "No disposable Medusa publishable API key available" >&2
+                exit 1
+              fi
+              blocked_code=$(curl --silent --show-error --max-time 6 \
+                -o "$RUNNER_TEMP/blocked-order.json" -w '%{http_code}' \
+                -X POST "http://127.0.0.1:9000/store/carts/cart_ci_never_create/complete" \
+                -H "x-publishable-api-key: $publishable_ci" \
+                -H 'Content-Type: application/json' -d '{}')
+              if [[ "$blocked_code" != "503" ]]; then
+                echo "Public order creation API was NOT blocked (HTTP $blocked_code)" >&2
+                cat "$RUNNER_TEMP/blocked-order.json" >&2
+                tail -n 100 "$RUNNER_TEMP/medusa-ci.log" >&2
+                exit 1
+              fi
+              if ! grep -q 'Customer checkout is not yet available' "$RUNNER_TEMP/blocked-order.json"; then
+                echo "Order denial did not originate from Minarva launch gate" >&2
+                cat "$RUNNER_TEMP/blocked-order.json" >&2
+                exit 1
+              fi
+              echo "Verified direct Medusa order-completion API denied by default"
               exit 0
             fi
             if ! kill -0 $backend_pid 2>/dev/null; then
