@@ -34,9 +34,10 @@ const deny = (message: string): never => {
   throw new CashfreeIntakeRejected(message)
 }
 const id = (value: unknown, label: string): string => {
-  if (typeof value !== "string" || value.length > 128 ||
-      !/^[A-Za-z0-9_-]+$/.test(value)) deny(`Invalid ${label}`)
-  return value
+  if (typeof value !== "string") deny(`Invalid ${label}`)
+  const known = value as string
+  if (known.length > 128 || !/^[A-Za-z0-9_-]+$/.test(known)) deny(`Invalid ${label}`)
+  return known
 }
 const paymentId = (value: unknown): string => {
   if (typeof value === "number" && !Number.isSafeInteger(value)) {
@@ -146,15 +147,19 @@ export async function recordSignedCashfreeWebhook({
     deny("Expired or future webhook timestamp")
   }
   if (!db || typeof db.raw !== "function") deny("Medusa database unavailable")
+  // Narrow unknown values explicitly: the SDK cannot verify a parsed object.
+  const verifiedSignature = signature as string
+  const verifiedTimestamp = timestamp as string
+  const verifiedBody = rawBody as string
   const client = sdk as CashfreeWebhookClient
   try {
-    await client.PGVerifyWebhookSignature(signature, rawBody, timestamp)
+    await client.PGVerifyWebhookSignature(verifiedSignature, verifiedBody, verifiedTimestamp)
   } catch {
     deny("Cashfree webhook signature invalid")
   }
-  let event: Record<string, any>
+  let event: Record<string, any> = {}
   try {
-    event = JSON.parse(rawBody)
+    event = JSON.parse(verifiedBody)
   } catch {
     deny("Invalid signed JSON")
   }
@@ -172,7 +177,7 @@ export async function recordSignedCashfreeWebhook({
     client.PGOrderFetchPayments(orderId),
   ])
   const order = orderResponse?.data
-  const payments = paymentResponse?.data
+  const payments = paymentResponse?.data ?? []
   if (!order || order.order_id !== orderId ||
       order.order_status !== "PAID" ||
       order.order_currency !== "INR" ||
