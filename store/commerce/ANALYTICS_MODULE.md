@@ -24,3 +24,7 @@ This package is installed and pinned, but the plugin is **OFF by default**.
 - No Medusa Admin demo seed data is to be presented as real company sales.
 
 Next: validate dashboard rendering with actual staging admin account and sample **clearly labeled test** orders, plus access-control checks. License/provenance files are retained at upstream, not copied into application source.
+
+## Verification status
+
+The exact dependency and lockfile are committed on the review branch. Source installation is separate from compatibility verification: CI must run real Medusa backend compilation and startup with analytics **disabled**, followed by manual staging-enabled Admin UI and role-access checks before launch. Do not mark this as a working dashboard until the latter is tested.
