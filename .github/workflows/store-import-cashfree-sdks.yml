@@ -1,0 +1,53 @@
+name: Store - import official Cashfree SDKs
+on:
+  push:
+    branches: [feat/store-004-cashfree-official-sdks]
+    paths:
+      - '.github/workflows/store-import-cashfree-sdks.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+
+jobs:
+  pin-payment-sdks:
+    if: github.repository == 'evertekitsolutions-del/minarva-technologies-website'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/store-004-cashfree-official-sdks
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Install official published modules without running install scripts
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.11.1 --activate
+          cd store/commerce
+          pnpm add --filter @dtc/backend --save-exact 'cashfree-pg@6.0.6' --ignore-scripts
+          pnpm add --filter @dtc/storefront --save-exact '@cashfreepayments/cashfree-js@1.0.7' --ignore-scripts
+          node --input-type=module <<'EOF'
+          import assert from 'node:assert/strict'
+          import { readFileSync } from 'node:fs'
+          const backend=JSON.parse(readFileSync('apps/backend/package.json','utf8'))
+          const frontend=JSON.parse(readFileSync('apps/storefront/package.json','utf8'))
+          assert.equal(backend.dependencies['cashfree-pg'],'6.0.6')
+          assert.equal(frontend.dependencies['@cashfreepayments/cashfree-js'],'1.0.7')
+          assert.equal(backend.dependencies['@sam-ael/medusa-plugin-shiprocket'],'0.2.1')
+          EOF
+      - name: Commit exact package changes and lockfile
+        run: |
+          set -euo pipefail
+          git add store/commerce/apps/backend/package.json store/commerce/apps/storefront/package.json store/commerce/pnpm-lock.yaml
+          if git diff --cached --quiet; then
+            echo 'Cashfree SDK dependencies already pinned'
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+            -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m 'vendor(store): pin official Cashfree server and browser SDK packages'
+          git push origin HEAD:refs/heads/feat/store-004-cashfree-official-sdks
