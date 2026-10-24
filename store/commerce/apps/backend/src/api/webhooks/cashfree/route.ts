@@ -1,5 +1,5 @@
 import type { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
-import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import { Cashfree, CFEnvironment } from "cashfree-pg"
 import {
   CashfreeIntakeRejected,
@@ -45,9 +45,33 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     const result = await recordSignedCashfreeWebhook({
       sdk, db, signature, timestamp, rawBody,
     })
+    const allowSettlement =
+      process.env.STORE_CASHFREE_SANDBOX_SETTLEMENT_ENABLED === "true" &&
+      process.env.STORE_CASHFREE_SANDBOX_SETTLEMENT_APPROVED === "true"
+    if (allowSettlement && result.status === "verified_unsettled" &&
+        "medusaPaymentSessionId" in result) {
+      // Do not write payment or capture rows directly. Medusa's official
+      // idempotent deferred-payment authorization workflow is the authority.
+      // The provider independently re-polls Cashfree and checks the immutable
+      // full-price prepaid proof; a mere COD shipping advance stays awaiting.
+      const paymentModule = req.scope.resolve(Modules.PAYMENT) as {
+        authorizePaymentSession: (
+          sessionId: string,
+          context: Record<string, unknown>
+        ) => Promise<{ id: string } | null>
+      }
+      const payment = await paymentModule.authorizePaymentSession(
+        result.medusaPaymentSessionId, {}
+      )
+      return res.status(202).json({
+        status: payment ? "sandbox_payment_authorized" : "verified_unsettled",
+        confirmedInMedusa: Boolean(payment),
+        fulfillmentReady: false,
+      })
+    }
     return res.status(202).json({
       status: result.status,
-      settled: false,
+      confirmedInMedusa: false,
       fulfillmentReady: false,
     })
   } catch (error) {
