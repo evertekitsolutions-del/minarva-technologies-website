@@ -30,3 +30,7 @@ Important boundaries:
 5. Enable production only after audited workflows, live account approval and explicit authorization.
 
 No additional recurring paid AI/notification infrastructure is mandatory to install this plugin, although hosted services and messaging may cost extra.
+
+## Staging admission checklist
+
+The required sequence is: locked dependency → isolated Medusa backend boot → reviewed plugin migrations → admin-only trigger creation → dry-run evaluation → explicitly approved transactional template and consent enforcement. Never activate arbitrary send actions on customer-created triggers or infer marketing consent from checkout payment authorization.
