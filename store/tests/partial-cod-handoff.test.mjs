@@ -194,3 +194,14 @@ test("reject untrusted draft/receipt shape and negative COD", () => {
   assert.throws(() => assertCourierBookingMatchesHandoff(draft,
     booking(draft, { codCollectablePaise: -1 })), /integer paise/)
 })
+
+test("reject structurally forged or serialized validated drafts", async () => {
+  const { sdk } = gateway()
+  const authentic = await prepareShippingHandoff({ ...checkout(), sdk })
+  const cloned = JSON.parse(JSON.stringify(authentic))
+  assert.deepEqual(cloned, authentic)
+  assert.throws(
+    () => assertCourierBookingMatchesHandoff(cloned, booking(authentic)),
+    /server-verified/,
+  )
+})
