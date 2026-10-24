@@ -17,7 +17,7 @@ test("Cashfree SDKs are official and pinned exactly", () => {
 test("Cashfree SDK source is locked and checkout remains inactive", () => {
   const lock = read("store/commerce/pnpm-lock.yaml")
   assert.match(lock, /cashfree-pg:/)
-  assert.match(lock, /@cashfreepayments\/cashfree-js:/)
+  assert.match(lock, /['\"]?@cashfreepayments\/cashfree-js['\"]?:/)
   const config = read("store/commerce/apps/backend/medusa-config.ts")
   assert.doesNotMatch(config, /resolve:\s*["']cashfree-pg/)
   const doc = read("store/commerce/PAYMENT_MODULES.md")
