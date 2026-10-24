@@ -22,6 +22,27 @@ CREATE TABLE IF NOT EXISTS store_cashfree_payment_evidence (
   CONSTRAINT store_cashfree_proof_key_valid CHECK (proof_key = 'cashfree:' || cashfree_order_id || ':' || cf_payment_id)
 );
 
+-- Rows are intentionally append-only. The one allowed SQL replay path may
+-- update a row to exactly the same values; any real mutation is forbidden.
+CREATE OR REPLACE FUNCTION store_cashfree_evidence_immutable_guard()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    RAISE EXCEPTION 'Cashfree evidence rows cannot be deleted';
+  END IF;
+  IF NEW IS DISTINCT FROM OLD THEN
+    RAISE EXCEPTION 'Cashfree evidence rows cannot be modified';
+  END IF;
+  RETURN NEW;
+END;
+$;
+
+CREATE OR REPLACE TRIGGER store_cashfree_evidence_append_only
+BEFORE UPDATE OR DELETE ON store_cashfree_payment_evidence
+FOR EACH ROW EXECUTE FUNCTION store_cashfree_evidence_immutable_guard();
+
 -- No public or anonymous database role may write receipts.
 REVOKE ALL ON TABLE store_cashfree_payment_evidence FROM PUBLIC;
 
