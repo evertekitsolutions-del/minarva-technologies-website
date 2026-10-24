@@ -18,9 +18,9 @@ export async function generateMetadata(props: {
   const [origin, regions] = await Promise.all([getSiteOrigin(), listRegions()])
 
   return {
-    title: "Medusa Next.js Starter Template",
+    title: `${STORE_NAME} | Camera Packages in Kerala`,
     description:
-      "A performant frontend ecommerce starter template with Next.js 16 and Medusa.",
+      "Shop CCTV packages from Minarva Technologies, Thiruvananthapuram. Compare kit contents and check delivery options based on your PIN code.",
     alternates: {
       canonical: `${origin}/${countryCode}`,
       languages: {

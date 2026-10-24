@@ -1,0 +1,55 @@
+name: Store - commerce source build
+on:
+  pull_request:
+    paths:
+      - 'store/commerce/**'
+      - 'store/tests/**'
+      - '.github/workflows/store-commerce-build.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'store/commerce/**'
+      - '.github/workflows/store-commerce-build.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  typecheck-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    env:
+      CI: "true"
+      NODE_ENV: development
+      NEXT_TELEMETRY_DISABLED: "1"
+      STORE_SHIPROCKET_PLUGIN_ENABLED: "false"
+      STORE_ALLOW_EXTERNAL_PROVIDER_STAGING: "false"
+      DATABASE_URL: postgresql://not-connected:invalid@127.0.0.1:55432/store_build_only
+      REDIS_URL: redis://127.0.0.1:56379
+      STORE_CORS: http://localhost:8000
+      ADMIN_CORS: http://localhost:9000
+      AUTH_CORS: http://localhost:8000,http://localhost:9000
+      JWT_SECRET: ci-non-production-example-only-32-chars
+      COOKIE_SECRET: ci-another-example-only-32-chars
+      NEXT_PUBLIC_MEDUSA_BACKEND_URL: http://localhost:9000
+      NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY: pk_ci_only_not_a_merchant_key
+      NEXT_PUBLIC_DEFAULT_REGION: in
+      NEXT_PUBLIC_BASE_URL: http://localhost:8000
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Setup exact workspace package manager
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.11.1 --activate
+      - name: Install locked open source dependencies
+        run: pnpm --dir store/commerce install --frozen-lockfile --ignore-scripts
+      - name: Verify marketing content and pricing rules
+        run: node --test store/tests/*.test.mjs
+      - name: Build Medusa backend without merchant credentials
+        run: pnpm --dir store/commerce --filter @dtc/backend build
+      - name: Validate prebuilt Next.js storefront types
+        run: pnpm --dir store/commerce --filter @dtc/storefront exec tsc --noEmit

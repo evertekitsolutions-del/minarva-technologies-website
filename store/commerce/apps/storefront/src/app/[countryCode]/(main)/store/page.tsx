@@ -5,8 +5,9 @@ import { getRegion } from "@lib/data/regions"
 import StoreTemplate from "@modules/store/templates"
 
 export const metadata: Metadata = {
-  title: "Store",
-  description: "Explore all of our products.",
+  title: "CCTV Camera Packages | Minarva Technologies",
+  description:
+    "Browse Minarva Technologies CCTV packages. Review exact kit contents, specifications, warranty terms and delivery charges before ordering.",
 }
 
 export default async function StorePage(props: {
