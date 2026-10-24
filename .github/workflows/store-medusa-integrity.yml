@@ -1,0 +1,51 @@
+name: Store - Medusa source integrity
+on:
+  pull_request:
+    paths:
+      - 'store/commerce/**'
+      - 'store/OSS_SOURCE_MANIFEST.md'
+      - '.github/workflows/store-import-medusa.yml'
+      - '.github/workflows/store-medusa-integrity.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'store/commerce/**'
+      - 'store/OSS_SOURCE_MANIFEST.md'
+      - '.github/workflows/store-medusa-integrity.yml'
+permissions:
+  contents: read
+
+jobs:
+  verify-imported-source:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate independent MIT Medusa source and module contracts
+        run: |
+          set -eu
+          test -f store/commerce/LICENSE
+          test -f store/commerce/pnpm-lock.yaml
+          test -f store/commerce/pnpm-workspace.yaml
+          test -f store/commerce/apps/backend/medusa-config.ts
+          test -f store/commerce/apps/storefront/package.json
+          grep -q 'MIT License' store/commerce/LICENSE
+          node --input-type=module <<'EOF'
+          import { readFileSync } from 'node:fs';
+          import assert from 'node:assert/strict';
+          const backend=JSON.parse(readFileSync('store/commerce/apps/backend/package.json','utf8'));
+          const frontend=JSON.parse(readFileSync('store/commerce/apps/storefront/package.json','utf8'));
+          const manifest=readFileSync('store/OSS_SOURCE_MANIFEST.md','utf8');
+          assert.match(backend.dependencies['@medusajs/medusa'] || '', /^2\./);
+          assert.ok(frontend.dependencies.next);
+          assert.ok(frontend.dependencies['@medusajs/js-sdk']);
+          assert.ok(manifest.includes('204130a32d80b704ab509069dcc1a2f8a61f51c1'));
+          assert.ok(!manifest.includes('WooCommerce approved'));
+          console.log('Medusa backend, Next.js storefront, upstream MIT license, pinned provenance verified');
+          EOF
+          test ! -f store/commerce/apps/backend/.env
+          test ! -f store/commerce/apps/storefront/.env.local
+          node --test store/tests/checkout-pricing.test.mjs

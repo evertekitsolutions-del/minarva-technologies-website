@@ -1,0 +1,76 @@
+name: Store - import pinned MIT Medusa DTC starter
+on:
+  push:
+    branches:
+      - feat/store-002-medusa-source
+    paths:
+      - .github/workflows/store-import-medusa.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-upstream:
+    if: github.repository == 'evertekitsolutions-del/minarva-technologies-website'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/store-002-medusa-source
+          persist-credentials: true
+
+      - name: Clone pinned official Medusa open source
+        env:
+          UPSTREAM_SHA: '204130a32d80b704ab509069dcc1a2f8a61f51c1'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git clone -q https://github.com/medusajs/dtc-starter.git "$RUNNER_TEMP/medusa-dtc"
+          git -C "$RUNNER_TEMP/medusa-dtc" checkout -q --detach "$UPSTREAM_SHA"
+          test "$(git -C "$RUNNER_TEMP/medusa-dtc" rev-parse HEAD)" = "$UPSTREAM_SHA"
+          test -f "$RUNNER_TEMP/medusa-dtc/LICENSE"
+          test -f "$RUNNER_TEMP/medusa-dtc/pnpm-lock.yaml"
+          test -f "$RUNNER_TEMP/medusa-dtc/apps/backend/package.json"
+          test -f "$RUNNER_TEMP/medusa-dtc/apps/storefront/package.json"
+          grep -q 'MIT License' "$RUNNER_TEMP/medusa-dtc/LICENSE"
+
+      - name: Import upstream source while preserving website
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p store/commerce
+          rsync -a \
+            --exclude='.git' \
+            --exclude='.github' \
+            --exclude='node_modules' \
+            --exclude='.env' \
+            --exclude='.env.*.local' \
+            --exclude='.next' \
+            --exclude='.medusa' \
+            "$RUNNER_TEMP/medusa-dtc/" store/commerce/
+          test -f store/commerce/LICENSE
+          test -f store/commerce/pnpm-lock.yaml
+          test -f store/commerce/apps/backend/medusa-config.ts
+          test -f store/commerce/apps/storefront/package.json
+          grep -q '"@medusajs/medusa"' store/commerce/apps/backend/package.json
+          grep -q '"next"' store/commerce/apps/storefront/package.json
+          if [ -f store/commerce/.env ] || [ -f store/commerce/apps/backend/.env ]; then
+            echo 'Refusing to commit environment secrets' >&2
+            exit 1
+          fi
+
+      - name: Commit vendorized source to feature branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -A store/commerce
+          if git diff --cached --quiet; then
+            echo 'Upstream source already imported'
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+            commit -m 'vendor(store): import pinned MIT Medusa DTC storefront and backend'
+          git push origin HEAD:refs/heads/feat/store-002-medusa-source
