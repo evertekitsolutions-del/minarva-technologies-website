@@ -41,7 +41,7 @@ const toPaise = (value: unknown): number => {
 const ensureId = (value: unknown, label: string): string => {
   if (typeof value !== "string" || value.length > 128 ||
       !/^[A-Za-z0-9_-]+$/.test(value)) fail("invalid " + label)
-  return value
+  return value as string
 }
 const gatewayOrderId = (medusaSessionId: string) =>
   "mcf_" + createHash("sha256").update(medusaSessionId).digest("hex").slice(0,40)
@@ -63,8 +63,10 @@ export async function confirmCashfreePrepaidProof({
   sessionData: Record<string, unknown> | undefined
 }): Promise<null | { sessionId: string; gatewayOrderId: string; paymentId: string; amountPaise: number }> {
   if (!db || typeof db.raw !== "function") fail("PostgreSQL authority unavailable")
-  const data = sessionData
-  if (!data || typeof data !== "object" || Array.isArray(data)) fail("session data missing")
+  if (!sessionData || typeof sessionData !== "object" || Array.isArray(sessionData)) {
+    fail("session data missing")
+  }
+  const data = sessionData as Record<string, unknown>
   const sessionId = ensureId(data.medusa_session_id, "Medusa payment session")
   if (!/^payses_[A-Za-z0-9_-]{4,100}$/.test(sessionId)) fail("invalid Medusa payment ID")
   const orderId = ensureId(data.order_id, "Cashfree order")
@@ -73,10 +75,11 @@ export async function confirmCashfreePrepaidProof({
     fail("Medusa sandbox payment order provenance mismatch")
   }
   const result = await db.raw(SELECT_SETTLEMENT_PROOF,[sessionId,orderId])
-  if (!Array.isArray(result?.rows) || result.rows.length > 1) fail("ambiguous payment proof")
-  if (!result.rows.length) return null
+  const rows = result?.rows ?? []
+  if (!Array.isArray(rows) || rows.length > 1) fail("ambiguous payment proof")
+  if (!rows.length) return null
 
-  const row = result.rows[0]
+  const row = rows[0]
   const paidId = ensureId(row.cf_payment_id, "verified payment")
   const amountPaise = toPaise(row.session_amount)
   if (row.medusa_session_id !== sessionId || row.cashfree_order_id !== orderId ||
@@ -107,7 +110,7 @@ export async function confirmCashfreePrepaidProof({
     client.PGFetchOrder(orderId), client.PGOrderFetchPayments(orderId),
   ])
   const order = orderResponse?.data
-  const payments = paymentsResponse?.data
+  const payments = paymentsResponse?.data ?? []
   if (!order || order.order_id !== orderId || order.order_status !== "PAID" ||
       order.order_currency !== "INR" || toPaise(order.order_amount) !== amountPaise ||
       !Array.isArray(payments)) fail("gateway order not independently confirmed")
