@@ -49,6 +49,8 @@ jobs:
         run: pnpm --dir store/commerce install --frozen-lockfile --ignore-scripts
       - name: Verify marketing content and pricing rules
         run: node --test store/tests/*.test.mjs
+      - name: Exercise Medusa Cashfree provider unit tests without merchant credentials
+        run: pnpm --dir store/commerce --filter @dtc/backend test:unit
       - name: Build Medusa backend without merchant credentials
         run: pnpm --dir store/commerce --filter @dtc/backend build
       - name: Validate prebuilt Next.js storefront types
