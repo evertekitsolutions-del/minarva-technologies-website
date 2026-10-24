@@ -25,7 +25,7 @@ test("Provider is double-gated and cannot run in production", () => {
   assert.match(config, /isProduction \|\| process\.env\.STORE_ALLOW_EXTERNAL_PROVIDER_STAGING !== "true"/)
   assert.match(config, /throw new Error\("Shiprocket is blocked/)
   assert.match(config, /resolve: "@sam-ael\/medusa-plugin-shiprocket"/)
-  assert.match(config, /process\.env\.SHIPROCKET_WEBHOOK_TOKEN/)
+  assert.match(config, /"SHIPROCKET_WEBHOOK_TOKEN"/)
 })
 
 test("No hard-coded working credentials are part of staging templates", () => {
