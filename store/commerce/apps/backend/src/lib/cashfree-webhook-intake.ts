@@ -99,10 +99,17 @@ const verifiedSession = async (db: PaymentDb, orderId: string) => {
       row.provider_id !== providerId ||
       row.currency_code !== "inr" ||
       row.collection_currency !== "inr" ||
-      !["pending", "pending_authorization", "requires_more"].includes(row.status) ||
-      !["not_paid", "awaiting"].includes(row.collection_status)) {
+      !(
+        (["pending", "pending_authorization", "requires_more"].includes(row.status) &&
+         ["not_paid", "awaiting"].includes(row.collection_status)) ||
+        (["authorized", "captured"].includes(row.status) &&
+         ["authorized", "completed", "partially_captured"].includes(row.collection_status))
+      )) {
     deny("Medusa payment session is not eligible for evidence intake")
   }
+  const alreadyAuthorized =
+    ["authorized", "captured"].includes(row.status) &&
+    ["authorized", "completed", "partially_captured"].includes(row.collection_status)
   const data = row.data
   if (!data || Array.isArray(data) || typeof data !== "object" ||
       data.order_id !== orderId || data.medusa_session_id !== sessionId ||
@@ -119,7 +126,7 @@ const verifiedSession = async (db: PaymentDb, orderId: string) => {
       data.amount_paise !== amount) {
     deny("Medusa payment amount and gateway intent disagree")
   }
-  return { sessionId, amount }
+  return { sessionId, amount, alreadyAuthorized }
 }
 
 /**
@@ -218,7 +225,7 @@ export async function recordSignedCashfreeWebhook({
     deny("Stored gateway evidence was altered or mismatched")
   }
   return Object.freeze({
-    status: "verified_unsettled",
+    status: medusa.alreadyAuthorized ? "verified_replay" : "verified_unsettled",
     medusaPaymentSessionId: medusa.sessionId,
     paymentProofKey: proofKey,
     capturedInMedusa: false,
