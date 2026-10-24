@@ -26,3 +26,5 @@
 - No gateway credential in repo, debug output, or client logs.
 
 This file is a module provenance/integration contract, not a claim that checkout is live.
+
+Peer-version note: Shiprocket 0.2.1 declares Medusa 2.12.4 peer requirements while store core is 2.22.0. Keep all external courier operations disabled pending compatibility verification.
