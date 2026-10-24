@@ -218,7 +218,7 @@ describe("staging Medusa-owned Cashfree payment evidence", () => {
     const result=await recordSignedCashfreeWebhook(input as any)
     expect(result.status).toBe("verified_replay")
     expect(result.fulfillmentReady).toBe(false)
-    expect(result.medusaPaymentSessionId).toBe(medusaId)
+    expect("medusaPaymentSessionId" in result && result.medusaPaymentSessionId).toBe(medusaId)
     expect(input.db.raw).toHaveBeenCalledTimes(2)
     expect(input.sdk.PGFetchOrder).toHaveBeenCalledTimes(1)
   })
