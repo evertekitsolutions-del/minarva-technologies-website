@@ -11,6 +11,9 @@ on:
     paths:
       - '.github/workflows/store-import-cashfree-sdks.yml'
   workflow_dispatch:
+concurrency:
+  group: store-cashfree-sdk-import
+  cancel-in-progress: false
 permissions:
   contents: write
 
@@ -56,4 +59,6 @@ jobs:
           git -c user.name='github-actions[bot]' \
             -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
             commit -m 'vendor(store): pin official Cashfree server and browser SDK packages'
+          git fetch origin feat/store-004-cashfree-official-sdks
+          git rebase origin/feat/store-004-cashfree-official-sdks
           git push origin HEAD:refs/heads/feat/store-004-cashfree-official-sdks
