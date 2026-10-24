@@ -5,6 +5,11 @@ import { configureStoreSearch, defineMiddlewares } from '@medusajs/framework/htt
 export default defineMiddlewares({
   routes: [
     {
+      method: ["POST"],
+      matcher: "/webhooks/cashfree",
+      bodyParser: { preserveRawBody: true, sizeLimit: "100kb" },
+    },
+    {
       method: ['POST'],
       matcher: '/store/search',
       middlewares: [
