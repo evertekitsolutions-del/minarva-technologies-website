@@ -6,6 +6,7 @@ const environment = process.env.NODE_ENV || "development"
 const isProduction = environment === "production"
 const shiprocketRequested = process.env.STORE_SHIPROCKET_PLUGIN_ENABLED === "true"
 const automationsRequested = process.env.STORE_AUTOMATIONS_PLUGIN_ENABLED === "true"
+const cashfreeSandboxRequested = process.env.STORE_CASHFREE_SANDBOX_ENABLED === "true"
 
 // External courier accounts can charge real money even on staging.
 // Require explicit, independent opt-in; production deliberately cannot use it
@@ -30,6 +31,18 @@ if (automationsRequested && (
   isProduction || process.env.STORE_AUTOMATIONS_STAGING_APPROVED !== "true"
 )) {
   throw new Error("Automations require explicit staging approval and are blocked in production")
+}
+
+if (cashfreeSandboxRequested) {
+  if (isProduction || process.env.STORE_CASHFREE_SANDBOX_APPROVED !== "true") {
+    throw new Error("Cashfree sandbox is disabled pending explicit staging authorization")
+  }
+  for (const name of ["CASHFREE_SANDBOX_CLIENT_ID", "CASHFREE_SANDBOX_CLIENT_SECRET"]) {
+    const value = process.env[name] || ""
+    if (value.length < 10 || value.startsWith("REPLACE_")) {
+      throw new Error(`Missing valid Cashfree staging configuration: ${name}`)
+    }
+  }
 }
 
 if (isProduction) {
@@ -69,8 +82,8 @@ module.exports = defineConfig({
       }] : []),
     ],
   } : {}),
-  ...(shiprocketRequested ? {
-    modules: [{
+  modules: [
+    ...(shiprocketRequested ? [{
       resolve: "@medusajs/medusa/fulfillment",
       options: {
         providers: [{
@@ -83,6 +96,19 @@ module.exports = defineConfig({
           },
         }],
       },
-    }],
-  } : {}),
+    }] : []),
+    ...(cashfreeSandboxRequested ? [{
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [{
+          resolve: "./src/modules/cashfree",
+          id: "cashfree-sandbox",
+          options: {
+            client_id: process.env.CASHFREE_SANDBOX_CLIENT_ID,
+            client_secret: process.env.CASHFREE_SANDBOX_CLIENT_SECRET,
+          },
+        }],
+      },
+    }] : []),
+  ],
 })
