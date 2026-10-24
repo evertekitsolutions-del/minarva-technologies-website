@@ -15,10 +15,10 @@
 ### Example proposed integration boundary (NOT ACTIVE)
 
 ```js
-import { Cashfree } from "cashfree-pg"
+import { Cashfree, CFEnvironment } from "cashfree-pg"
 import { reconcileSignedCashfreeWebhook } from "store/lib/cashfree-proof.mjs"
 
-const cashfree = new Cashfree(Cashfree.SANDBOX, serverSecretClientId, serverSecretClientKey)
+const cashfree = new Cashfree(CFEnvironment.SANDBOX, serverSecretClientId, serverSecretClientKey)
 const trusted = await findMedusaExpectedPaymentForSignedOrderId(/* verified order */)
 const result = await reconcileSignedCashfreeWebhook({
   sdk: cashfree,
@@ -51,3 +51,5 @@ Do not copy this illustration into a public route without replacing the pseudoco
 ## Future acceptance
 
 Wire Cashfree payment provider into Medusa's `AbstractPaymentProvider` lifecycle with complete merchant-owned sandbox tests (create session, cancel, browser return, webhook, delayed reconciliation, refund, idempotency and partial COD) and independent database migrations. No deployment until explicitly approved.
+
+Exact SDK check (24 Oct 2026): installed `cashfree-pg@6.0.6` exposes `PGVerifyWebhookSignature`, `PGFetchOrder`, `PGOrderFetchPayments`, `PGCreateOrder` and `PGOrderCreateRefund` on the **constructed client instance**, not as static methods. The current sandbox enum is `CFEnvironment.SANDBOX`; older README snippets use `Cashfree.SANDBOX` and are incompatible with the pinned package. This was checked by GitHub CI without network requests to Cashfree.
