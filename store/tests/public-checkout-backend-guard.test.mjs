@@ -7,7 +7,8 @@ const read = path => readFileSync(new URL(path,root),"utf8")
 
 test("Medusa POST cart-complete is blocked by server-side middleware",()=>{
   const code=read("store/commerce/apps/backend/src/api/middlewares.ts")
-  assert.match(code,/method: \["POST"\]/)
+  assert.match(code,/req\.method === "POST"/)
+  assert.match(code,/Global route middleware runs BEFORE Medusa/)
   assert.match(code,/\/store\/carts\//)
   assert.match(code,/complete\/\?\$/)
   assert.match(code,/publicCheckoutGateFromEnvironment\(\)/)
