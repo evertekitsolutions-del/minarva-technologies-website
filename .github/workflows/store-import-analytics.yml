@@ -1,0 +1,59 @@
+name: Store - pin open-source Medusa analytics
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/store-import-analytics.yml'
+      - 'store/commerce/ANALYTICS_MODULE.md'
+  workflow_dispatch:
+
+concurrency:
+  group: store-analytics-import
+  cancel-in-progress: false
+permissions:
+  contents: write
+
+jobs:
+  pin-oss-analytics:
+    if: github.repository == 'evertekitsolutions-del/minarva-technologies-website' && (github.event_name != 'pull_request' || github.head_ref == 'feat/store-012-oss-analytics')
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/store-012-oss-analytics
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Install exactly pinned published analytics source
+        shell: bash
+        run: |
+          set -euo pipefail
+          corepack enable
+          corepack prepare pnpm@10.11.1 --activate
+          cd store/commerce
+          pnpm add --filter @dtc/backend --save-exact '@agilo/medusa-analytics-plugin@1.2.1' --ignore-scripts
+          node --input-type=module <<'EOF'
+          import assert from 'node:assert/strict'
+          import { readFileSync } from 'node:fs'
+          const p=JSON.parse(readFileSync('apps/backend/package.json','utf8'))
+          assert.equal(p.dependencies['@agilo/medusa-analytics-plugin'],'1.2.1')
+          assert.equal(p.dependencies['@medusajs/medusa'],'2.22.0')
+          EOF
+      - name: Commit lockfile and dependency to feature branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add store/commerce/apps/backend/package.json store/commerce/pnpm-lock.yaml
+          if git diff --cached --quiet; then
+            echo 'Analytics plugin already pinned'
+            exit 0
+          fi
+          git -c user.name='github-actions[bot]' \
+              -c user.email='41898282+github-actions[bot]@users.noreply.github.com' \
+              commit -m 'vendor(store): reuse Medusa analytics admin dashboards v1.2.1'
+          git fetch origin feat/store-012-oss-analytics
+          git rebase origin/feat/store-012-oss-analytics
+          git push origin HEAD:refs/heads/feat/store-012-oss-analytics
