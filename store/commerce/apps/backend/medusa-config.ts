@@ -1,16 +1,69 @@
-import { loadEnv, defineConfig } from '@medusajs/framework/utils'
+import { loadEnv, defineConfig } from "@medusajs/framework/utils"
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+loadEnv(process.env.NODE_ENV || "development", process.cwd())
+
+const environment = process.env.NODE_ENV || "development"
+const isProduction = environment === "production"
+const shiprocketRequested = process.env.STORE_SHIPROCKET_PLUGIN_ENABLED === "true"
+
+// External courier accounts can charge real money even on staging.
+// Require explicit, independent opt-in; production deliberately cannot use it
+// until the delivery + residual-COD integration acceptance tests are in place.
+if (shiprocketRequested) {
+  if (isProduction || process.env.STORE_ALLOW_EXTERNAL_PROVIDER_STAGING !== "true") {
+    throw new Error("Shiprocket is blocked pending explicit staging approval and production shipment verification")
+  }
+  for (const name of [
+    "SHIPROCKET_EMAIL", "SHIPROCKET_PASSWORD",
+    "SHIPROCKET_PICKUP_LOCATION", "SHIPROCKET_WEBHOOK_TOKEN",
+  ]) {
+    if (!process.env[name] || process.env[name]!.startsWith("REPLACE_")) {
+      throw new Error(`Missing safe Shiprocket configuration: ${name}`)
+    }
+  }
+}
+
+if (isProduction) {
+  for (const name of ["JWT_SECRET", "COOKIE_SECRET"]) {
+    const value = process.env[name] || ""
+    if (value.length < 32 || value.startsWith("REPLACE_") || value.includes("supersecret")) {
+      throw new Error(`Refusing insecure production ${name}`)
+    }
+  }
+  if (!process.env.DATABASE_URL || !process.env.REDIS_URL) {
+    throw new Error("Production backend requires dedicated DATABASE_URL and REDIS_URL")
+  }
+}
 
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
       authCors: process.env.AUTH_CORS!,
       jwtSecret: process.env.JWT_SECRET,
       cookieSecret: process.env.COOKIE_SECRET,
-    }
-  }
+    },
+  },
+  // Existing MIT Medusa modules remain the transactional authority.
+  // Installed plugin code is inert by default and forbidden in production.
+  ...(shiprocketRequested ? {
+    plugins: [{ resolve: "@sam-ael/medusa-plugin-shiprocket", options: {} }],
+    modules: [{
+      resolve: "@medusajs/medusa/fulfillment",
+      options: {
+        providers: [{
+          resolve: "@sam-ael/medusa-plugin-shiprocket",
+          id: "shiprocket",
+          options: {
+            email: process.env.SHIPROCKET_EMAIL,
+            password: process.env.SHIPROCKET_PASSWORD,
+            pickup_location: process.env.SHIPROCKET_PICKUP_LOCATION,
+          },
+        }],
+      },
+    }],
+  } : {}),
 })
