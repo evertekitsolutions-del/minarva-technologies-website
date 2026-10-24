@@ -27,6 +27,11 @@ import type {
   WebhookActionResult,
 } from "@medusajs/framework/types"
 import { Cashfree, CFEnvironment } from "cashfree-pg"
+import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
+import {
+  confirmCashfreePrepaidProof,
+  type PaymentLedgerConnection,
+} from "../../lib/cashfree-settlement"
 
 type Options = {
   client_id: string
@@ -143,12 +148,40 @@ class CashfreeSandboxProvider extends AbstractPaymentProvider<Options> {
   }
 
   async authorizePayment(input: AuthorizePaymentInput): Promise<AuthorizePaymentOutput> {
-    // Do not trust checkout return or unverified client-side SDK callback.
-    return { status: PaymentSessionStatus.PENDING_AUTHORIZATION, data: input.data ?? {} }
+    // Use Medusa's already-shipped deferred authorization workflow, never a
+    // browser redirect as evidence of a paid order.
+    return this.getPaymentStatus({ data: input.data })
   }
 
   async getPaymentStatus(input: GetPaymentStatusInput): Promise<GetPaymentStatusOutput> {
-    return { status: PaymentSessionStatus.PENDING_AUTHORIZATION, data: input.data ?? {} }
+    if (process.env.NODE_ENV === "production" ||
+        process.env.STORE_CASHFREE_SANDBOX_SETTLEMENT_ENABLED !== "true" ||
+        process.env.STORE_CASHFREE_SANDBOX_SETTLEMENT_APPROVED !== "true") {
+      return { status: PaymentSessionStatus.PENDING_AUTHORIZATION, data: input.data ?? {} }
+    }
+    const db = this.container[ContainerRegistrationKeys.PG_CONNECTION] as
+      PaymentLedgerConnection | undefined
+    const result = await confirmCashfreePrepaidProof({
+      sdk: this.client_,
+      db: db as PaymentLedgerConnection,
+      sessionData: input.data,
+    })
+    if (!result) {
+      return { status: PaymentSessionStatus.PENDING_AUTHORIZATION, data: input.data ?? {} }
+    }
+    // Cashfree has ALREADY captured this single full prepaid amount. Medusa
+    // internally creates its payment/capture records once via its own workflow.
+    // Shipping-advance partial COD is refused by the collection-total check.
+    return {
+      status: PaymentSessionStatus.CAPTURED,
+      data: {
+        ...input.data,
+        cashfree_payment_id: result.paymentId,
+        cashfree_verified_order_id: result.gatewayOrderId,
+        proof_amount_paise: result.amountPaise,
+        sandbox_gateway_captured: true,
+      },
+    }
   }
 
   async updatePayment(_input: UpdatePaymentInput): Promise<UpdatePaymentOutput> {
