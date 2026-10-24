@@ -1,0 +1,101 @@
+name: Store - Medusa runtime smoke
+on:
+  pull_request:
+    paths:
+      - 'store/commerce/apps/backend/**'
+      - 'store/commerce/SMOKE_VERIFICATION.md'
+      - '.github/workflows/store-medusa-runtime-smoke.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'store/commerce/apps/backend/**'
+      - '.github/workflows/store-medusa-runtime-smoke.yml'
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: medusa_ci
+          POSTGRES_PASSWORD: ci-local-temporary-only
+          POSTGRES_DB: minarva_store_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U medusa_ci -d minarva_store_ci"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+
+    env:
+      CI: "true"
+      NODE_ENV: development
+      DATABASE_URL: postgresql://medusa_ci:ci-local-temporary-only@127.0.0.1:5432/minarva_store_ci
+      REDIS_URL: redis://127.0.0.1:6379
+      STORE_CORS: http://127.0.0.1:8000
+      ADMIN_CORS: http://127.0.0.1:9000
+      AUTH_CORS: http://127.0.0.1:8000,http://127.0.0.1:9000
+      JWT_SECRET: ci-a-temporary-test-only-unique-jwt-secret
+      COOKIE_SECRET: ci-another-temporary-only-cookie-secret
+      STORE_SHIPROCKET_PLUGIN_ENABLED: "false"
+      STORE_ALLOW_EXTERNAL_PROVIDER_STAGING: "false"
+      STORE_AUTOMATIONS_PLUGIN_ENABLED: "false"
+      STORE_AUTOMATIONS_STAGING_APPROVED: "false"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Install Medusa OSS packages (no third-party install scripts)
+        shell: bash
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.11.1 --activate
+          pnpm --dir store/commerce install --frozen-lockfile --ignore-scripts
+      - name: Run Medusa native DB migrations on disposable CI database
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir store/commerce --filter @dtc/backend exec medusa db:migrate
+      - name: Boot actual Medusa backend and verify the health endpoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir store/commerce --filter @dtc/backend dev > "$RUNNER_TEMP/medusa-ci.log" 2>&1 &
+          backend_pid=$!
+          trap 'kill $backend_pid 2>/dev/null || true' EXIT
+          for i in $(seq 1 90); do
+            if curl --fail --silent --max-time 3 http://127.0.0.1:9000/health > "$RUNNER_TEMP/health-response.txt"; then
+              echo "Medusa Health endpoint responded successfully"
+              cat "$RUNNER_TEMP/health-response.txt"
+              exit 0
+            fi
+            if ! kill -0 $backend_pid 2>/dev/null; then
+              echo "Medusa backend exited prematurely" >&2
+              tail -n 140 "$RUNNER_TEMP/medusa-ci.log" >&2
+              exit 1
+            fi
+            sleep 3
+          done
+          echo "Medusa backend health endpoint timed out" >&2
+          tail -n 180 "$RUNNER_TEMP/medusa-ci.log" >&2
+          exit 1
+      - name: Preserve sanitized backend logs on failure
+        if: failure()
+        shell: bash
+        run: |
+          if [ -f "$RUNNER_TEMP/medusa-ci.log" ]; then
+            tail -n 80 "$RUNNER_TEMP/medusa-ci.log" |
+              sed -E 's#postgresql://[^@]+@#postgresql://[redacted]@#g'
+          fi
