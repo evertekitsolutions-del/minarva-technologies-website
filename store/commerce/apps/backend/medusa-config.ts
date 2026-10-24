@@ -5,6 +5,7 @@ loadEnv(process.env.NODE_ENV || "development", process.cwd())
 const environment = process.env.NODE_ENV || "development"
 const isProduction = environment === "production"
 const shiprocketRequested = process.env.STORE_SHIPROCKET_PLUGIN_ENABLED === "true"
+const automationsRequested = process.env.STORE_AUTOMATIONS_PLUGIN_ENABLED === "true"
 
 // External courier accounts can charge real money even on staging.
 // Require explicit, independent opt-in; production deliberately cannot use it
@@ -21,6 +22,14 @@ if (shiprocketRequested) {
       throw new Error(`Missing safe Shiprocket configuration: ${name}`)
     }
   }
+}
+
+// The bundled MIT automation plugin can dispatch notifications and run jobs.
+// Never enable it in production before consent, dry-run and delivery controls.
+if (automationsRequested && (
+  isProduction || process.env.STORE_AUTOMATIONS_STAGING_APPROVED !== "true"
+)) {
+  throw new Error("Automations require explicit staging approval and are blocked in production")
 }
 
 if (isProduction) {
@@ -49,8 +58,18 @@ module.exports = defineConfig({
   },
   // Existing MIT Medusa modules remain the transactional authority.
   // Installed plugin code is inert by default and forbidden in production.
+  ...(shiprocketRequested || automationsRequested ? {
+    plugins: [
+      ...(shiprocketRequested ? [{ resolve: "@sam-ael/medusa-plugin-shiprocket", options: {} }] : []),
+      ...(automationsRequested ? [{
+        resolve: "@codee-sh/medusa-plugin-automations",
+        options: {
+          automations: { actionsEnabled: { email: false, slack: false } },
+        },
+      }] : []),
+    ],
+  } : {}),
   ...(shiprocketRequested ? {
-    plugins: [{ resolve: "@sam-ael/medusa-plugin-shiprocket", options: {} }],
     modules: [{
       resolve: "@medusajs/medusa/fulfillment",
       options: {
