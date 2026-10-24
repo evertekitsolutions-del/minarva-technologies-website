@@ -22,6 +22,7 @@
     "test:unit": "TEST_TYPE=unit NODE_OPTIONS=--experimental-vm-modules jest --silent --runInBand --forceExit"
   },
   "dependencies": {
+    "@agilo/medusa-analytics-plugin": "1.2.1",
     "@codee-sh/medusa-plugin-automations": "1.0.11",
     "@medusajs/admin-sdk": "2.22.0",
     "@medusajs/admin-shared": "2.22.0",
