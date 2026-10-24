@@ -1,5 +1,11 @@
 name: Store - import official Cashfree SDKs
 on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [main]
+    paths:
+      - '.github/workflows/store-import-cashfree-sdks.yml'
+      - 'store/commerce/PAYMENT_MODULES.md'
   push:
     branches: [feat/store-004-cashfree-official-sdks]
     paths:
@@ -10,7 +16,7 @@ permissions:
 
 jobs:
   pin-payment-sdks:
-    if: github.repository == 'evertekitsolutions-del/minarva-technologies-website'
+    if: github.repository == 'evertekitsolutions-del/minarva-technologies-website' && (github.event_name != 'pull_request' || github.head_ref == 'feat/store-004-cashfree-official-sdks')
     runs-on: ubuntu-latest
     timeout-minutes: 25
     steps:
