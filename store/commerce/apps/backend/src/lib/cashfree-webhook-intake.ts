@@ -164,11 +164,12 @@ export async function recordSignedCashfreeWebhook({
     deny("Invalid signed JSON")
   }
   if (!event || typeof event !== "object" || Array.isArray(event)) deny("Invalid event")
-  if (event.type !== "PAYMENT_SUCCESS_WEBHOOK") {
+  const signedPayload: Record<string, any> = event as Record<string, any>
+  if (signedPayload.type !== "PAYMENT_SUCCESS_WEBHOOK") {
     return Object.freeze({ status: "ignored_non_success", authorized: false, fulfillmentReady: false })
   }
-  const orderId = id(event.data?.order?.order_id, "Cashfree order ID")
-  const expectedPaymentId = paymentId(event.data?.payment?.cf_payment_id)
+  const orderId = id(signedPayload.data?.order?.order_id, "Cashfree order ID")
+  const expectedPaymentId = paymentId(signedPayload.data?.payment?.cf_payment_id)
   // Gateway event signature proves only that Cashfree sent this payload.
   // All expected values come from Medusa and independently polled Cashfree.
   const medusa = await verifiedSession(db, orderId)
