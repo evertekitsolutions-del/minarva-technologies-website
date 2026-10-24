@@ -1,0 +1,47 @@
+name: Store - OSS staging readiness
+on:
+  pull_request:
+    paths:
+      - 'store/commerce/**'
+      - 'store/tests/**'
+      - '.github/workflows/store-oss-staging.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'store/commerce/**'
+      - 'store/tests/**'
+      - '.github/workflows/store-oss-staging.yml'
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.23.4'
+      - name: Test provider staging gates and COD pricing foundation
+        run: node --test store/tests/*.test.mjs
+      - name: Verify isolated open source container definitions
+        env:
+          STORE_DEV_DB_PASSWORD: local-test-password-only-not-production
+        run: docker compose -f store/commerce/compose.dev.yml config --quiet
+      - name: Verify upstream source and pinned provider metadata
+        run: |
+          node --input-type=module <<'EOF'
+          import { readFileSync } from 'node:fs'
+          import assert from 'node:assert/strict'
+          const root='store/commerce/'
+          const backend=JSON.parse(readFileSync(root+'apps/backend/package.json','utf8'))
+          assert.equal(backend.dependencies['@medusajs/medusa'],'2.22.0')
+          assert.equal(backend.dependencies['@sam-ael/medusa-plugin-shiprocket'],'0.2.1')
+          assert.match(readFileSync(root+'LICENSE','utf8'),/MIT License/)
+          const lock=readFileSync(root+'pnpm-lock.yaml','utf8')
+          assert.match(lock, /@sam-ael\/medusa-plugin-shiprocket/)
+          const conf=readFileSync(root+'apps/backend/medusa-config.ts','utf8')
+          assert.match(conf, /if \(isProduction \|\| process\.env\.STORE_ALLOW_EXTERNAL_PROVIDER_STAGING/)
+          console.log('Exact dependency + inert production provider config verified')
+          EOF
