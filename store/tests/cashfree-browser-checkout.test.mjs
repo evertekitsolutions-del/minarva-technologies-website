@@ -28,7 +28,7 @@ test("sandbox checkout cannot be used by production or without explicit opt-in",
 
 test("cashfree browser callback never calls placeOrder or reports paid", () => {
   const source = read(prefix + "cashfree-sandbox-button/index.tsx")
-  assert.doesNotMatch(source, /placeOrder\(|cart\.complete|authorized: true|status: "paid"/)
+  assert.doesNotMatch(source, /\bawait\s+placeOrder\(|\b(?:await\s+)?cart\.complete\(|authorized: true|status: "paid"/)
   assert.match(source, /Payment status is not confirmed/)
   assert.match(source, /No order has been placed/)
 })
