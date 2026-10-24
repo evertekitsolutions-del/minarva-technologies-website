@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS store_cashfree_payment_evidence (
 CREATE OR REPLACE FUNCTION store_cashfree_evidence_immutable_guard()
 RETURNS TRIGGER
 LANGUAGE plpgsql
-AS $
+AS $cashfree_guard$
 BEGIN
   IF TG_OP = 'DELETE' THEN
     RAISE EXCEPTION 'Cashfree evidence rows cannot be deleted';
@@ -37,7 +37,7 @@ BEGIN
   END IF;
   RETURN NEW;
 END;
-$;
+$cashfree_guard$;
 
 CREATE OR REPLACE TRIGGER store_cashfree_evidence_append_only
 BEFORE UPDATE OR DELETE ON store_cashfree_payment_evidence
