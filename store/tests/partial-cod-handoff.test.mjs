@@ -186,13 +186,12 @@ test("reject wrong courier, wrong order, wrong address, and missing AWB", async 
   }
 })
 
-test("reject untrusted draft/receipt shape and negative COD", () => {
+test("reject untrusted draft/receipt shape and negative COD", async () => {
   assert.throws(() => assertCourierBookingMatchesHandoff({ status: "user_submitted" }, {}), /server-verified/)
-  const draft = { status: "validated_draft_not_booked", courierId: "sr_42",
-    medusaOrderRef: ref, destinationPincode: PIN, codCollectablePaise: 1,
-    prepaidCapturedPaise: 100, handoffKey: "some_hash" }
-  assert.throws(() => assertCourierBookingMatchesHandoff(draft,
-    booking(draft, { codCollectablePaise: -1 })), /integer paise/)
+  const { sdk } = gateway()
+  const verifiedDraft = await prepareShippingHandoff({ ...checkout(), sdk })
+  assert.throws(() => assertCourierBookingMatchesHandoff(verifiedDraft,
+    booking(verifiedDraft, { codCollectablePaise: -1 })), /integer paise/)
 })
 
 test("reject structurally forged or serialized validated drafts", async () => {
