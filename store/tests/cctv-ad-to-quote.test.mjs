@@ -12,7 +12,7 @@ test("marketing quote page is India/INR only; no false courier or checkout promi
   assert.match(code, /countryCode !== "in"/)
   assert.match(code, /region\.currency_code !== "inr"/)
   assert.match(code, /notFound\(\)/)
-  assert.match(code, /<CctvQuoteWizard source=\{source\} \/>/)
+  assert.match(code, /<CctvQuoteWizard source=\{source\} product=\{verifiedProduct\} \/>/)
   assert.doesNotMatch(code, /createOrder\(|placeOrder\(|checkout\(|ShiprocketCreateOrder\(/)
 })
 test("form collects only site, camera count, installation and Kerala PIN", () => {
