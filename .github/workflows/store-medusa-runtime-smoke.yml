@@ -97,23 +97,32 @@ jobs:
                 echo "No disposable Medusa publishable API key available" >&2
                 exit 1
               fi
-              blocked_code=$(curl --silent --show-error --max-time 6 \
-                -o "$RUNNER_TEMP/blocked-order.json" -w '%{http_code}' \
-                -X POST "http://127.0.0.1:9000/store/carts/cart_ci_never_create/complete" \
-                -H "x-publishable-api-key: $publishable_ci" \
-                -H 'Content-Type: application/json' -d '{}')
-              if [[ "$blocked_code" != "503" ]]; then
-                echo "Public order creation API was NOT blocked (HTTP $blocked_code)" >&2
-                cat "$RUNNER_TEMP/blocked-order.json" >&2
-                tail -n 100 "$RUNNER_TEMP/medusa-ci.log" >&2
-                exit 1
-              fi
-              if ! grep -q 'Customer checkout is not yet available' "$RUNNER_TEMP/blocked-order.json"; then
-                echo "Order denial did not originate from Minarva launch gate" >&2
-                cat "$RUNNER_TEMP/blocked-order.json" >&2
-                exit 1
-              fi
-              echo "Verified direct Medusa order-completion API denied by default"
+              # A UI toggle is insufficient; prove the real Medusa API
+              # refuses unauthorised cart CREATE/ADD/UPDATE/DELETE/COMPLETE.
+              # Each response MUST be from our guard, not a route 401/404.
+              for method_and_route in \
+                "POST /store/carts" \
+                "POST /store/carts/cart_ci_never_create/line-items" \
+                "PATCH /store/carts/cart_ci_never_create" \
+                "DELETE /store/carts/cart_ci_never_create/line-items/item_ci_missing" \
+                "POST /store/carts/cart_ci_never_create/complete"; do
+                verb="${method_and_route%% *}"
+                route="${method_and_route#* }"
+                blocked_code=$(curl --silent --show-error --max-time 6 \
+                  -o "$RUNNER_TEMP/blocked-order.json" -w '%{http_code}' \
+                  -X "$verb" "http://127.0.0.1:9000$route" \
+                  -H "x-publishable-api-key: $publishable_ci" \
+                  -H 'Content-Type: application/json' -d '{}')
+                if [[ "$blocked_code" != "503" ]] || \
+                    ! grep -q 'Customer cart and checkout are not yet available' "$RUNNER_TEMP/blocked-order.json"; then
+                  echo "Unsafe cart mutation $verb $route bypassed gate (HTTP $blocked_code)" >&2
+                  cat "$RUNNER_TEMP/blocked-order.json" >&2
+                  tail -n 100 "$RUNNER_TEMP/medusa-ci.log" >&2
+                  exit 1
+                fi
+                echo "Verified denied: $verb $route"
+              done
+              echo "All five direct Medusa cart mutation routes are blocked before launch"
               exit 0
             fi
             if ! kill -0 $backend_pid 2>/dev/null; then
