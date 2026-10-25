@@ -225,6 +225,15 @@ export default function ProductActions({
               ? "Out of stock"
               : "Add to cart"}
           </Button>
+          <a
+            href="https://wa.me/916235353732"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block rounded border border-gray-300 px-3 py-2 text-center text-sm font-medium text-gray-900"
+            aria-label="Ask Minarva Technologies for a verified CCTV quotation"
+          >
+            Ask for confirmed package quote / പാക്കേജ് വില ചോദിക്കൂ
+          </a>
         </form>
         <MobileActions
           product={product}
