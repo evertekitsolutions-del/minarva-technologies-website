@@ -1,0 +1,41 @@
+name: Store Preview - Public HTTP Verification
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/store-preview-public-http.yml"
+      - "store/preview/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  public-preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Verify public Cloudflare visual preview
+        env:
+          PREVIEW_ORIGIN: https://minarva-cctv-store-preview.anilalbert7.workers.dev
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --retry 5 --retry-all-errors \
+            --retry-delay 3 --max-time 15 "$PREVIEW_ORIGIN/health" \
+            -o /tmp/minarva-health
+          grep -qx "ok" /tmp/minarva-health
+          for route in /in /in/store /in/cctv-quote; do
+            curl --fail --silent --show-error --retry 5 --retry-all-errors \
+              --retry-delay 3 --max-time 15 "$PREVIEW_ORIGIN$route" \
+              -D /tmp/minarva-headers -o /tmp/minarva-html
+            grep -q "VISUAL PREVIEW ONLY" /tmp/minarva-html
+            grep -q "Minarva CCTV Store" /tmp/minarva-html
+            grep -qi "x-robots-tag: noindex,nofollow" /tmp/minarva-headers
+            echo "Verified public preview GET $route"
+          done
+          grep -q "Prepare WhatsApp Enquiry" /tmp/minarva-html
+          blocked=$(curl --silent --show-error --max-time 10 \
+            -X POST "$PREVIEW_ORIGIN/in/cctv-quote" -o /tmp/blocked -w '%{http_code}')
+          test "$blocked" = "405"
+          echo "Confirmed all public preview routes and no checkout POST"
