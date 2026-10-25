@@ -28,6 +28,10 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   return (
     <>
       <Nav />
+      <div role="status" className="w-full border-b border-gray-200 bg-gray-50 px-4 py-2 text-center text-sm text-gray-800">
+        Minarva CCTV Store — Kerala online catalogue preparation in progress.
+        Ordering, online payments and courier booking are not enabled yet.
+      </div>
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart} />
       )}
