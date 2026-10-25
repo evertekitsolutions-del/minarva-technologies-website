@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 import { getRegion } from "@lib/data/regions"
+import { listProducts } from "@lib/data/products"
+import { hasApprovedCctvOffer } from "@lib/util/cctv-public-offer"
+import type { VerifiedCctvQuoteProduct } from "@lib/util/cctv-lead-request"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import CctvQuoteWizard from "@modules/lead/components/cctv-quote-wizard"
 import { normalizeAdSource } from "@lib/util/cctv-lead-request"
@@ -16,7 +19,7 @@ export default async function QuoteLanding({
   searchParams,
 }: {
   params: Promise<{ countryCode: string }>
-  searchParams: Promise<{ utm_source?: string | string[] }>
+  searchParams: Promise<{ utm_source?: string | string[]; product?: string | string[]; variant?: string | string[] }>
 }) {
   const { countryCode } = await params
   const region = await getRegion(countryCode)
@@ -27,6 +30,39 @@ export default async function QuoteLanding({
   const source = normalizeAdSource(
     typeof query.utm_source === "string" ? query.utm_source : null
   )
+
+  // Only Medusa's approved store catalogue can assign product context to a
+  // lead. A user-editable URL cannot invent SKUs, price, stock or approval.
+  const requestedHandle = typeof query.product === "string" &&
+    /^[a-z0-9-]{3,100}$/.test(query.product) ? query.product : null
+  const requestedVariant = typeof query.variant === "string" &&
+    /^variant_[A-Za-z0-9_-]{4,100}$/.test(query.variant) ? query.variant : null
+  let verifiedProduct: VerifiedCctvQuoteProduct | undefined
+  if (requestedHandle) {
+    try {
+      const { response } = await listProducts({
+        countryCode: "in",
+        queryParams: { handle: requestedHandle, limit: 1 },
+      })
+      const match = response.products.find(product =>
+        product.handle === requestedHandle && hasApprovedCctvOffer(product)
+      )
+      if (match) {
+        const option = match.variants?.find(variant =>
+          variant.id === requestedVariant
+        )
+        verifiedProduct = {
+          title: match.title,
+          handle: match.handle,
+          ...(option?.sku ? { variantSku: option.sku } : {}),
+        }
+      }
+    } catch {
+      // Missing backend product must degrade to generic enquiry, not fabricate
+      // a product or expose metadata obtained from URL parameters.
+      verifiedProduct = undefined
+    }
+  }
 
   return (
     <main className="content-container py-10 small:py-16">
@@ -46,7 +82,7 @@ export default async function QuoteLanding({
           സ്ഥിരീകരിച്ച വിലയും വാറന്റിയും ഡെലിവറി ചാർജും അറിയാം.
         </p>
       </header>
-      <CctvQuoteWizard source={source} />
+      <CctvQuoteWizard source={source} product={verifiedProduct} />
       <p className="mt-8 text-center text-sm text-ui-fg-subtle">
         Prefer to browse?{" "}
         <LocalizedClientLink href="/store" className="font-semibold underline">
