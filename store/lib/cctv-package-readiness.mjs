@@ -140,14 +140,15 @@ export function auditCatalog(products,{countryCode="in"}={}){
     if(skus.has(v.sku))duplicateSkus.add(v.sku)
     skus.add(v.sku)
   }
+  const eligibleCount=audited.filter(p=>p.ready &&
+    p.variants.every(v=>!duplicateSkus.has(v.sku))).length
   return Object.freeze({
     total:audited.length,
-    ready:audited.filter(p=>p.ready).length,
-    blocked:audited.filter(p=>!p.ready).length + [...duplicateSkus].filter(s =>
-      audited.some(p=>p.ready&&p.variants.some(v=>v.sku===s))).length,
+    ready:eligibleCount,
+    blocked:audited.length-eligibleCount,
     duplicateSkus:Object.freeze([...duplicateSkus]),
     items:Object.freeze(audited),
     eligibleForPublication:audited.length>0 &&
-      audited.every(p=>p.ready) && duplicateSkus.size===0,
+      eligibleCount===audited.length,
   })
 }
