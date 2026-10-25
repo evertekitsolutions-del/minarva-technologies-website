@@ -44,7 +44,7 @@ export const ShippingSummary = ({
 
 export const PlaceholderNotice = () => (
   <p className="text-ui-fg-subtle" data-testid="policy-placeholder">
-    This is placeholder content from the Medusa starter. Replace it with your
-    store&apos;s own text before launch.
+    Merchant policies are under review. Online payments and order placement
+    are not available yet. Contact Minarva Technologies for details.
   </p>
 )

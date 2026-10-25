@@ -16,13 +16,13 @@ export default function TermsPage() {
     <PolicyPage title="Terms of service">
       <PlaceholderNotice />
       <p>
-        By placing an order with {STORE_NAME} you agree to these terms. Prices,
-        product availability and shipping options are shown on the product
-        pages and at checkout, and may change without notice.
+        {STORE_NAME} is preparing its online store. Checkout, online payment
+        and courier dispatch are not available at present.
       </p>
       <p>
-        Orders are confirmed by email once payment is received. Returns and
-        refunds are handled according to our return policy.
+        Final product terms, GST, warranty exclusions, installation charges
+        and return conditions must be approved and published before orders
+        can be accepted. For a quotation please contact our team.
       </p>
     </PolicyPage>
   )

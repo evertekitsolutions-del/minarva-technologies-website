@@ -3,7 +3,6 @@ import { listCollections } from "@lib/data/collections";
 import { Text, clx } from "@modules/common/components/ui";
 
 import LocalizedClientLink from "@modules/common/components/localized-client-link";
-import MedusaCTA from "@modules/layout/components/medusa-cta";
 
 export default async function Footer() {
   const [{ collections }, productCategories] = await Promise.all([
@@ -176,39 +175,16 @@ export default async function Footer() {
               </ul>
             </div>
             <div className="flex flex-col gap-y-2">
-              <span className="txt-small-plus txt-ui-fg-base">Medusa</span>
-              <ul className="grid grid-cols-1 gap-y-2 text-ui-fg-subtle txt-small">
-                <li>
-                  <a
-                    href="https://github.com/medusajs"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    GitHub
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://docs.medusajs.com"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Documentation
-                  </a>
-                </li>
-                <li>
-                  <a
-                    href="https://github.com/medusajs/dtc-starter"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="hover:text-ui-fg-base"
-                  >
-                    Source code
-                  </a>
-                </li>
-              </ul>
+              <span className="txt-small-plus txt-ui-fg-base">Customer enquiries</span>
+              <p className="max-w-xs text-sm text-ui-fg-subtle">
+                The online CCTV store is being prepared. Payments, courier
+                booking and online ordering are not available yet.
+              </p>
+              <a href="https://wa.me/916235353732"
+                target="_blank" rel="noopener noreferrer"
+                className="text-sm underline hover:text-ui-fg-base">
+                Contact Minarva Technologies on WhatsApp
+              </a>
             </div>
           </div>
         </div>
@@ -216,7 +192,7 @@ export default async function Footer() {
           <Text className="txt-compact-small">
             © {new Date().getFullYear()} Minarva CCTV Store. All rights reserved.
           </Text>
-          <MedusaCTA />
+          <span className="text-xs">Thiruvananthapuram, Kerala</span>
         </div>
       </div>
     </footer>

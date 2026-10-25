@@ -16,9 +16,17 @@ export default function ContactPage() {
     <PolicyPage title="Contact">
       <PlaceholderNotice />
       <p>
-        Questions about an order, shipping or returns? Contact {STORE_NAME}{" "}
-        customer service and include your order number.
+        Contact {STORE_NAME} for CCTV packages, quotations, technical
+        specifications, warranty and delivery enquiries. This online
+        storefront is not yet accepting orders.
       </p>
+      <p>
+        Phone: <a href="tel:+916235353732">+91 6235353732</a>.
+        Email: <a href="mailto:minarvatechnologies@gmail.com">
+          minarvatechnologies@gmail.com
+        </a>.
+      </p>
+      <p>Service location: Thiruvananthapuram, Kerala, India.</p>
     </PolicyPage>
   )
 }
