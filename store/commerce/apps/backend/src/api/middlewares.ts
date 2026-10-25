@@ -25,7 +25,9 @@ export default defineMiddlewares({
         (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
           if (shouldBlockPublicCartMutation({
             method: req.method,
-            path: req.path,
+            // Express app.use(RegExp) mounts middleware and rewrites req.path
+            // to the remaining subpath; originalUrl retains /store/carts.
+            path: req.originalUrl.split("?")[0],
             sandboxAuthorized: publicCheckoutGateFromEnvironment(),
           })) {
             return res.status(503).json({
