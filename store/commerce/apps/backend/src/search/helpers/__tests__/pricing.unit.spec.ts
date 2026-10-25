@@ -30,9 +30,16 @@ describe("Minarva Kerala INR indexed catalogue search", () => {
     expect(result.min_price_usd).toBe(170)
   })
 
-  test("no positive or valid variant price means no indexed INR price", () => {
+  test("invalid, free or missing prices cannot become an INR search offer", () => {
     const result = toProductPricing({
-      inr: [null, { calculated_price: { calculated_amount: null } }],
+      inr: [
+        null,
+        { calculated_price: { calculated_amount: null } },
+        { calculated_price: { calculated_amount: Number.NaN } },
+        { calculated_price: { calculated_amount: Number.POSITIVE_INFINITY } },
+        { calculated_price: { calculated_amount: 0 } },
+        { calculated_price: { calculated_amount: -120 } },
+      ],
     })
     expect(result).not.toHaveProperty("min_price_inr")
     expect(result).not.toHaveProperty("on_sale_inr")
