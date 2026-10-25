@@ -97,7 +97,9 @@ function toPricing(
     const price = variant?.calculated_price;
     const calculated = price?.calculated_amount;
 
-    if (typeof calculated !== "number") {
+    if (typeof calculated !== "number" ||
+        !Number.isFinite(calculated) || calculated <= 0) {
+      // Invalid, NaN and zero prices cannot become an advertised offer.
       continue;
     }
 
