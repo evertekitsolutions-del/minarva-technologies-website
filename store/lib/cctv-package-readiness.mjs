@@ -83,10 +83,10 @@ export function auditCctvPackage(product, {countryCode="in"}={}) {
     breadthCm:metadataValue(metadata,"minarva_box_breadth_cm"),
     heightCm:metadataValue(metadata,"minarva_box_height_cm"),
   }
-  const boxValid=integer(weights.actualWeightGrams,1,100_000_000) &&
-    integer(weights.lengthCm,1,10000) &&
-    integer(weights.breadthCm,1,10000) &&
-    integer(weights.heightCm,1,10000)
+  const boxValid=integer(weights.actualWeightGrams,1,100_000) &&
+    integer(weights.lengthCm,1,300) &&
+    integer(weights.breadthCm,1,300) &&
+    integer(weights.heightCm,1,300)
   add(boxValid, "Verified packed box weight and all three dimensions are required")
   let chargeableGrams=null
   if(boxValid){
