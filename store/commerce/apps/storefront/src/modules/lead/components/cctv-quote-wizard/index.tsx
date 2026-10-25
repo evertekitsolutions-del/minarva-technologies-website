@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useRef, useState, type FormEvent } from "react"
 import {
   buildCctvLeadWhatsAppUrl,
   isValidDeliveryPin,
@@ -9,12 +9,26 @@ import {
   type CctvPremise,
   type CctvAdSource,
 } from "@lib/util/cctv-lead-request"
+import {
+  crmEnquiryEnabled,
+  submitConsentedCctvCrmEnquiry,
+} from "@lib/util/cctv-crm-enquiry"
 
 export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
   const [premise, setPremise] = useState<CctvPremise>("home")
   const [cameraCount, setCameraCount] = useState<CctvCameraCount>("4")
   const [installation, setInstallation] = useState<CctvInstallation>("need_advice")
   const [pin, setPin] = useState("")
+  const [customerName, setCustomerName] = useState("")
+  const [customerPhone, setCustomerPhone] = useState("")
+  const [customerEmail, setCustomerEmail] = useState("")
+  const [contactConsent, setContactConsent] = useState(false)
+  const [companyWebsite, setCompanyWebsite] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [crmFeedback, setCrmFeedback] = useState("")
+  const startedAt = useRef(Date.now())
+  const crmAvailable = crmEnquiryEnabled()
 
   const pinReady = isValidDeliveryPin(pin)
   const url = useMemo(() => {
@@ -27,6 +41,36 @@ export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
       return null
     }
   }, [premise, cameraCount, installation, pin, pinReady, source])
+
+  const submitToCrm = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (!crmAvailable || !pinReady || !contactConsent || isSaving || saved) return
+    setIsSaving(true)
+    setCrmFeedback("")
+    try {
+      await submitConsentedCctvCrmEnquiry({
+        request: {
+          premise, cameraCount, installation, deliveryPincode: pin, source,
+        },
+        contact: {
+          name: customerName,
+          phone: customerPhone,
+          email: customerEmail,
+          consentToContact: contactConsent,
+          formStartedAt: startedAt.current,
+          companyWebsite,
+        },
+      })
+      setSaved(true)
+      setCrmFeedback("Enquiry saved with Minarva Technologies. Our team can contact you about this request.")
+    } catch (error) {
+      setCrmFeedback(error instanceof Error
+        ? error.message
+        : "Could not save the enquiry. You can still contact us on WhatsApp.")
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
   return (
     <section
@@ -102,6 +146,64 @@ export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
           ? "PIN format accepted. Courier availability and final charges need confirmation."
           : "Enter a valid 6-digit delivery PIN to prepare your enquiry."}
       </p>
+      {crmAvailable && (
+        <form className="mt-6 space-y-3 rounded-lg border border-gray-200 p-4"
+          onSubmit={submitToCrm}>
+          <h3 className="text-base font-semibold">Save enquiry with Minarva CRM</h3>
+          <p className="text-xs text-ui-fg-subtle">
+            Optional. Share your contact details only if you want our team
+            to follow up on this CCTV quotation request.
+          </p>
+          <label className="flex flex-col gap-1 text-sm">
+            Name / പേര്
+            <input required minLength={2} maxLength={120}
+              autoComplete="name" value={customerName}
+              onChange={e => setCustomerName(e.target.value)}
+              className="rounded border border-gray-300 bg-white p-2 text-gray-900" />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Phone / ഫോൺ
+            <input required type="tel" minLength={7} maxLength={30}
+              autoComplete="tel" value={customerPhone}
+              onChange={e => setCustomerPhone(e.target.value)}
+              className="rounded border border-gray-300 bg-white p-2 text-gray-900" />
+          </label>
+          <label className="flex flex-col gap-1 text-sm">
+            Email (optional)
+            <input type="email" maxLength={320} autoComplete="email"
+              value={customerEmail}
+              onChange={e => setCustomerEmail(e.target.value)}
+              className="rounded border border-gray-300 bg-white p-2 text-gray-900" />
+          </label>
+          <div aria-hidden="true" className="absolute -left-[9999px]">
+            <label htmlFor="minarva-cctv-company-url">Company website</label>
+            <input id="minarva-cctv-company-url" tabIndex={-1}
+              autoComplete="off" value={companyWebsite}
+              onChange={e => setCompanyWebsite(e.target.value)} />
+          </div>
+          <label className="flex items-start gap-2 text-xs leading-relaxed">
+            <input type="checkbox" required checked={contactConsent}
+              onChange={e => setContactConsent(e.target.checked)}
+              className="mt-1" />
+            <span>
+              I agree that Minarva Technologies may contact me about this
+              enquiry only. I am not consenting to promotional campaigns or
+              automated phone calls.{" "}
+              <a href="https://minarvatechnologies.com/privacy"
+                target="_blank" rel="noopener noreferrer"
+                className="underline">Privacy information</a>
+            </span>
+          </label>
+          <button type="submit"
+            disabled={!pinReady || !contactConsent || isSaving || saved}
+            className="w-full rounded bg-gray-900 px-4 py-3 text-sm font-semibold text-white disabled:opacity-50">
+            {saved ? "Enquiry saved" : isSaving ? "Saving enquiry…" : "Save enquiry / രജിസ്റ്റർ ചെയ്യൂ"}
+          </button>
+          <p role="status" aria-live="polite" className="text-sm text-ui-fg-subtle">
+            {crmFeedback}
+          </p>
+        </form>
+      )}
       {url ? (
         <a
           href={url}
@@ -118,10 +220,11 @@ export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
         </button>
       )}
       <p className="mt-4 text-xs leading-relaxed text-ui-fg-subtle">
-        No phone number is collected on this page. Your information is included
-        only in a WhatsApp draft, which you can review or discard. This is an
-        enquiry, not an order or a shipping-rate guarantee. Online payment
-        and courier booking are currently unavailable.
+        WhatsApp is optional and never sent automatically. When the approved
+        CRM form is enabled, contact details are saved only after you explicitly
+        submit and consent to this enquiry. This is not an order or a
+        shipping-rate guarantee. Online payment and courier booking are
+        currently unavailable.
       </p>
     </section>
   )

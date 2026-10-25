@@ -25,7 +25,10 @@ test("form collects only site, camera count, installation and Kerala PIN", () =>
   assert.match(code, /href=\{url\}/)
   assert.match(code, /target="_blank"/)
   assert.match(code, /rel="noopener noreferrer"/)
-  assert.doesNotMatch(code, /autoComplete="tel"|type="email"|type="tel"|useEffect\(\(\) => fetch\(|sendBeacon|navigator\.geolocation/)
+  // Optional contact fields are now shown ONLY inside the approved CRM form.
+  assert.match(code, /\{crmAvailable && \(/)
+  assert.match(code, /consentToContact: contactConsent/)
+  assert.doesNotMatch(code, /useEffect\(\(\) => fetch\(|sendBeacon|navigator\.geolocation/)
 })
 test("lead draft contains only safe enums, independently checked PIN, no fake prices", () => {
   const code = read(front + "lib/util/cctv-lead-request.ts")
