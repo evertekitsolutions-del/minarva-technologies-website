@@ -8,13 +8,19 @@ import {
   type CctvInstallation,
   type CctvPremise,
   type CctvAdSource,
+  type VerifiedCctvQuoteProduct,
 } from "@lib/util/cctv-lead-request"
 import {
   crmEnquiryEnabled,
   submitConsentedCctvCrmEnquiry,
 } from "@lib/util/cctv-crm-enquiry"
 
-export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
+export default function CctvQuoteWizard({
+  source, product,
+}: {
+  source: CctvAdSource
+  product?: VerifiedCctvQuoteProduct
+}) {
   const [premise, setPremise] = useState<CctvPremise>("home")
   const [cameraCount, setCameraCount] = useState<CctvCameraCount>("4")
   const [installation, setInstallation] = useState<CctvInstallation>("need_advice")
@@ -36,11 +42,11 @@ export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
     try {
       return buildCctvLeadWhatsAppUrl({
         premise, cameraCount, installation, deliveryPincode: pin, source,
-      })
+      }, product)
     } catch {
       return null
     }
-  }, [premise, cameraCount, installation, pin, pinReady, source])
+  }, [premise, cameraCount, installation, pin, pinReady, source, product])
 
   const submitToCrm = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -52,6 +58,7 @@ export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
         request: {
           premise, cameraCount, installation, deliveryPincode: pin, source,
         },
+        product,
         contact: {
           name: customerName,
           phone: customerPhone,
@@ -78,6 +85,18 @@ export default function CctvQuoteWizard({ source }: { source: CctvAdSource }) {
       aria-label="CCTV package quotation request"
     >
       <h2 className="text-xl font-semibold">Find the right CCTV package</h2>
+      {product && (
+        <div className="mt-3 rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm" role="note">
+          <p className="font-semibold">Selected CCTV package: {product.title}</p>
+          {product.variantSku && (
+            <p className="mt-1 text-xs text-gray-700">SKU: {product.variantSku}</p>
+          )}
+          <p className="mt-2 text-xs text-gray-700">
+            This reference is not a confirmed quotation. Stock, price and delivery
+            charges will be verified before accepting an order.
+          </p>
+        </div>
+      )}
       <p lang="ml" className="mt-2 text-sm leading-relaxed text-ui-fg-subtle">
         നിങ്ങളുടെ ആവശ്യത്തിന് അനുയോജ്യമായ പാക്കേജിന്റെ യഥാർത്ഥ വിലയും
         ഡെലിവറി വിവരങ്ങളും ലഭിക്കാൻ താഴെ പൂരിപ്പിക്കുക.
