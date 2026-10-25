@@ -7,7 +7,7 @@ import { QueryContext, search } from "@medusajs/framework/utils";
  * change: the module reindexes on the next boot. Keep in sync with the
  * storefront's `SEARCH_PRICE_CURRENCIES`.
  */
-export const PRICE_CURRENCIES = ["eur", "usd"] as const;
+export const PRICE_CURRENCIES = ["inr", "eur", "usd"] as const;
 
 export type PriceCurrency = (typeof PRICE_CURRENCIES)[number];
 
@@ -97,7 +97,9 @@ function toPricing(
     const price = variant?.calculated_price;
     const calculated = price?.calculated_amount;
 
-    if (typeof calculated !== "number") {
+    if (typeof calculated !== "number" ||
+        !Number.isFinite(calculated) || calculated <= 0) {
+      // Invalid, NaN and zero prices cannot become an advertised offer.
       continue;
     }
 
