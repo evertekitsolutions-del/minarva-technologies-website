@@ -11,18 +11,26 @@ const positiveInt = (n: unknown, max=100000000): n is number =>
   typeof n==="number" && Number.isSafeInteger(n) && n>0 && n<=max
 const clean = (s: unknown): s is string =>
   typeof s==="string" && s.trim().length>0
-const validBom = (components: unknown): boolean =>
-  Array.isArray(components) && components.length>=2 &&
-  components.length<=40 && components.every(c=>
-    c && typeof c==="object" && clean(c.name) &&
-    positiveInt(c.quantity,10000))
+const validBom = (components: unknown): boolean => {
+  if(!Array.isArray(components) || components.length<2 || components.length>40)return false
+  const seen=new Set<string>()
+  for(const component of components){
+    if(!component || typeof component!=="object" ||
+       !clean(component.name) || !positiveInt(component.quantity,10000))return false
+    const key=component.name.trim().toLowerCase()
+    if(seen.has(key))return false
+    seen.add(key)
+  }
+  return true
+}
 
 /**
  * This only controls what is shown to potential buyers. It does not accept
  * browser-supplied price, stock or approval for an actual sale.
  */
 export function hasApprovedCctvOffer(product: Product | null | undefined): boolean {
-  if (!product || product.status!=="published") return false
+  if (!product || product.status!=="published" ||
+      !clean(product.description) || product.description.trim().length<40) return false
   const metadata=product.metadata
   if (!metadata || metadata.minarva_sale_approved!==true ||
       metadata.minarva_market!=="Kerala" ||
@@ -37,7 +45,7 @@ export function hasApprovedCctvOffer(product: Product | null | undefined): boole
       !positiveInt(metadata.minarva_box_length_cm,300) ||
       !positiveInt(metadata.minarva_box_breadth_cm,300) ||
       !positiveInt(metadata.minarva_box_height_cm,300) ||
-      !clean(product.thumbnail)) {
+      !clean(product.thumbnail) || !product.thumbnail.startsWith("https://")) {
     return false
   }
   const variants=product.variants
@@ -48,8 +56,9 @@ export function hasApprovedCctvOffer(product: Product | null | undefined): boole
        v.manage_inventory!==true ||
        !positiveInt(v.inventory_quantity) ||
        v.calculated_price?.currency_code?.toLowerCase()!=="inr" ||
-       !Number.isFinite(v.calculated_price?.calculated_amount) ||
-       !(v.calculated_price?.calculated_amount!>0) ||
+       typeof v.calculated_price?.calculated_amount!=="number" ||
+       !Number.isFinite(v.calculated_price.calculated_amount) ||
+       v.calculated_price.calculated_amount<=0 ||
        skus.has(v.sku))return false
     skus.add(v.sku)
   }
