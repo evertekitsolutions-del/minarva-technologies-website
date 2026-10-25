@@ -27,7 +27,7 @@ test("desktop and mobile purchase controls remain disabled before customer relea
   assert.match(action,/cartEnabled=\{cartEnabled\}/)
   assert.match(mobile,/disabled=\{!cartEnabled \|\| !inStock \|\| !variant\}/)
   assert.match(mobile,/offerApproved && selectedPrice/)
-  assert.match(action,/href="https:\/\/wa\.me\/916235353732"/)
+  assert.match(action,/href=\{buildCctvQuoteLink\(\{ product, variant: selectedVariant \}\)\}/)
 })
 test("unapproved variants need live stock and INR calculated value to show buy affordances",()=>{
   const code=read(component+"lib/util/cctv-public-offer.ts")
