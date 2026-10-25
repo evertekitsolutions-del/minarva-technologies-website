@@ -16,6 +16,7 @@ const SERVER_KEY=serverKey();
 const ALLOWED_ORIGINS=new Set([
   "https://minarvatechnologies.com",
   "https://www.minarvatechnologies.com",
+  "https://store.minarvatechnologies.com",
   "https://minarva-technologies-website.vercel.app",
   "http://localhost:3000",
   "http://127.0.0.1:3000"
