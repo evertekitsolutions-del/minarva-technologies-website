@@ -1,5 +1,5 @@
-import type { CctvLeadRequest } from "./cctv-lead-request"
-import { isValidDeliveryPin, normalizeAdSource } from "./cctv-lead-request"
+import type { CctvLeadRequest, VerifiedCctvQuoteProduct } from "./cctv-lead-request"
+import { isValidDeliveryPin, normalizeAdSource, validQuoteProductReference } from "./cctv-lead-request"
 
 /**
  * STORE-028: reuse Minarva Technologies' existing protected enquiry Edge API,
@@ -41,7 +41,8 @@ function validateContact(contact: CctvCrmContact): void {
 
 export function makeCctvCrmEnquiry(
   request: CctvLeadRequest,
-  contact: CctvCrmContact
+  contact: CctvCrmContact,
+  product?: VerifiedCctvQuoteProduct
 ) {
   validateContact(contact)
   if (!isValidDeliveryPin(request.deliveryPincode) ||
@@ -53,6 +54,11 @@ export function makeCctvCrmEnquiry(
   const source = request.source ? normalizeAdSource(request.source) : "other"
   const message = [
     "CCTV package quotation request",
+    ...(product && validQuoteProductReference(product) ? [
+      "Selected package: " + product.title.trim().replace(/[\\r\\n]/g, " ").slice(0, 150),
+      "Product ref: " + product.handle,
+      ...(product.variantSku ? ["Variant SKU: " + product.variantSku] : []),
+    ] : []),
     "Premises: " + request.premise,
     "Camera quantity: " + request.cameraCount,
     "Installation: " + request.installation,
@@ -82,16 +88,17 @@ export const crmEnquiryEnabled = () =>
   )
 
 export async function submitConsentedCctvCrmEnquiry({
-  request, contact, fetchImpl = fetch,
+  request, contact, product, fetchImpl = fetch,
 }: {
   request: CctvLeadRequest
   contact: CctvCrmContact
+  product?: VerifiedCctvQuoteProduct
   fetchImpl?: typeof fetch
 }): Promise<{ saved: true }> {
   if (!crmEnquiryEnabled()) {
     throw new Error("CRM enquiry integration not approved")
   }
-  const payload = makeCctvCrmEnquiry(request, contact)
+  const payload = makeCctvCrmEnquiry(request, contact, product)
   const key = process.env.NEXT_PUBLIC_STORE_CRM_PUBLISHABLE_KEY as string
   const response = await fetchImpl(ENDPOINT, {
     method: "POST",
