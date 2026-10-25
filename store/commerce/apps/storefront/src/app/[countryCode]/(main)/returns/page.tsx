@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 
 import { getStorePolicies } from "@lib/data/store-policies"
+import { merchantPolicyPublicationApproved } from "@lib/util/merchant-policy-release"
 import { PoliciesUnavailable, PolicyPage } from "@modules/policies/templates"
 
 export const dynamic = "force-static"
@@ -15,7 +16,9 @@ export default async function ReturnsPage(props: {
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await props.params
-  const { current } = await getStorePolicies(countryCode)
+  const { current } = merchantPolicyPublicationApproved()
+    ? await getStorePolicies(countryCode)
+    : { current: null }
 
   return (
     <PolicyPage title="Return policy">
@@ -32,7 +35,15 @@ export default async function ReturnsPage(props: {
           </p>
         </>
       ) : (
-        <PoliciesUnavailable />
+        <>
+          <PoliciesUnavailable />
+          <p>
+            Return, replacement, refund and warranty conditions for CCTV
+            hardware are undergoing merchant approval. This online store
+            is not accepting customer orders or payments. Please contact
+            Minarva Technologies for approved written terms before purchase.
+          </p>
+        </>
       )}
     </PolicyPage>
   )

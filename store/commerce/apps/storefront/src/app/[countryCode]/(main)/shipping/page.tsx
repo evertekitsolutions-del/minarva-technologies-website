@@ -1,6 +1,7 @@
 import { Metadata } from "next"
 
 import { getStorePolicies } from "@lib/data/store-policies"
+import { merchantPolicyPublicationApproved } from "@lib/util/merchant-policy-release"
 import {
   PoliciesUnavailable,
   PolicyPage,
@@ -19,23 +20,35 @@ export default async function ShippingPage(props: {
   params: Promise<{ countryCode: string }>
 }) {
   const { countryCode } = await props.params
-  const { current, currencyCode } = await getStorePolicies(countryCode)
+  const approved = merchantPolicyPublicationApproved()
+  const { current, currencyCode } = approved
+    ? await getStorePolicies(countryCode)
+    : { current: null, currencyCode: "" }
 
   return (
     <PolicyPage title="Shipping information">
       {current ? (
         <>
           <p>
-            Orders to {countryCode.toUpperCase()} ship with the following rates
-            and delivery times.
+            These published {countryCode.toUpperCase()} courier policies are
+            informational. A shipment cost must still be confirmed against
+            actual package dimensions, serviceability and final carrier fees.
           </p>
           <ShippingSummary policies={current} currencyCode={currencyCode} />
           <p className="text-ui-fg-subtle">
-            Available shipping methods and final costs are shown at checkout.
+            Online checkout remains closed until merchant verification is complete.
           </p>
         </>
       ) : (
-        <PoliciesUnavailable />
+        <>
+          <PoliciesUnavailable />
+          <p>
+            Minarva Technologies is preparing Kerala-wide CCTV package delivery.
+            Availability and final shipping charges require the destination
+            PIN code, measured packed weight and an approved courier quote.
+            No online orders or courier bookings are accepted yet.
+          </p>
+        </>
       )}
     </PolicyPage>
   )
