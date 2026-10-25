@@ -12,6 +12,7 @@ import { isEqual } from "lodash"
 import { useParams, usePathname } from "next/navigation"
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
+import { canUseStorefrontTestCart, hasApprovedCctvOffer } from "@lib/util/cctv-public-offer"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 
@@ -37,6 +38,9 @@ export default function ProductActions({
   product,
   disabled,
 }: ProductActionsProps) {
+  const offerApproved = hasApprovedCctvOffer(product)
+  const cartTestingAllowed = canUseStorefrontTestCart()
+  const cartEnabled = offerApproved && cartTestingAllowed && !disabled
   const router = useRouter()
   const pathname = usePathname()
   // Preselected on the server so the form posts a valid variant without JavaScript.
@@ -116,7 +120,7 @@ export default function ProductActions({
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
-    if (!selectedVariant?.id) return null
+    if (!selectedVariant?.id || !cartEnabled) return null
 
     setIsAdding(true)
 
@@ -132,7 +136,7 @@ export default function ProductActions({
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    handleAddToCart()
+    if (cartEnabled) handleAddToCart()
   }
 
   return (
@@ -179,20 +183,27 @@ export default function ProductActions({
             )}
           </div>
 
-          <ProductPrice product={product} variant={selectedVariant} />
+          {offerApproved ? (
+            <ProductPrice product={product} variant={selectedVariant} />
+          ) : (
+            <p className="text-small-regular text-ui-fg-muted" data-testid="unapproved-quote">
+              Verified price and package details available on enquiry.
+            </p>
+          )}
 
           {selectedVariant && isValidVariant && (
             <p
               className="text-small-regular text-ui-fg-subtle"
               data-testid="product-availability"
             >
-              {inStock ? "In stock" : "Out of stock"}
+              {offerApproved ? (inStock ? "In stock" : "Out of stock") : "Availability pending verification"}
             </p>
           )}
 
           <Button
             type="submit"
             disabled={
+              !cartEnabled ||
               !inStock ||
               !selectedVariant ||
               !!disabled ||
@@ -204,7 +215,11 @@ export default function ProductActions({
             isLoading={isAdding}
             data-testid="add-product-button"
           >
-            {!selectedVariant
+            {!offerApproved
+              ? "Request verified quote"
+              : !cartTestingAllowed
+              ? "Online ordering not yet available"
+              : !selectedVariant
               ? "Select variant"
               : !inStock || !isValidVariant
               ? "Out of stock"
@@ -213,6 +228,8 @@ export default function ProductActions({
         </form>
         <MobileActions
           product={product}
+          offerApproved={offerApproved}
+          cartEnabled={cartEnabled}
           variant={selectedVariant}
           options={options}
           updateOptions={setOptionValue}
@@ -220,7 +237,7 @@ export default function ProductActions({
           handleAddToCart={handleAddToCart}
           isAdding={isAdding}
           show={!inView}
-          optionsDisabled={!!disabled || isAdding}
+          optionsDisabled={!cartEnabled || isAdding}
         />
       </div>
     </>
