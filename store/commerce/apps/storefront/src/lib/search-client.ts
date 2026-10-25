@@ -11,7 +11,7 @@ export const PRODUCT_INDEX_NAME = "product"
  * The currencies the product index holds prices in, one field set each. Keep
  * in sync with `PRICE_CURRENCIES` in the backend's `src/search/product.ts`.
  */
-export const SEARCH_PRICE_CURRENCIES = ["eur", "usd"]
+export const SEARCH_PRICE_CURRENCIES = ["inr", "eur", "usd"]
 
 export type PriceField =
   | "min_price"
@@ -20,16 +20,12 @@ export type PriceField =
   | "on_sale"
 
 /**
- * The indexed currency to read prices in for a region. A region whose currency
- * the index doesn't hold falls back to the first one, so the listing still
- * shows a price rather than none.
+ * NEVER use another region's currency as a fallback. A missing INR price is
+ * missing — it must not be shown as EUR, USD or a guessed conversion.
+ * Non-indexed currencies yield a nonmatching field rather than a false price.
  */
-export const indexedCurrency = (currencyCode: string) => {
-  const code = currencyCode.toLowerCase()
-  return SEARCH_PRICE_CURRENCIES.includes(code)
-    ? code
-    : SEARCH_PRICE_CURRENCIES[0]
-}
+export const indexedCurrency = (currencyCode: string) =>
+  currencyCode.toLowerCase()
 
 export const priceAttribute = (field: PriceField, currencyCode: string) =>
   `${field}_${indexedCurrency(currencyCode)}`
