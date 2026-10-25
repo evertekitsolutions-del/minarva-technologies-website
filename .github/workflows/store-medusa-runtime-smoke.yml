@@ -91,16 +91,6 @@ jobs:
             if curl --fail --silent --max-time 3 http://127.0.0.1:9000/health > "$RUNNER_TEMP/health-response.txt"; then
               echo "Medusa Health endpoint responded successfully"
               cat "$RUNNER_TEMP/health-response.txt"
-              india_response=$(curl --fail --silent --show-error --max-time 6 \
-                "http://127.0.0.1:9000/store/regions")
-              INDIA_RESPONSE="$india_response" node -e '
-                const o=JSON.parse(process.env.INDIA_RESPONSE);
-                const rows=Array.isArray(o.regions)?o.regions:[];
-                const found=rows.filter(r=>r.currency_code==="inr" &&
-                  r.countries?.some(c=>c.iso_2==="in"));
-                if(found.length!==1)process.exit(1);
-                console.log("India INR storefront region verified over real Medusa HTTP");
-              '
               # Bypass the Next.js UI and target Medusa's public cart API.
               # Must fail at the actual backend middleware before any order
               # is created, regardless of publishable client checkout logic.
@@ -117,6 +107,17 @@ jobs:
                 echo "No disposable Medusa publishable API key available" >&2
                 exit 1
               fi
+              india_response=$(curl --fail --silent --show-error --max-time 6 \
+                -H "x-publishable-api-key: $publishable_ci" \
+                "http://127.0.0.1:9000/store/regions")
+              INDIA_RESPONSE="$india_response" node -e '
+                const o=JSON.parse(process.env.INDIA_RESPONSE);
+                const rows=Array.isArray(o.regions)?o.regions:[];
+                const found=rows.filter(r=>r.currency_code==="inr" &&
+                  r.countries?.some(c=>c.iso_2==="in"));
+                if(found.length!==1)process.exit(1);
+                console.log("India INR storefront region verified over real Medusa HTTP");
+              '
               # A UI toggle is insufficient; prove the real Medusa API
               # refuses unauthorised cart CREATE/ADD/UPDATE/DELETE/COMPLETE.
               # Each response MUST be from our guard, not a route 401/404.
