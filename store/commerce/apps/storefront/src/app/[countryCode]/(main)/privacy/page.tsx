@@ -16,13 +16,15 @@ export default function PrivacyPage() {
     <PolicyPage title="Privacy policy">
       <PlaceholderNotice />
       <p>
-        {STORE_NAME} collects the information you provide at checkout, such as
-        your name, email address and shipping address, to process and deliver
-        your order.
+        {STORE_NAME} is not accepting online orders or live payments yet.
+        Customer information, checkout operations and privacy practices must
+        be reviewed and published before the store launches.
       </p>
       <p>
-        Payment details are handled by our payment provider and are not stored
-        by the store. Cookies are used to keep your cart and sign-in session.
+        The optional CCTV help interface processes customer-submitted
+        questions to show catalogue-based information. Clicking the WhatsApp
+        contact link opens an external messaging service only at your request.
+        Contact Minarva Technologies for privacy enquiries.
       </p>
     </PolicyPage>
   )
