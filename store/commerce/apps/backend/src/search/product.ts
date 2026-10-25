@@ -17,6 +17,7 @@ const PRODUCT_GRAPH_FIELDS = [
   "handle",
   "thumbnail",
   "status",
+  "metadata",
   "created_at",
   "sales_channels.id",
   "categories.name",
@@ -32,6 +33,7 @@ type ProductRow = {
   handle?: string | null;
   thumbnail?: string | null;
   status?: string | null;
+  metadata?: Record<string, unknown> | null;
   created_at?: string | Date | null;
   deleted_at?: string | Date | null;
   sales_channels?: ({ id?: string | null } | null)[] | null;
@@ -44,6 +46,8 @@ const productFields = search.define({
   id: search.keyword().filterable().retrievable(),
   // Read by `/store/search` to scope the index; never returned to hits.
   status: search.keyword().filterable().retrievable(false),
+  // Merchant-approved catalogue only; client cannot disable the filter.
+  sale_approved: search.boolean().filterable().retrievable(false),
   sales_channel_ids: search.keyword().array().filterable().retrievable(false),
   title: search.text().searchable({ weight: 3 }).sortable().retrievable(),
   description: search.text().searchable({ weight: 1 }),
@@ -84,6 +88,7 @@ function toDocument(
   return {
     id: product.id,
     status: product.status ?? null,
+    sale_approved: product.metadata?.minarva_sale_approved === true,
     sales_channel_ids: salesChannelIds,
     title: product.title ?? null,
     description: product.description ?? null,

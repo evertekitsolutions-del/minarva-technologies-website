@@ -3,6 +3,7 @@
 import { sdk } from "@lib/config"
 import { OptionValueIds } from "@lib/util/product-option-filters"
 import { sortProducts } from "@lib/util/sort-products"
+import { isApprovedForPublicCatalog } from "@lib/util/approved-cctv"
 import { HttpTypes } from "@medusajs/types"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
@@ -79,12 +80,17 @@ export const listProducts = async ({
       }
     )
     .then(({ products, count }) => {
+      // Reuse the audited BOM/stock/INR package readiness before any item
+      // reaches a public Next.js listing, direct product page or metadata.
+      const approvedProducts = products.filter((p) =>
+        isApprovedForPublicCatalog(p, countryCode ?? "in")
+      )
       const nextPage = count > offset + limit ? pageParam + 1 : null
 
       return {
         response: {
-          products,
-          count,
+          products: approvedProducts,
+          count: approvedProducts.length,
         },
         nextPage: nextPage,
         queryParams,
