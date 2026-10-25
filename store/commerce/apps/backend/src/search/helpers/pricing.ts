@@ -7,7 +7,7 @@ import { QueryContext, search } from "@medusajs/framework/utils";
  * change: the module reindexes on the next boot. Keep in sync with the
  * storefront's `SEARCH_PRICE_CURRENCIES`.
  */
-export const PRICE_CURRENCIES = ["eur", "usd"] as const;
+export const PRICE_CURRENCIES = ["inr", "eur", "usd"] as const;
 
 export type PriceCurrency = (typeof PRICE_CURRENCIES)[number];
 
