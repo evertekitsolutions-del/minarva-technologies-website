@@ -13,6 +13,7 @@ import { useParams, usePathname } from "next/navigation"
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import { canUseStorefrontTestCart, hasApprovedCctvOffer } from "@lib/util/cctv-public-offer"
+import { buildCctvQuoteLink } from "@lib/util/cctv-quote-link"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 
@@ -226,7 +227,7 @@ export default function ProductActions({
               : "Add to cart"}
           </Button>
           <a
-            href="https://wa.me/916235353732"
+            href={buildCctvQuoteLink({ product, variant: selectedVariant })}
             target="_blank"
             rel="noopener noreferrer"
             className="block rounded border border-gray-300 px-3 py-2 text-center text-sm font-medium text-gray-900"
