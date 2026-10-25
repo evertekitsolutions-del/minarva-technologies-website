@@ -1,0 +1,55 @@
+import test from "node:test"
+import assert from "node:assert/strict"
+import {readFileSync} from "node:fs"
+const base = new URL("../../",import.meta.url)
+const read=path=>readFileSync(new URL(path,base),"utf8")
+const component="store/commerce/apps/storefront/src/"
+test("product preview refuses unapproved package price claims",()=>{
+  const code=read(component+"modules/products/components/product-preview/index.tsx")
+  assert.match(code,/const offerApproved = hasApprovedCctvOffer\(product\)/)
+  assert.match(code,/offerApproved && cheapestPrice/)
+  assert.match(code,/Price on enquiry/)
+})
+test("product page SEO never promotes pricing or stock of unapproved products",()=>{
+  const code=read(component+"app/[countryCode]/(main)/products/[handle]/page.tsx")
+  assert.match(code,/robots: \{ index: approved &&/)
+  assert.match(code,/const offerApproved = hasApprovedCctvOffer\(pricedProduct\)/)
+  assert.match(code,/offerApproved && <ProductMetaTags/)
+  assert.match(code,/structuredData && <script/)
+})
+test("desktop and mobile purchase controls remain disabled before customer release",()=>{
+  const action=read(component+"modules/products/components/product-actions/index.tsx")
+  const mobile=read(component+"modules/products/components/product-actions/mobile-actions.tsx")
+  assert.match(action,/const cartEnabled = offerApproved && cartTestingAllowed/)
+  assert.match(action,/!selectedVariant\?\.id \|\| !cartEnabled/)
+  assert.match(action,/if \(cartEnabled\) handleAddToCart\(\)/)
+  assert.match(action,/!cartEnabled \|\|/)
+  assert.match(action,/cartEnabled=\{cartEnabled\}/)
+  assert.match(mobile,/disabled=\{!cartEnabled \|\| !inStock \|\| !variant\}/)
+  assert.match(mobile,/offerApproved && selectedPrice/)
+  assert.match(action,/href="https:\/\/wa\.me\/916235353732"/)
+})
+test("unapproved variants need live stock and INR calculated value to show buy affordances",()=>{
+  const code=read(component+"lib/util/cctv-public-offer.ts")
+  assert.match(code,/minarva_sale_approved!==true/)
+  assert.match(code,/minarva_kit_components/)
+  assert.match(code,/minarva_packed_weight_grams/)
+  assert.match(code,/v\.manage_inventory!==true/)
+  assert.match(code,/!positiveInt\(v\.inventory_quantity\)/)
+  assert.match(code,/currency_code\?\.toLowerCase\(\)!=="inr"/)
+  assert.match(code,/typeof v\.calculated_price\?\.calculated_amount!=="number"/)
+})
+test("sandbox Buy button requires two local frontend flags and production always refuses",()=>{
+  const code=read(component+"lib/util/cctv-public-offer.ts")
+  assert.match(code,/process\.env\.NODE_ENV!=="production"/)
+  assert.match(code,/NEXT_PUBLIC_STORE_CART_TEST_ENABLED==="true"/)
+  assert.match(code,/NEXT_PUBLIC_STORE_CART_TEST_APPROVED==="true"/)
+  const env=read("store/commerce/apps/storefront/.env.template")
+  assert.match(env,/^NEXT_PUBLIC_STORE_CART_TEST_ENABLED=false$/m)
+  assert.match(env,/^NEXT_PUBLIC_STORE_CART_TEST_APPROVED=false$/m)
+})
+test("existing backend default-off Medusa cart mutation gate remains untouched",()=>{
+  const code=read("store/commerce/apps/backend/src/api/middlewares.ts")
+  assert.match(code,/Customer checkout is not yet available|Customer cart and checkout are not yet available/)
+  assert.match(code,/publicCheckoutGateFromEnvironment\(\)/)
+})
