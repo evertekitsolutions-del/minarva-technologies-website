@@ -38,7 +38,11 @@ export default defineMiddlewares({
       middlewares: [
         configureStoreSearch({
           allowed_indexes: {
-            product: true,
+            // Medusa combines this server-owned constraint with any client
+            // filters via AND; a buyer cannot query unpublished/unapproved kits.
+            product: {
+              filters: () => ({ sale_approved: true }),
+            },
           },
         }),
       ],
