@@ -13,6 +13,8 @@ import { isSimpleProduct } from "@lib/util/product"
 
 type MobileActionsProps = {
   product: HttpTypes.StoreProduct
+  offerApproved: boolean
+  cartEnabled: boolean
   variant?: HttpTypes.StoreProductVariant
   options: Record<string, string | undefined>
   updateOptions: (title: string, value: string) => void
@@ -25,6 +27,8 @@ type MobileActionsProps = {
 
 const MobileActions: React.FC<MobileActionsProps> = ({
   product,
+  offerApproved,
+  cartEnabled,
   variant,
   options,
   updateOptions,
@@ -76,7 +80,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             <div className="flex items-center gap-x-2">
               <span data-testid="mobile-title">{product.title}</span>
               <span>—</span>
-              {selectedPrice ? (
+              {offerApproved && selectedPrice ? (
                 <div className="flex items-end gap-x-2 text-ui-fg-base">
                   {selectedPrice.price_type === "sale" && (
                     <p>
@@ -120,12 +124,16 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <Button
                 type="button"
                 onClick={handleAddToCart}
-                disabled={!inStock || !variant}
+                disabled={!cartEnabled || !inStock || !variant}
                 className="w-full"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
-                {!variant
+                {!offerApproved
+                  ? "Request verified quote"
+                  : !cartEnabled
+                  ? "Online ordering not available"
+                  : !variant
                   ? "Select variant"
                   : !inStock
                   ? "Out of stock"
