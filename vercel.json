@@ -35,5 +35,47 @@
         }
       ]
     }
+  ],
+  "rewrites": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.minarvatechnologies.com"
+        }
+      ],
+      "destination": "/store/live/index"
+    },
+    {
+      "source": "/in",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.minarvatechnologies.com"
+        }
+      ],
+      "destination": "/store/live/index"
+    },
+    {
+      "source": "/in/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.minarvatechnologies.com"
+        }
+      ],
+      "destination": "/store/live/index"
+    },
+    {
+      "source": "/store",
+      "has": [
+        {
+          "type": "host",
+          "value": "store.minarvatechnologies.com"
+        }
+      ],
+      "destination": "/store/live/index"
+    }
   ]
 }
