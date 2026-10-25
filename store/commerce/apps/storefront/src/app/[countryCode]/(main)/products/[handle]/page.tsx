@@ -5,6 +5,7 @@ import { getRegion, listRegions } from "@lib/data/regions"
 import ProductTemplate from "@modules/products/templates"
 import { HttpTypes } from "@medusajs/types"
 import { isVariantInStock } from "@lib/util/inventory"
+import { hasApprovedCctvOffer } from "@lib/util/cctv-public-offer"
 import {
   buildProductStructuredData,
   getPricedVariants,
@@ -41,9 +42,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const path = `/products/${product.handle}`
   const productUrl = `${origin}/${params.countryCode}${path}`
   const description = product.description || product.title
+  const approved = hasApprovedCctvOffer(product)
 
   return {
     title: `${product.title} | ${STORE_NAME}`,
+    robots: { index: approved && process.env.STORE_SEO_RELEASE_ENABLED === "true" && process.env.STORE_SEO_RELEASE_APPROVED === "true" && process.env.NODE_ENV === "production" },
     description,
     alternates: {
       canonical: productUrl,
@@ -121,20 +124,21 @@ export default async function ProductPage(props: Props) {
   }
 
   const origin = await getSiteOrigin()
-  const structuredData = buildProductStructuredData({
+  const offerApproved = hasApprovedCctvOffer(pricedProduct)
+  const structuredData = offerApproved ? buildProductStructuredData({
     product: pricedProduct,
     region,
     countryCode: params.countryCode,
     productUrl: `${origin}/${params.countryCode}/products/${pricedProduct.handle}`,
-  })
+  }) : null
 
   return (
     <>
-      <ProductMetaTags product={pricedProduct} region={region} />
-      <script
+      {offerApproved && <ProductMetaTags product={pricedProduct} region={region} />}
+      {structuredData && <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: toJsonLd(structuredData) }}
-      />
+      /> }
       <ProductTemplate
         product={pricedProduct}
         region={region}
