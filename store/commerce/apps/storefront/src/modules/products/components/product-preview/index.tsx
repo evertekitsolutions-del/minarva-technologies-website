@@ -4,6 +4,7 @@ import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
 import PreviewPrice from "./price"
+import { hasApprovedCctvOffer } from "@lib/util/cctv-public-offer"
 
 export default async function ProductPreview({
   product,
@@ -23,6 +24,7 @@ export default async function ProductPreview({
   //   return null
   // }
 
+  const offerApproved = hasApprovedCctvOffer(product)
   const { cheapestPrice } = getProductPrice({
     product,
   })
@@ -42,7 +44,11 @@ export default async function ProductPreview({
             {product.title}
           </Text>
           <div className="flex items-center gap-x-2">
-            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
+            {offerApproved && cheapestPrice ? (
+              <PreviewPrice price={cheapestPrice} />
+            ) : (
+              <Text className="text-ui-fg-muted text-xs">Price on enquiry</Text>
+            )}
           </div>
         </div>
       </div>
