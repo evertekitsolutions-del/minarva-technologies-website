@@ -23,6 +23,9 @@ const Hero = () => (
         ഡെലിവറി ലഭ്യതയും ചാർജും PIN കോഡിന് അനുസരിച്ച് സ്ഥിരീകരിക്കും.
       </p>
       <div className="flex flex-wrap gap-3">
+        <LocalizedClientLink href="/cctv-quote">
+          <Button>Get a Verified CCTV Quote</Button>
+        </LocalizedClientLink>
         <LocalizedClientLink href="/store">
           <Button>Explore Camera Packages</Button>
         </LocalizedClientLink>
