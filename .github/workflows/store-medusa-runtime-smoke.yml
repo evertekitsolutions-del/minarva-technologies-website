@@ -53,6 +53,9 @@ jobs:
       STORE_AUTOMATIONS_STAGING_APPROVED: "false"
       STORE_PUBLIC_CHECKOUT_TEST_ENABLED: "false"
       STORE_PUBLIC_CHECKOUT_TEST_APPROVED: "false"
+      STORE_INR_REGION_STAGING_ENABLED: "true"
+      STORE_INR_REGION_STAGING_APPROVED: "true"
+      STORE_INR_REGION_STAGING_DB_NAME: minarva_store_ci
 
     steps:
       - uses: actions/checkout@v4
@@ -70,6 +73,13 @@ jobs:
         run: |
           set -euo pipefail
           pnpm --dir store/commerce --filter @dtc/backend exec medusa db:migrate
+      - name: Initialize isolated India INR region using Medusa native workflows
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm --dir store/commerce --filter @dtc/backend exec medusa exec ./src/scripts/init-india-region.ts
+          # Re-running must not duplicate the country or corrupt region config.
+          pnpm --dir store/commerce --filter @dtc/backend exec medusa exec ./src/scripts/init-india-region.ts
       - name: Boot actual Medusa backend and verify the health endpoint
         shell: bash
         run: |
@@ -97,6 +107,17 @@ jobs:
                 echo "No disposable Medusa publishable API key available" >&2
                 exit 1
               fi
+              india_response=$(curl --fail --silent --show-error --max-time 6 \
+                -H "x-publishable-api-key: $publishable_ci" \
+                "http://127.0.0.1:9000/store/regions")
+              INDIA_RESPONSE="$india_response" node -e '
+                const o=JSON.parse(process.env.INDIA_RESPONSE);
+                const rows=Array.isArray(o.regions)?o.regions:[];
+                const found=rows.filter(r=>r.currency_code==="inr" &&
+                  r.countries?.some(c=>c.iso_2==="in"));
+                if(found.length!==1)process.exit(1);
+                console.log("India INR storefront region verified over real Medusa HTTP");
+              '
               # A UI toggle is insufficient; prove the real Medusa API
               # refuses unauthorised cart CREATE/ADD/UPDATE/DELETE/COMPLETE.
               # Each response MUST be from our guard, not a route 401/404.
