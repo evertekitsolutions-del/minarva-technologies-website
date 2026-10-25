@@ -12,6 +12,27 @@ import { publicCheckoutGateFromEnvironment } from '../lib/store-checkout-release
 export default defineMiddlewares({
   routes: [
     {
+      // STORE-023: disable ALL customer-facing cart mutation endpoints by
+      // default, not only final completion. Static product/cart GETs continue
+      // to work and Medusa Admin endpoints are not affected.
+      // Broad match includes /store/carts, /store/carts/:id/line-items,
+      // shipping options, promotions and every other nested cart mutation.
+      matcher: new RegExp("^/store/carts(?:/.*)?$", "i"),
+      middlewares: [
+        (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
+          if (
+            ["POST", "PUT", "PATCH", "DELETE"].includes(req.method) &&
+            !publicCheckoutGateFromEnvironment()
+          ) {
+            return res.status(503).json({
+              error: "Customer cart and checkout are not yet available",
+            })
+          }
+          next()
+        },
+      ],
+    },
+    {
       // Global route middleware runs BEFORE Medusa route-body validation;
       // method-scoped middleware can be bypassed by request validation.
       // Exact anchored matcher avoids affecting other Store routes.
