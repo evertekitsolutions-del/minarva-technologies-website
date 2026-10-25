@@ -16,6 +16,26 @@ export type CctvLeadRequest = {
   source?: CctvAdSource
 }
 
+/** A reference resolved server-side from an approved Medusa product.
+ * No client-provided reference is financial or inventory authority.
+ */
+export type VerifiedCctvQuoteProduct = {
+  title: string
+  handle: string
+  variantSku?: string
+}
+
+export function validQuoteProductReference(product: VerifiedCctvQuoteProduct): boolean {
+  return typeof product.title === "string" && product.title.trim().length >= 2 &&
+    product.title.length <= 150 &&
+    typeof product.handle === "string" &&
+    /^[a-z0-9-]{3,100}$/.test(product.handle) &&
+    (product.variantSku === undefined || (
+      typeof product.variantSku === "string" &&
+      /^[A-Za-z0-9_.-]{1,64}$/.test(product.variantSku)
+    ))
+}
+
 const PREMISES: Record<CctvPremise, string> = {
   home: "Home / വീട്",
   shop: "Shop / കട",
@@ -39,7 +59,7 @@ export const normalizeAdSource = (source: string | undefined | null): CctvAdSour
     normalized === "direct" ? normalized : "other"
 }
 
-export function buildCctvLeadWhatsAppUrl(input: CctvLeadRequest): string {
+export function buildCctvLeadWhatsAppUrl(input: CctvLeadRequest, product?: VerifiedCctvQuoteProduct): string {
   if (!Object.hasOwn(PREMISES, input.premise) ||
       !["2", "4", "8", "16", "not_sure"].includes(input.cameraCount) ||
       !Object.hasOwn(INSTALLATION, input.installation) ||
@@ -52,6 +72,11 @@ export function buildCctvLeadWhatsAppUrl(input: CctvLeadRequest): string {
   const message = [
     "Hello Minarva Technologies,",
     "I saw your CCTV packages and would like an accurate quotation.",
+    ...(product && validQuoteProductReference(product) ? [
+      "Selected package: " + product.title.trim().replace(/[\\r\\n]/g, " ").slice(0, 150),
+      "Product ref: " + product.handle,
+      ...(product.variantSku ? ["Variant SKU: " + product.variantSku] : []),
+    ] : []),
     "Premises: " + PREMISES[input.premise],
     "Cameras: " + count,
     "Installation: " + INSTALLATION[input.installation],

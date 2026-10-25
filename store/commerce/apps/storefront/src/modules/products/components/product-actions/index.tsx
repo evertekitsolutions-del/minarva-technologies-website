@@ -14,6 +14,7 @@ import { FormEvent, useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import { canUseStorefrontTestCart, hasApprovedCctvOffer } from "@lib/util/cctv-public-offer"
 import { buildCctvQuoteLink } from "@lib/util/cctv-quote-link"
+import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 
@@ -235,6 +236,15 @@ export default function ProductActions({
           >
             Ask for confirmed package quote / പാക്കേജ് വില ചോദിക്കൂ
           </a>
+          {offerApproved && product.handle && (
+            <LocalizedClientLink
+              href={`/cctv-quote?product=${encodeURIComponent(product.handle)}&variant=${encodeURIComponent(selectedVariant?.id ?? "")}`}
+              className="block rounded border border-gray-300 px-3 py-2 text-center text-sm font-medium text-gray-900"
+              aria-label="Continue with your chosen CCTV package to the optional contact-consent quotation form"
+            >
+              Request this package through Minarva CRM / ഫോമിൽ രജിസ്റ്റർ ചെയ്യൂ
+            </LocalizedClientLink>
+          )}
         </form>
         <MobileActions
           product={product}
