@@ -5,7 +5,10 @@ import {
   type MedusaResponse,
   type MedusaNextFunction,
 } from '@medusajs/framework/http'
-import { publicCheckoutGateFromEnvironment } from '../lib/store-checkout-release'
+import {
+  publicCheckoutGateFromEnvironment,
+  shouldBlockPublicCartMutation,
+} from '../lib/store-checkout-release'
 
 // The product index declares filterable `status` and `sales_channel_ids`, so
 // the route narrows it to published products in the key's sales channels.
@@ -20,10 +23,11 @@ export default defineMiddlewares({
       matcher: new RegExp("^/store/carts(?:/.*)?$", "i"),
       middlewares: [
         (req: MedusaRequest, res: MedusaResponse, next: MedusaNextFunction) => {
-          if (
-            ["POST", "PUT", "PATCH", "DELETE"].includes(req.method) &&
-            !publicCheckoutGateFromEnvironment()
-          ) {
+          if (shouldBlockPublicCartMutation({
+            method: req.method,
+            path: req.path,
+            sandboxAuthorized: publicCheckoutGateFromEnvironment(),
+          })) {
             return res.status(503).json({
               error: "Customer cart and checkout are not yet available",
             })
